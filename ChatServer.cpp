@@ -67,13 +67,13 @@ int main() {
 
 				json response; // ответ получателю
 
-
 				if(data->name != "NO_NAME")
 				{
 					response[COMMAND] = PRIVATE_MSG;
 					response[MESSAGE] = user_msg;
 					response[USER_ID_FROM] = data->name;
 				}
+
 				else
 				{
 					response[COMMAND] = PRIVATE_MSG;
@@ -98,6 +98,7 @@ int main() {
 					response[MESSAGE] = user_msg;
 					response[USER_ID_FROM] = data->name;
 				}
+
 				else
 				{
 					response[COMMAND] = PRIVATE_MSG;
@@ -122,6 +123,7 @@ int main() {
     }).listen(9001, [](auto*)
     {
     	cout << "Listening for connections..." << "\n";
+
     }).run();
 
 }
