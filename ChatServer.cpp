@@ -23,7 +23,7 @@ const std::string NEW_NAME = "new_name";
 // пользователь
 struct UserData
 {
-	uint64_t user_id;
+    uint64_t user_id;
     std::string name = "NO_NAME";
 };
 
