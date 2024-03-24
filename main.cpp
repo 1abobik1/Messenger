@@ -24,8 +24,9 @@ int main() {
 
 		// Пример обработчика для запроса корневого URL и отправки HTML-клиенту
 		uWS::App().get("/", [&html_content](auto* res, auto* req) {
-			res->write(html_content.data(), html_content.length(), "text/html");
+			res->write(html_content);
 			});
+
 	}
 	catch (const std::exception& e)
 	{

@@ -112,5 +112,4 @@ inline void runServer(const uint16_t port)
 				std::cout << "Listening for connections..." << "\n";
 
 			}).run();
-
 }
