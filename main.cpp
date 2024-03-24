@@ -10,8 +10,7 @@
 int main() {
 	using namespace std;
 
-	try
-	{
+	try {
 		// Загрузка HTML-файл клиента
 		const std::ifstream file(PathHTML::CLIENT_HTML_FILE_PATH);
 		if(!file.is_open())
