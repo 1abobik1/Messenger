@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Файлы заголовков\headers">
+      <UniqueIdentifier>{12a34cd6-c2cf-4524-9cd3-1c7a33412502}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Web">
+      <UniqueIdentifier>{c3789329-209b-4651-bb2e-22b3425e9b6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -20,16 +26,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="client.htm">
-      <Filter>Исходные файлы</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="json_objects.h">
-      <Filter>Файлы заголовков</Filter>
+    <ClInclude Include="CommonConst.h">
+      <Filter>Файлы заголовков\headers</Filter>
     </ClInclude>
     <ClInclude Include="server.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>Файлы заголовков\headers</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="client.htm">
+      <Filter>Исходные файлы\Web</Filter>
+    </None>
   </ItemGroup>
 </Project>

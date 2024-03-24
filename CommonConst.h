@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 namespace JsonObj
 {
@@ -22,8 +23,14 @@ namespace JsonObj
 	const std::string NEW_NAME = "new_name";
 }
 
-// Путь к файлу HTML-клиента
 namespace PathHTML
 {
-	const std::string CLIENT_HTML_FILE_PATH = "client.htm";
+	// Путь к файлу HTML-клиента
+	constexpr std::string_view CLIENT_HTML_FILE_PATH = "client.htm";
+}
+
+namespace ConnDB
+{
+	//путь к бд
+	constexpr std::string_view CONNECTION_DB = "host=localhost dbname=Messenger_DB user=postgres password=Zopa_kek12";
 }
