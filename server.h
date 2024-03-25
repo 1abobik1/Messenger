@@ -7,21 +7,21 @@
 
 using json = nlohmann::json;
 
-// пользователь
+// §б§а§Э§о§Щ§а§У§С§д§Ц§Э§о
 struct UserData
 {
 	uint64_t user_id;
 	std::string name = "NO_NAME";
 };
 
-//id пользовате?
+//id §б§а§Э§о§Щ§а§У§С§д§Ц§Э§с
 inline uint32_t cnt_user = 1;
 
 inline void runServer(const uint16_t port)
 {
 	using namespace JsonObj; using namespace PathHTML;
 
-	// /* - значит чт?запускае??корнейво?папк? пока бе?url
+	// /* - §Щ§Я§С§й§Ъ§д §й§д§а §Щ§С§б§е§г§Ь§С§Ц§Ю §У §Ь§а§в§Я§Ц§У§а§Ы §б§С§б§Ь§Ц, §б§а§Ь§С §Т§Ц§Щ url
 	uWS::App().ws<UserData>("/*", {
 			.idleTimeout = 960,
 
@@ -32,10 +32,10 @@ inline void runServer(const uint16_t port)
 
 				std::cout << "New user connected ID: " << data->user_id << "\n";
 
-				// подключаем человека личном?каналу(личные сообщения)
+				// §б§а§Х§Ь§Э§р§й§С§Ц§Ю §й§Ц§Э§а§У§Ц§Ь§С §Ь §Э§Ъ§й§Я§а§Ю§е §Ь§С§Я§С§Э§е(§Х§Э§с §Э§Ъ§й§Я§н§з §г§а§а§Т§л§Ц§Я§Ъ§Ы)
 				ws->subscribe("userN" + std::to_string(data->user_id));
 
-				//подключаем на общи?кана?общи?ча?
+				// §б§а§Х§Ь§Э§р§й§С§Ц§Ю §Ь §а§Т§л§Ц§Ю§е §Ь§С§Я§С§Э§е(§Х§Э§с §а§Т§л§Ц§Ф§а §й§С§д§С)
 				ws->subscribe("public + ' ' + chat");
 			},
 
@@ -52,7 +52,7 @@ inline void runServer(const uint16_t port)
 					const uint64_t user_id_to = parsed[RECEIVER_ID];
 					std::string user_msg = parsed[MESSAGE];
 
-					json response; // отве?получателю
+					json response; // §г§а§Щ§Х§С§Ц§Ю §а§д§У§Ц§д §б§а§Э§е§й§С§д§Ц§Э§р
 
 					if (data->name != "NO_NAME")
 					{
@@ -70,14 +70,14 @@ inline void runServer(const uint16_t port)
 					}
 
 					ws->publish("userN" + std::to_string(user_id_to), response.dump()); //отправ?ем ?приватны?кана?
-					//response.dump() отправ?ет пользователю сообщени?
+					//response.dump() §а§д§б§в§С§У§Э§с§Ц§д §б§а§Э§о§Щ§а§У§С§д§Ц§Э§р §г§а§а§Т§л§Ц§Я§Ъ§Ц
 				}
 
 				if (parsed[COMMAND] == PUBLIC_MSG)
 				{
 					std::string user_msg = parsed[MESSAGE];
 
-					json response; // отве?всем
+					json response; // §г§а§Щ§Х§С§Ц§Ю §а§д§У§Ц§д §Х§Э§с §а§Т§л§Ц§Ф§а §й§С§д§С
 
 					if (data->name != "NO_NAME")
 					{
