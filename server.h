@@ -14,14 +14,14 @@ struct UserData
 	std::string name = "NO_NAME";
 };
 
-//id пользователя
+//id пользовате?
 inline uint32_t cnt_user = 1;
 
 inline void runServer(const uint16_t port)
 {
 	using namespace JsonObj; using namespace PathHTML;
 
-	// /* - значит что запускаем в корнейвой папке, пока без url
+	// /* - значит чт?запускае??корнейво?папк? пока бе?url
 	uWS::App().ws<UserData>("/*", {
 			.idleTimeout = 960,
 
@@ -32,10 +32,10 @@ inline void runServer(const uint16_t port)
 
 				std::cout << "New user connected ID: " << data->user_id << "\n";
 
-				// подключаем человека личному каналу(личные сообщения)
+				// подключаем человека личном?каналу(личные сообщения)
 				ws->subscribe("userN" + std::to_string(data->user_id));
 
-				//подключаем на общий канал(общий чат)
+				//подключаем на общи?кана?общи?ча?
 				ws->subscribe("public + ' ' + chat");
 			},
 
@@ -52,7 +52,7 @@ inline void runServer(const uint16_t port)
 					const uint64_t user_id_to = parsed[RECEIVER_ID];
 					std::string user_msg = parsed[MESSAGE];
 
-					json response; // ответ получателю
+					json response; // отве?получателю
 
 					if (data->name != "NO_NAME")
 					{
@@ -69,15 +69,15 @@ inline void runServer(const uint16_t port)
 
 					}
 
-					ws->publish("userN" + std::to_string(user_id_to), response.dump()); //отправляем в приватный канал.
-					//response.dump() отправляет пользователю сообщение
+					ws->publish("userN" + std::to_string(user_id_to), response.dump()); //отправ?ем ?приватны?кана?
+					//response.dump() отправ?ет пользователю сообщени?
 				}
 
 				if (parsed[COMMAND] == PUBLIC_MSG)
 				{
 					std::string user_msg = parsed[MESSAGE];
 
-					json response; // ответ всем
+					json response; // отве?всем
 
 					if (data->name != "NO_NAME")
 					{
@@ -93,7 +93,7 @@ inline void runServer(const uint16_t port)
 						response[USER_ID_FROM] = data->user_id;
 					}
 
-					ws->publish("public + ' ' + chat", response.dump()); // отправляем в общий канал
+					ws->publish("public + ' ' + chat", response.dump()); // отправ?ем ?общи?кана?
 				}
 
 				if (parsed[COMMAND] == SET_NAME)

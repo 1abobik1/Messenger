@@ -6,31 +6,31 @@
 namespace JsonObj
 {
 	const std::string COMMAND = "command";
-	// сообщения
+	// §г§а§а§Т§л§Ц§Я§Ъ§с
 	const std::string MESSAGE = "message";
-	// личные сообщения
+	// §Э§Ъ§й§Я§н§н§Ц §г§а§а§Т§л§Ц§Я§Ъ§с
 	const std::string PRIVATE_MSG = "private_msg";
-	// публичные сообщения
+	// §б§е§Т§Э§Ъ§й§Я§н§Ц §г§а§а§Т§л§Ц§Я§Ъ§с
 	const std::string PUBLIC_MSG = "public_msg";
 
-	// получатель сообщения
+	// §б§а§Э§е§й§С§д§Ц§Э§о §г§а§а§Т§л§Ц§Я§Ъ§с
 	const std::string RECEIVER_ID = "receiver_id";
-	// кто отправил сообщение
+	// §Ь§д§а §а§д§б§в§С§У§Ъ§Э §г§а§а§Т§л§Ц§Я§Ъ§Ц
 	const std::string USER_ID_FROM = "user_id_from";
 
-	// имя пользователя
+	// §Ъ§Ю§с §б§а§Э§о§Щ§а§У§С§д§Ц§Э§с
 	const std::string SET_NAME = "set_name";
 	const std::string NEW_NAME = "new_name";
 }
 
 namespace PathHTML
 {
-	// Путь к файлу HTML-клиента
+	// §б§е§д§о §Ь §ж§С§Ы§Э§е HTML-§Ь§Э§Ъ§Ц§Я§д§С
 	constexpr std::string_view CLIENT_HTML_FILE_PATH = "client.htm";
 }
 
 namespace ConnDB
 {
-	//путь к бд
+	// §б§е§д§о §Ь §Т§Х
 	constexpr std::string_view CONNECTION_DB = "host=localhost dbname=Messenger_DB user=postgres password=Zopa_kek12";
 }
