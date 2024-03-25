@@ -7,7 +7,7 @@
 
 using json = nlohmann::json;
 
-// пользователь
+// §б§а§Э§о§Щ§а§У§С§д§Ц§Э§о
 struct UserData
 {
     uint64_t user_id;
