@@ -17,114 +17,111 @@ using namespace PathHTML;
 
 void Server::run()
 {
-
 	std::vector<std::thread*> threads(std::thread::hardware_concurrency());
-	std::ranges::transform(threads, threads.begin(), [&](auto* thr)
-		{
-			return new std::thread([&]()
+	std::ranges::transform(threads, threads.begin(), [&](auto* thr){
+		return new std::thread([&](){
+			// /* - значит что запускаем в корневой папке, пока без url
+			uWS::SSLApp({
+
+			 .key_file_name = "misc/key.pem",
+			 .cert_file_name = "misc/cert.pem",
+			 .passphrase = "Zopa_kek12"
+
+			}).ws<UserData>("/*", {
+				.idleTimeout = 960,
+
+				.open = [&](auto* ws)
 				{
-					// /* - значит что запускаем в корневой папке, пока без url
-					uWS::SSLApp({
+				  UserData* data = ws->getUserData();
+				  data->user_id = this->cnt_user_++;
 
-					 .key_file_name = "misc/key.pem",
-					 .cert_file_name = "misc/cert.pem",
-					 .passphrase = "Zopa_kek12"
+				  std::cout << "New user connected ID: " << data->user_id << "\n";
 
-					}).ws<UserData>("/*", {
-						.idleTimeout = 960,
+				  // подключаем человека к личному каналу(дл€ личных сообщений)
+				  ws->subscribe("userN" + std::to_string(data->user_id));
 
-						.open = [&](auto* ws)
-						{
-						  UserData* data = ws->getUserData();
-						  data->user_id = this->cnt_user_++;
+				  // подключаем к общему каналу(дл€ общего чата)
+				  ws->subscribe("public_chat");
+				},
 
-						  std::cout << "New user connected ID: " << data->user_id << "\n";
+				.message = [](auto* ws, std::string_view message, uWS::OpCode)
+				{
+				  UserData* data = ws->getUserData();
 
-						  // подключаем человека к личному каналу(дл€ личных сообщений)
-						  ws->subscribe("userN" + std::to_string(data->user_id));
+				  std::cout << "message from user ID: " << data->user_id << " --message: " << message << "\n";
 
-						  // подключаем к общему каналу(дл€ общего чата)
-						  ws->subscribe("public_chat");
-						},
+				  auto parsed = json::parse(message);
 
-						.message = [](auto* ws, std::string_view message, uWS::OpCode)
-						{
-						  UserData* data = ws->getUserData();
+				  if (parsed[COMMAND] == PRIVATE_MSG)
+				  {
+					  const uint64_t user_id_to = parsed[RECEIVER_ID];
+					  std::string user_msg = parsed[MESSAGE];
 
-						  std::cout << "message from user ID: " << data->user_id << " --message: " << message << "\n";
+					  json response; // создаем ответ получателю
 
-						  auto parsed = json::parse(message);
+					  if (data->name != "NO_NAME")
+					  {
+						  response[COMMAND] = PRIVATE_MSG;
+						  response[MESSAGE] = user_msg;
+						  response[USER_ID_FROM] = data->name;
+					  }
 
-						  if (parsed[COMMAND] == PRIVATE_MSG)
-						  {
-							const uint64_t user_id_to = parsed[RECEIVER_ID];
-							std::string user_msg = parsed[MESSAGE];
+					  else
+					  {
+						  response[COMMAND] = PRIVATE_MSG;
+						  response[MESSAGE] = user_msg;
+						  response[USER_ID_FROM] = data->user_id;
 
-							json response; // создаем ответ получателю
+					  }
 
-							if (data->name != "NO_NAME")
-							{
-							  response[COMMAND] = PRIVATE_MSG;
-							  response[MESSAGE] = user_msg;
-							  response[USER_ID_FROM] = data->name;
-							}
+					  ws->publish("userN" + std::to_string(user_id_to), response.dump()); // отправка сообщени€
+					  //response.dump() отправл€ет пользователю сообщение
+				  }
 
-							else
-							{
-							  response[COMMAND] = PRIVATE_MSG;
-							  response[MESSAGE] = user_msg;
-							  response[USER_ID_FROM] = data->user_id;
+				  if (parsed[COMMAND] == PUBLIC_MSG)
+				  {
+					  std::string user_msg = parsed[MESSAGE];
 
-							}
+					  json response; // создаем ответ дл€ общего чата
 
-							ws->publish("userN" + std::to_string(user_id_to), response.dump()); // отправка сообщени€
-							//response.dump() отправл€ет пользователю сообщение
-						  }
+					  if (data->name != "NO_NAME")
+					  {
+						  response[COMMAND] = PUBLIC_MSG;
+						  response[MESSAGE] = user_msg;
+						  response[USER_ID_FROM] = data->name;
+					  }
 
-						  if (parsed[COMMAND] == PUBLIC_MSG)
-						  {
-							std::string user_msg = parsed[MESSAGE];
+					  else
+					  {
+						  response[COMMAND] = PUBLIC_MSG;
+						  response[MESSAGE] = user_msg;
+						  response[USER_ID_FROM] = data->user_id;
+					  }
 
-							json response; // создаем ответ дл€ общего чата
+					  ws->publish("public_chat", response.dump()); // отправка сообщени€
+				  }
 
-							if (data->name != "NO_NAME")
-							{
-							  response[COMMAND] = PUBLIC_MSG;
-							  response[MESSAGE] = user_msg;
-							  response[USER_ID_FROM] = data->name;
-							}
+				  if (parsed[COMMAND] == SET_NAME)
+				  {
+					data->name = parsed[NEW_NAME];
+				  }
+				},
 
-							else
-							{
-							  response[COMMAND] = PUBLIC_MSG;
-							  response[MESSAGE] = user_msg;
-							  response[USER_ID_FROM] = data->user_id;
-							}
+				.close = [](auto* ws, int code, std::string_view message)
+				{
+				  std::cout << "User disconnected ID: " << ws->getUserData()->user_id << "\n";
+				}
 
-							ws->publish("public_chat", response.dump()); // отправка сообщени€
-						  }
-
-						  if (parsed[COMMAND] == SET_NAME)
-						  {
-							data->name = parsed[NEW_NAME];
-						  }
-						},
-
-						.close = [](auto* ws, int code, std::string_view message)
-						{
-						  std::cout << "User disconnected ID: " << ws->getUserData()->user_id << "\n";
+				}).listen(this->port_, [](const auto* listenSocket)
+					{
+						if (listenSocket) {
+							//std::cout << "Listening on port 9001 thread: "<< std::this_thread::get_id() << '\n';
 						}
-
-						}).listen(this->port_, [](const auto* listenSocket)
-							{
-								if (listenSocket) {
-									//std::cout << "Listening on port 9001 thread: "<< std::this_thread::get_id() << '\n';
-								}
-								else {
-									std::cout << "Failed to load certificates or bind to port." << '\n';
-								}
-							}).run();
-				});
+						else {
+							std::cout << "Failed to load certificates or bind to port." << '\n';
+						}
+					}).run();
+			});
 		});
 
 	for (const auto thread : threads)
