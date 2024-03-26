@@ -44,14 +44,14 @@ void Server::run()
 						  ws->subscribe("userN" + std::to_string(data->user_id));
 
 						  // подключаем к общему каналу(для общего чата)
-						  ws->subscribe("public + ' ' + chat");
+						  ws->subscribe("public_chat");
 						},
 
 						.message = [](auto* ws, std::string_view message, uWS::OpCode)
 						{
 						  UserData* data = ws->getUserData();
 
-						  std::cout << "message from user ID: " << data->user_id << "--message: " << message << "\n";
+						  std::cout << "message from user ID: " << data->user_id << " --message: " << message << "\n";
 
 						  auto parsed = json::parse(message);
 
@@ -89,19 +89,19 @@ void Server::run()
 
 							if (data->name != "NO_NAME")
 							{
-							  response[COMMAND] = PRIVATE_MSG;
+							  response[COMMAND] = PUBLIC_MSG;
 							  response[MESSAGE] = user_msg;
 							  response[USER_ID_FROM] = data->name;
 							}
 
 							else
 							{
-							  response[COMMAND] = PRIVATE_MSG;
+							  response[COMMAND] = PUBLIC_MSG;
 							  response[MESSAGE] = user_msg;
 							  response[USER_ID_FROM] = data->user_id;
 							}
 
-							ws->publish("public + ' ' + chat", response.dump()); // отправка сообщения
+							ws->publish("public_chat", response.dump()); // отправка сообщения
 						  }
 
 						  if (parsed[COMMAND] == SET_NAME)
@@ -118,7 +118,7 @@ void Server::run()
 						}).listen(this->port_, [](const auto* listenSocket)
 							{
 								if (listenSocket) {
-									std::cout << "Listening on port 9001" << '\n';
+									//std::cout << "Listening on port 9001 thread: "<< std::this_thread::get_id() << '\n';
 								}
 								else {
 									std::cout << "Failed to load certificates or bind to port." << '\n';
