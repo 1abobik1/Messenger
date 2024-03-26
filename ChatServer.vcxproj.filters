@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Файлы заголовков\headers">
-      <UniqueIdentifier>{12a34cd6-c2cf-4524-9cd3-1c7a33412502}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Исходные файлы\Web">
       <UniqueIdentifier>{c3789329-209b-4651-bb2e-22b3425e9b6c}</UniqueIdentifier>
     </Filter>
@@ -24,13 +21,16 @@
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonConst.h">
-      <Filter>Файлы заголовков\headers</Filter>
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="server.h">
-      <Filter>Файлы заголовков\headers</Filter>
+    <ClInclude Include="Server.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

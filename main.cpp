@@ -1,12 +1,14 @@
-﻿#define _CRT_SECURE_NO_WARNINGS					
-#define _SILENCE_ALL_CXX23_DEPRECATION_WARNINGS 
-
+﻿#define _SILENCE_ALL_CXX23_DEPRECATION_ARNINGS 
 
 #include<fstream>
+#include <iostream>
+#include <sstream>
+
 #include <libpq-fe.h>
+#include <uwebsockets/App.h>
 
-#include "server.h"
-
+#include "CommonConst.h"
+#include "Server.h"
 
 int main() {
 	using namespace std;
@@ -53,8 +55,9 @@ int main() {
 		return 1;
 	}
 
+	Server server(9001);
 	// запуск сервера
-	runServer(9001);
+	server.run();
 
 	PQfinish(connection);
 
