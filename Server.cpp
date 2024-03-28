@@ -20,7 +20,6 @@ void Server::run()
 	std::vector<std::thread*> threads(std::thread::hardware_concurrency());
 	std::ranges::transform(threads, threads.begin(), [&](auto* thr){
 		return new std::thread([&](){
-			// /* - значит что запускаем в корневой папке, пока без url
 			uWS::SSLApp({
 
 			 .key_file_name = "misc/key.pem",
@@ -37,10 +36,10 @@ void Server::run()
 
 				  std::cout << "New user connected ID: " << data->user_id << "\n";
 
-				  // подключаем человека к личному каналу(дл€ личных сообщений)
+				  // connect the person to a private channel (for personal messages)
 				  ws->subscribe("userN" + std::to_string(data->user_id));
 
-				  // подключаем к общему каналу(дл€ общего чата)
+				  // connect to a common channel (for general chat)
 				  ws->subscribe("public_chat");
 				},
 
@@ -57,7 +56,7 @@ void Server::run()
 					  const uint64_t user_id_to = parsed[RECEIVER_ID];
 					  std::string user_msg = parsed[MESSAGE];
 
-					  json response; // создаем ответ получателю
+					  json response; 
 
 					  if (data->name != "NO_NAME")
 					  {
@@ -74,15 +73,15 @@ void Server::run()
 
 					  }
 
-					  ws->publish("userN" + std::to_string(user_id_to), response.dump()); // отправка сообщени€
-					  //response.dump() отправл€ет пользователю сообщение
+					  ws->publish("userN" + std::to_string(user_id_to), response.dump()); // sending a message
+					  //response.dump() sends a message to the user
 				  }
 
 				  if (parsed[COMMAND] == PUBLIC_MSG)
 				  {
 					  std::string user_msg = parsed[MESSAGE];
 
-					  json response; // создаем ответ дл€ общего чата
+					  json response; // create a response for the general chat
 
 					  if (data->name != "NO_NAME")
 					  {
@@ -98,7 +97,7 @@ void Server::run()
 						  response[USER_ID_FROM] = data->user_id;
 					  }
 
-					  ws->publish("public_chat", response.dump()); // отправка сообщени€
+					  ws->publish("public_chat", response.dump()); // sending a message
 				  }
 
 				  if (parsed[COMMAND] == SET_NAME)
