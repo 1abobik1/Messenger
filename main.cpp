@@ -12,8 +12,6 @@
 #include "Server.h"
 
 int main() {
-	using namespace std;
-
 	PGconn* connection = PQconnectdb(ConnDB::CONNECTION_DB.data());
 
 	try
@@ -34,7 +32,7 @@ int main() {
 	std::cout << "Connected to database!" << '\n';
 
 	try {
-		// Загрузка HTML-файл клиента
+		// Download HTML-file client
 		const std::ifstream file((PathHTML::CLIENT_HTML_FILE_PATH.data()));
 		if(!file.is_open())
 		{
@@ -44,7 +42,7 @@ int main() {
 		buffer << file.rdbuf();
 		const std::string html_content = buffer.str();
 
-		// Пример обработчика для запроса корневого URL и отправки HTML-клиенту
+		// handler to request the root URL and send it to the HTML client
 		uWS::App().get("/", [&html_content](auto* res, auto* req) {
 			res->write(html_content);
 			});
@@ -57,7 +55,7 @@ int main() {
 	}
 
 	Server server(9001);
-	// запуск сервера
+
 	server.run();
 
 	PQfinish(connection);
