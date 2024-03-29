@@ -25,7 +25,7 @@ namespace JsonObj
 namespace PathHTML
 {
 	// path to the HTMl-client file
-	constexpr std::string_view CLIENT_HTML_FILE_PATH = "client.htm";
+	constexpr std::string_view CLIENT_HTML_FILE_PATH = "web-files/client.htm";
 }
 
 namespace ConnDB

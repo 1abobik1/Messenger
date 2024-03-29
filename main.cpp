@@ -8,8 +8,8 @@
 #include <libpq-fe.h>
 #include <uwebsockets/App.h>
 
-#include "CommonConst.h"
-#include "Server.h"
+#include "header/CommonConst.h"
+#include "header/Server.h"
 
 int main() {
 	PGconn* connection = PQconnectdb(ConnDB::CONNECTION_DB.data());

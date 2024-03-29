@@ -7,8 +7,8 @@
 #include<thread>
 #include<algorithm>
 
-#include "CommonConst.h"
-#include "Server.h"
+#include "../header/CommonConst.h"
+#include "../header/Server.h"
 
 using json = nlohmann::json;
 
