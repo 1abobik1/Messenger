@@ -143,6 +143,10 @@
     <None Include="client.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="index.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="style.css" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonConst.h" />

@@ -34,5 +34,11 @@
     <None Include="client.htm">
       <Filter>Файлы ресурсов</Filter>
     </None>
+    <None Include="index.htm">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="style.css">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
   </ItemGroup>
 </Project>
