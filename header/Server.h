@@ -1,16 +1,9 @@
 #pragma once
 
-#define _CRT_SECURE_NO_WARNINGS
 #include <uwebsockets/App.h>
 #include <nlohmann/json.hpp>
 
-#include "CommonConst.h"
-
 using json = nlohmann::json;
-
-using namespace JsonObj;
-using namespace PathHTML;
-
 
 class Server
 {
@@ -23,9 +16,6 @@ private:
 
     // Определение web_socket с использованием UserData
     typedef uWS::WebSocket<false, true, UserData> web_socket;
-
-    //web_socket* ws_;
-    //UserData* data_ =ws_->getUserData();
 
     std::uint64_t cnt_user_ = 0;
     std::uint16_t port_ = 0;
