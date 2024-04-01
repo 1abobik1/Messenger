@@ -1,11 +1,12 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "../header/Server.h"
+#include "../header/CommonConst.h"
 
 #include <iostream>
 
-//#include<vector>
-//#include<thread>
-//#include<algorithm>
-
+using namespace JsonObj;
+using namespace PathHTML;
 
 void Server::ProcessSetName(web_socket* WS, nlohmann::json parsed, UserData* data)
 {
