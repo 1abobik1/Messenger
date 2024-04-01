@@ -11,11 +11,12 @@
 <div id="messages"></div>
 
 <script>
-        const socket = new WebSocket("ws://localhost:9001/");
+	const socket = new WebSocket("ws://localhost:9001/");
 
         socket.onmessage = function(event) {
             const message = JSON.parse(event.data);
-            document.getElementById("messages").innerHTML += "<p>" + message.user_id_from + ": " + message.message + "</p>";
+            document.getElementById("messages").innerHTML += `<p>${message.user_id_from}: ${message.message}</p>`;
+
         };
 
         function sendMessage() {

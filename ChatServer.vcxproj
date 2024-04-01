@@ -150,6 +150,7 @@
     <None Include="web-files\index.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="web-files\index.js" />
     <None Include="web-files\style.css" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
