@@ -6,13 +6,14 @@
 #include <sstream>
 
 #include <libpq-fe.h>
+#include <regex>
 #include <uwebsockets/App.h>
 
 #include "header/CommonConst.h"
 #include "header/Server.h"
 
 int main() {
-	PGconn* connection = PQconnectdb(ConnDB::CONNECTION_DB.data());
+	PGconn* connection = PQconnectdb(PathDB::CONNECTION_DB.data());
 
 	try
 	{

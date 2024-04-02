@@ -3,7 +3,7 @@
 #include <string>
 #include <string_view>
 
-namespace JsonObj
+namespace JsonChat
 {
 	const std::string COMMAND = "command";
 
@@ -28,7 +28,7 @@ namespace PathHTML
 	constexpr std::string_view CLIENT_HTML_FILE_PATH = "web-files/client.htm";
 }
 
-namespace ConnDB
+namespace PathDB
 {
 	// path to the DB
 	constexpr std::string_view CONNECTION_DB = "host=localhost dbname=Messenger_DB user=postgres password=Zopa_kek12";

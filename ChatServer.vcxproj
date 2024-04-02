@@ -136,10 +136,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="encrypt\Encrypt.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="source\Server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="encrypt\Encrypt.h" />
     <ClInclude Include="header\CommonConst.h" />
     <ClInclude Include="header\Server.h" />
   </ItemGroup>

@@ -2,10 +2,11 @@
 
 #include <uwebsockets/App.h>
 #include <nlohmann/json.hpp>
+#include "../encrypt/Encrypt.h"
 
 using json = nlohmann::json;
 
-class Server
+class Server : protected Encrypt
 {
 private:
     struct UserData
@@ -17,7 +18,7 @@ private:
     // Определение web_socket с использованием UserData
     typedef uWS::WebSocket<false, true, UserData> web_socket;
 
-    std::uint64_t cnt_user_ = 0;
+    std::uint64_t cnt_user_;
     std::uint16_t port_ = 0;
 
 public:

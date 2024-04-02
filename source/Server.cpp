@@ -5,8 +5,7 @@
 
 #include <iostream>
 
-using namespace JsonObj;
-using namespace PathHTML;
+using namespace JsonChat;
 
 void Server::ProcessSetName(web_socket* WS, nlohmann::json parsed, UserData* data)
 {
@@ -62,11 +61,29 @@ void Server::ProcessMessage(web_socket* WS, std::string_view message)
 	}
 }
 
-
 void Server::run()
 {
 
-	uWS::App().ws<UserData>("/*", {
+	uWS::App()
+		.get("/signup", [&](auto* res, auto* req)
+		{
+			auto body = static_cast<std::string>(req->getQuery());
+
+			if(!body.empty())
+			{
+				json userData = json::parse(UrlDecode(body));
+
+				// Получение данных из запроса
+				const std::string email = userData["email"];
+				const std::string password = userData["pswd"];
+				const std::string user_name = userData["user_name"];
+
+				std::cout << "Received data: " << user_name << ' ' << email << ' ' << password << '\n'; // Выводим полученные данные
+			}
+			res->writeStatus("200 OK");
+			res->end("server http://localhost:9001/signup working");
+		}).ws<UserData>("/*", {
+
 		.idleTimeout = 666,
 
 		.open = [&](auto* ws)
@@ -101,17 +118,6 @@ void Server::run()
 			res->writeHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 			res->writeStatus("200 OK");
 			res->end();
-
-		})
-		.post("/signup", [&](auto* res, auto* req)
-		{
-			auto body = static_cast<std::string>(req->getQuery());
-			json userData = json::parse(body);
-			// Здесь можно обработать данные, сохранить их в базу данных и отправить ответ клиенту
-			std::cout << body;
-
-			// Отправляем ответ клиенту
-			res->end("Registration successful");
 
 		})
 		.listen(this->port_, [](const auto* listenSocket)
