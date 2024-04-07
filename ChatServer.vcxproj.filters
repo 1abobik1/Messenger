@@ -21,7 +21,7 @@
     <ClCompile Include="source\Server.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="encrypt\Encrypt.cpp">
+    <ClCompile Include="encrypt\ServiceFunc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,13 +32,13 @@
     <ClInclude Include="header\Server.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="encrypt\Encrypt.h">
+    <ClInclude Include="encrypt\ServiceFunc.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="web-files\client.htm" />
-    <None Include="web-files\index.htm" />
+    <None Include="web-files\client.html" />
+    <None Include="web-files\index.html" />
     <None Include="web-files\index.js" />
     <None Include="web-files\style.css" />
   </ItemGroup>

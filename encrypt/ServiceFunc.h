@@ -6,14 +6,16 @@
 #include <iomanip>
 #include <sstream>
 
-class Encrypt
+class ServiceFunc
 {
 protected:
-	Encrypt() = default;
-	~Encrypt() = default;
+	ServiceFunc() = default;
+	~ServiceFunc() = default;
 
 public:
 
 	static std::string UrlDecode(const std::string& urlEncodedString);
 
+	//function for checking data integrity
+	static uint32_t crc32(const char* s, size_t n, uint32_t crc = 0xFFFFFFFF);
 };

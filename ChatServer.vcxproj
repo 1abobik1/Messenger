@@ -136,20 +136,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="encrypt\Encrypt.cpp" />
+    <ClCompile Include="encrypt\ServiceFunc.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="source\Server.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="encrypt\Encrypt.h" />
+    <ClInclude Include="encrypt\ServiceFunc.h" />
     <ClInclude Include="header\CommonConst.h" />
     <ClInclude Include="header\Server.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="web-files\client.htm">
+    <None Include="web-files\client.html">
       <DeploymentContent>true</DeploymentContent>
     </None>
-    <None Include="web-files\index.htm">
+    <None Include="web-files\index.html">
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="web-files\index.js" />

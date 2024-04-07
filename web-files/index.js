@@ -1,6 +1,6 @@
 $(document).ready(function () {
     window.$("#signup_button").on("click", function () {
-        var userData = {
+        let userData = {
             user_name: window.$("input[name='user_name']").val(),
             email: window.$("input[name='email']").val(),
             pswd: window.$("input[name='pswd']").val()
@@ -15,11 +15,11 @@ $(document).ready(function () {
             data: jsonStr,
             success: function (data) {
                 alert("Registration successful!");
-            },
-            error: function (xhr, status, error) {
-                alert("Error: " + error);
-                // Обработка ошибки, если необходимо
             }
+            //error: function (xhr, status, error) {
+            //    alert("Error: " + error);
+            //    // Обработка ошибки, если необходимо
+            //}
         });
     });
 });

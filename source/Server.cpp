@@ -64,24 +64,67 @@ void Server::ProcessMessage(web_socket* WS, std::string_view message)
 void Server::run()
 {
 
-	uWS::App()
-		.get("/signup", [&](auto* res, auto* req)
-		{
-			auto body = static_cast<std::string>(req->getQuery());
+	uWS::App(
+		/*.key_file_name = "C:/Users/dima1/source/repos/ChatServer/misc/key.pem",
+		.cert_file_name = "C:/Users/dima1/source/repos/ChatServer/misc/cert.pem",
+		.passphrase = "dima15042004"*/
 
-			if(!body.empty())
-			{
-				json userData = json::parse(UrlDecode(body));
+		).post("/signup", [&](auto* res, auto* req) {
+			res->writeHeader("Access-Control-Allow-Origin", "*");
+			auto isAborted = std::make_shared<bool>(false);
+			std::shared_ptr<std::string> body = std::make_shared<std::string>();
 
-				// Получение данных из запроса
-				const std::string email = userData["email"];
-				const std::string password = userData["pswd"];
-				const std::string user_name = userData["user_name"];
+			res->onData([res, isAborted, body](std::string_view chunk, bool isFin) mutable {
+				if (!chunk.empty()) {
+					// Накапливаем тело запроса
+					body->append(chunk.data(), chunk.length());
 
-				std::cout << "Received data: " << user_name << ' ' << email << ' ' << password << '\n'; // Выводим полученные данные
-			}
-			res->writeStatus("200 OK");
+					if (isFin && !*isAborted) {
+						// Обработка тела запроса после его полного получения
+						try {
+							// Парсим JSON из накопленного тела
+							json userData = json::parse(*body);
+
+							// Получение данных из запроса
+							const std::string email = userData["email"];
+							const std::string password = userData["pswd"];
+							const std::string user_name = userData["user_name"];
+
+							std::cout << "Received data: " << user_name << ' ' << email << ' ' << password << '\n';
+
+							// Отправляем ответ клиенту
+							res->end("Data processed successfully");
+						}
+						catch (std::exception& e)
+						{
+							std::cerr << e.what();
+						}
+					}
+				}
+			});
+			res->onAborted([isAborted]() {
+				*isAborted = true;
+			});
+
 			res->end("server http://localhost:9001/signup working");
+	//).get("/signup", [&](auto* res, auto* req)
+	//	{	
+	//	auto body = static_cast<std::string>(req->getQuery());
+
+	//	if (!body.empty())
+	//	{
+	//		json userData = json::parse(UrlDecode(body));
+
+	//		// Получение данных из запроса
+	//		const std::string email = userData["email"];
+	//		const std::string password = userData["pswd"];
+	//		const std::string user_name = userData["user_name"];
+
+	//		std::cout << "Received data: " << user_name << ' ' << email << ' ' << password << '\n'; // Выводим полученные данные
+	//	}
+	//	res->writeStatus("200 OK");
+	//	res->end("server http://localhost:9001/signup working");
+
 		}).ws<UserData>("/*", {
 
 		.idleTimeout = 666,
@@ -118,7 +161,6 @@ void Server::run()
 			res->writeHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 			res->writeStatus("200 OK");
 			res->end();
-
 		})
 		.listen(this->port_, [](const auto* listenSocket)
 		{

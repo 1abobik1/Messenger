@@ -2,11 +2,11 @@
 
 #include <uwebsockets/App.h>
 #include <nlohmann/json.hpp>
-#include "../encrypt/Encrypt.h"
+#include "../encrypt/ServiceFunc.h"
 
 using json = nlohmann::json;
 
-class Server : protected Encrypt
+class Server : protected ServiceFunc
 {
 private:
     struct UserData
