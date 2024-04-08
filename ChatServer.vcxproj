@@ -152,7 +152,8 @@
     <None Include="web-files\index.html">
       <DeploymentContent>true</DeploymentContent>
     </None>
-    <None Include="web-files\index.js" />
+    <None Include="web-files\login.js" />
+    <None Include="web-files\signup.js" />
     <None Include="web-files\style.css" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

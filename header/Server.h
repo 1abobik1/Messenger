@@ -16,7 +16,7 @@ private:
     };
 
     // Определение web_socket с использованием UserData
-    typedef uWS::WebSocket<false, true, UserData> web_socket;
+    typedef uWS::WebSocket<true, true, UserData> web_socket;
 
     std::uint64_t cnt_user_;
     std::uint16_t port_ = 0;
@@ -25,6 +25,10 @@ public:
     explicit Server(const uint16_t port) : cnt_user_(1), port_(port)
     {
     }
+
+    static void HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
+
+    static void HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
     static void ProcessSetName(web_socket* WS, json parsed, UserData* data);
 

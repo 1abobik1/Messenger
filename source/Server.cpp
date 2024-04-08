@@ -7,12 +7,83 @@
 
 using namespace JsonChat;
 
-void Server::ProcessSetName(web_socket* WS, nlohmann::json parsed, UserData* data)
+void Server::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
+{
+	// CORS policy
+	res->writeHeader("Access-Control-Allow-Origin", "*");
+
+	auto isAborted = std::make_shared<bool>(false);
+	std::shared_ptr<std::string> body = std::make_shared<std::string>();
+
+	res->onData([res, isAborted, body](std::string_view chunk, bool isFin) mutable {
+		if (!chunk.empty()) {
+			// fill in the request body
+			body->append(chunk.data(), chunk.length());
+
+			if (isFin && !*isAborted) {
+				// Parse JSON from the body
+				json userData = json::parse(std::move(*body));
+
+				// Retrieving data from a request
+				const std::string email = std::move(userData["email"]);
+				const std::string password = std::move(userData["pswd"]);
+				const std::string user_name = std::move(userData["user_name"]);
+
+				std::cout << "Received data in signup: " << user_name << ' ' << email << ' ' << password << '\n';
+
+				// send a message that the server has received the JSON data
+				res->end("The server received the data");
+			}
+		}
+		});
+
+	res->onAborted([&isAborted]() {
+		*isAborted = true;
+		});
+}
+
+void Server::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
+{
+	// CORS policy
+	res->writeHeader("Access-Control-Allow-Origin", "*");
+
+	
+	auto isAborted = std::make_shared<bool>(false);
+	auto body = std::make_shared<std::string>();
+
+	res->onData([res, isAborted, body](std::string_view chunk, bool isFin) mutable {
+		if (!chunk.empty()) {
+			// fill in the request body
+			body->append(chunk.data(), chunk.length());
+
+			if (isFin && !*isAborted) {
+
+				// Parse JSON from the body
+				json userData = json::parse(std::move(*body));
+
+				// Retrieving data from a request
+				const std::string email = std::move(userData["email"]);
+				const std::string password = std::move(userData["pswd"]);
+
+				std::cout << "Received data in login: " << ' ' << email << ' ' << password << '\n';
+
+				// send a message that the server has received the JSON data
+				res->end("The server received the data");
+				}
+			}
+		});
+
+	res->onAborted([&isAborted]() {
+		*isAborted = true;
+		});
+}
+
+void Server::ProcessSetName(web_socket* WS, json parsed, UserData* data)
 {
 	data->name = parsed[NEW_NAME];
 }
 
-void Server::ProcessPrivateMessage(web_socket* WS, nlohmann::json parsed, std::uint64_t user_id)
+void Server::ProcessPrivateMessage(web_socket* WS, json parsed, std::uint64_t user_id)
 {
 	UserData* data = WS->getUserData();
 	const uint64_t user_id_to = parsed[RECEIVER_ID];
@@ -27,7 +98,7 @@ void Server::ProcessPrivateMessage(web_socket* WS, nlohmann::json parsed, std::u
 	//response.dump() sends a message to the user
 }
 
-void Server::ProcessPublicMessage(web_socket* WS, nlohmann::json parsed, std::uint64_t user_id)
+void Server::ProcessPublicMessage(web_socket* WS, json parsed, std::uint64_t user_id)
 {
 	UserData* data = WS->getUserData();
 	std::string user_msg = parsed[MESSAGE];
@@ -63,69 +134,20 @@ void Server::ProcessMessage(web_socket* WS, std::string_view message)
 
 void Server::run()
 {
+	uWS::SSLApp({
 
-	uWS::App(
-		/*.key_file_name = "C:/Users/dima1/source/repos/ChatServer/misc/key.pem",
+		.key_file_name = "C:/Users/dima1/source/repos/ChatServer/misc/key.pem",
 		.cert_file_name = "C:/Users/dima1/source/repos/ChatServer/misc/cert.pem",
-		.passphrase = "dima15042004"*/
+		.passphrase = "dima15042004"
 
-		).post("/signup", [&](auto* res, auto* req) {
-			res->writeHeader("Access-Control-Allow-Origin", "*");
-			auto isAborted = std::make_shared<bool>(false);
-			std::shared_ptr<std::string> body = std::make_shared<std::string>();
+		}).post("/signup", [&](auto* res, auto* req) {
+			HandleSignUp(res, req);
 
-			res->onData([res, isAborted, body](std::string_view chunk, bool isFin) mutable {
-				if (!chunk.empty()) {
-					// Накапливаем тело запроса
-					body->append(chunk.data(), chunk.length());
+		}).post("/login", [&](auto* res, auto* req){
+			HandleLogIn(res, req);
+		})
 
-					if (isFin && !*isAborted) {
-						// Обработка тела запроса после его полного получения
-						try {
-							// Парсим JSON из накопленного тела
-							json userData = json::parse(*body);
-
-							// Получение данных из запроса
-							const std::string email = userData["email"];
-							const std::string password = userData["pswd"];
-							const std::string user_name = userData["user_name"];
-
-							std::cout << "Received data: " << user_name << ' ' << email << ' ' << password << '\n';
-
-							// Отправляем ответ клиенту
-							res->end("Data processed successfully");
-						}
-						catch (std::exception& e)
-						{
-							std::cerr << e.what();
-						}
-					}
-				}
-			});
-			res->onAborted([isAborted]() {
-				*isAborted = true;
-			});
-
-			res->end("server http://localhost:9001/signup working");
-	//).get("/signup", [&](auto* res, auto* req)
-	//	{	
-	//	auto body = static_cast<std::string>(req->getQuery());
-
-	//	if (!body.empty())
-	//	{
-	//		json userData = json::parse(UrlDecode(body));
-
-	//		// Получение данных из запроса
-	//		const std::string email = userData["email"];
-	//		const std::string password = userData["pswd"];
-	//		const std::string user_name = userData["user_name"];
-
-	//		std::cout << "Received data: " << user_name << ' ' << email << ' ' << password << '\n'; // Выводим полученные данные
-	//	}
-	//	res->writeStatus("200 OK");
-	//	res->end("server http://localhost:9001/signup working");
-
-		}).ws<UserData>("/*", {
+		.ws<UserData>("/*",{
 
 		.idleTimeout = 666,
 

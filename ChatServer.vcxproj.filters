@@ -37,9 +37,20 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="web-files\client.html" />
-    <None Include="web-files\index.html" />
-    <None Include="web-files\index.js" />
-    <None Include="web-files\style.css" />
+    <None Include="web-files\login.js">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="web-files\client.html">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="web-files\index.html">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="web-files\signup.js">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="web-files\style.css">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
   </ItemGroup>
 </Project>
