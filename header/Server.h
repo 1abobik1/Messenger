@@ -2,7 +2,7 @@
 
 #include <uwebsockets/App.h>
 #include <nlohmann/json.hpp>
-#include "../encrypt/ServiceFunc.h"
+#include "ServiceFunc.h"
 
 using json = nlohmann::json;
 
@@ -15,7 +15,7 @@ private:
         std::string name = "NO_NAME";
     };
 
-    // Определение web_socket с использованием UserData
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ web_socket пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ UserData
     typedef uWS::WebSocket<true, true, UserData> web_socket;
 
     std::uint64_t cnt_user_;
