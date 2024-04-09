@@ -362,5 +362,11 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+# configuration for CMakeLists.txt
 /build
 /.vscode
+
+#ignore VS
+ChatServer.vcxproj
+ChatServer.vcxproj.filters
+Messenger.sln
