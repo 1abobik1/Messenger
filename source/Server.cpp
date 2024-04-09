@@ -13,7 +13,7 @@ void Server::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 	res->writeHeader("Access-Control-Allow-Origin", "*");
 
 	auto isAborted = std::make_shared<bool>(false);
-	std::shared_ptr<std::string> body = std::make_shared<std::string>();
+	auto body = std::make_shared<std::string>();
 
 	res->onData([res, isAborted, body](std::string_view chunk, bool isFin) mutable {
 		if (!chunk.empty()) {
@@ -32,7 +32,7 @@ void Server::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 				std::cout << "Received data in signup: " << user_name << ' ' << email << ' ' << password << '\n';
 
 				// send a message that the server has received the JSON data
-				res->end("The server received the data");
+				res->end("The server received the signup-data");
 			}
 		}
 		});
@@ -47,7 +47,6 @@ void Server::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 	// CORS policy
 	res->writeHeader("Access-Control-Allow-Origin", "*");
 
-	
 	auto isAborted = std::make_shared<bool>(false);
 	auto body = std::make_shared<std::string>();
 
@@ -57,7 +56,6 @@ void Server::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 			body->append(chunk.data(), chunk.length());
 
 			if (isFin && !*isAborted) {
-
 				// Parse JSON from the body
 				json userData = json::parse(std::move(*body));
 
@@ -65,12 +63,12 @@ void Server::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 				const std::string email = std::move(userData["email"]);
 				const std::string password = std::move(userData["pswd"]);
 
-				std::cout << "Received data in login: " << ' ' << email << ' ' << password << '\n';
+				std::cout << "Received data in login: "<< ' ' << email << ' ' << password << '\n';
 
 				// send a message that the server has received the JSON data
-				res->end("The server received the data");
-				}
+				res->end("The server received the login-data");
 			}
+		}
 		});
 
 	res->onAborted([&isAborted]() {

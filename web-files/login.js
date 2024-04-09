@@ -1,8 +1,8 @@
 $(document).ready(function () {
     window.$("#login_button").on("click", function () {
 
-        let email = window.$("input[name='login_email']").val();
-        let password = window.$("input[name='login_pswd']").val();
+        let email = window.$("input[name='email']").val();
+        let password = window.$("input[name='pswd']").val();
 
         if (email && password) {
             let userData = {
