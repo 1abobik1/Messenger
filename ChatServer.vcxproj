@@ -138,11 +138,13 @@
   <ItemGroup>
     <ClCompile Include="encrypt\ServiceFunc.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="source\DataBase.cpp" />
     <ClCompile Include="source\Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="encrypt\ServiceFunc.h" />
     <ClInclude Include="header\CommonConst.h" />
+    <ClInclude Include="header\DataBase.h" />
     <ClInclude Include="header\Server.h" />
   </ItemGroup>
   <ItemGroup>

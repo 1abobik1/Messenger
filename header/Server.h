@@ -2,20 +2,22 @@
 
 #include <uwebsockets/App.h>
 #include <nlohmann/json.hpp>
+
 #include "ServiceFunc.h"
+#include "DataBase.h"
 
 using json = nlohmann::json;
 
 class Server : protected ServiceFunc
 {
 private:
+
     struct UserData
     {
         uint64_t user_id;
         std::string name = "NO_NAME";
     };
 
-    // ����������� web_socket � �������������� UserData
     typedef uWS::WebSocket<true, true, UserData> web_socket;
 
     std::uint64_t cnt_user_;

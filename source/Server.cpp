@@ -31,6 +31,18 @@ void Server::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 
 				std::cout << "Received data in signup: " << user_name << ' ' << email << ' ' << password << '\n';
 
+				try {
+					// save data in the database
+					Database::getInstance()->insert_user(user_name, email, password);  
+					res->end("Signup successful!");
+				}
+				catch (std::exception& e) {
+					//  errors messages
+					std::cerr << e.what();
+					res->writeStatus("500 Internal Server Error");
+					res->end("Signup failed: " + static_cast<std::string>(e.what()));
+				}
+
 				// send a message that the server has received the JSON data
 				res->end("The server received the signup-data");
 			}
