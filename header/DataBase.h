@@ -6,7 +6,7 @@
 #include <libpq-fe.h>
 #include <memory>
 
-//RAII
+//RAII for PGconn*
 class DBConnection {
 private:
     PGconn* connection_;
@@ -34,6 +34,7 @@ private:
 public:
     static Database* getInstance();
 
-    void insert_user(const std::string& user_name, const std::string& email, const std::string& password) const;
-    
+    void InsertUsers(const std::string& user_name, const std::string& email, const std::string& password) const;
+
+    bool CheckEmailExists(const std::string& email) const;
 };

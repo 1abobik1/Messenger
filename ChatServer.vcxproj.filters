@@ -21,10 +21,10 @@
     <ClCompile Include="source\Server.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="encrypt\ServiceFunc.cpp">
+    <ClCompile Include="source\DataBase.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="source\DataBase.cpp">
+    <ClCompile Include="source\ServiceFunc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,10 +35,10 @@
     <ClInclude Include="header\Server.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="encrypt\ServiceFunc.h">
+    <ClInclude Include="header\DataBase.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="header\DataBase.h">
+    <ClInclude Include="header\ServiceFunc.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

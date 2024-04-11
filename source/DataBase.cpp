@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+//---------------initialization instance_---------------//
+Database* Database::instance_ = nullptr;
 
 DBConnection::DBConnection() : connection_(PQconnectdb(PathDB::CONNECTION_DB.data()))
 {
@@ -17,6 +19,7 @@ DBConnection::~DBConnection()
     PQfinish(connection_);
 }
 
+
 Database* Database::getInstance()
 {
     if (!instance_) {
@@ -25,22 +28,44 @@ Database* Database::getInstance()
     return instance_;
 }
 
-void Database::insert_user(const std::string& user_name, const std::string& email, const std::string& password) const
+void Database::InsertUsers(const std::string& user_name, const std::string& email, const std::string& password) const
 {
-    // Составление SQL-запроса
+
     const std::string query = "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)";
     const char* param_values[3] = { user_name.c_str(), email.c_str(), password.c_str() };
     PGresult* res = PQexecParams(connection_,
         query.c_str(),
-        3,       // cnt param_values
+        3,      
         NULL,
         param_values,
         NULL,   
-        NULL,    // форматы параметров
-        0);      // результат в текстовом формате
-    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-        PQclear(res);
-        throw std::runtime_error(PQerrorMessage(connection_));
-    }
+        NULL,    
+        0);      
+ 
     PQclear(res);
+}
+
+bool Database::CheckEmailExists(const std::string& email) const
+{
+    const std::string query = "SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)";
+    const char* param_values[1] = { email.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,           
+        NULL,         
+        param_values,
+        NULL, NULL,   
+        0);           
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        return false; 
+    }
+
+    const bool exists = PQgetvalue(res, 0, 0)[0] == 't'; // 't' == true
+
+    PQclear(res);
+
+    return exists;
 }

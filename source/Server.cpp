@@ -32,17 +32,28 @@ void Server::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 				std::cout << "Received data in signup: " << user_name << ' ' << email << ' ' << password << '\n';
 
 				try {
-					// save data in the database
-					Database::getInstance()->insert_user(user_name, email, password);  
+					if(Database::getInstance()->CheckEmailExists(email))
+					{
+						throw std::exception("User with this email already exists");
+					}
+					// save data in database
+					Database::getInstance()->InsertUsers(user_name, email, password);
+					res->writeStatus("200 OK");
 					res->end("Signup successful!");
+					std::cout << "Signup successful!" << '\n';
+				}
+				catch (std::runtime_error& e){
+					//  errors messages
+					std::cerr << e.what() << '\n';
+					res->writeStatus("500 Internal Server Error");
+					res->end("Internal Server Error");
 				}
 				catch (std::exception& e) {
-					//  errors messages
-					std::cerr << e.what();
-					res->writeStatus("500 Internal Server Error");
-					res->end("Signup failed: " + static_cast<std::string>(e.what()));
+					std::cerr << e.what() << '\n';
+					res->writeStatus("409 Conflict");
+					res->end("User with this email already exists");
 				}
-
+				
 				// send a message that the server has received the JSON data
 				res->end("The server received the signup-data");
 			}

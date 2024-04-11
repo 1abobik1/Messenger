@@ -19,8 +19,19 @@ $(document).ready(function () {
                 method: "post",
                 contentType: "application/json",
                 data: jsonStr,
-                success: function (data) {
-                    alert("Registration successful!");
+                success: function (data, textStatus, xhr) {
+                    if (xhr.status === 200)
+                    {
+                        alert(data);
+                    }
+                    else if (xhr.status === 409) // User with this email already exists
+                    {
+                        alert("Error: " + data);
+                    }
+                    else
+                    {
+                        alert("Error: " + data);
+                    }
                 },
                 error: function (xhr, status, error) {
                     alert("Error: " + error);
