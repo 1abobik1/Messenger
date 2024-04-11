@@ -17,14 +17,25 @@ $(document).ready(function () {
                 method: "post",
                 contentType: "application/json",
                 data: jsonStr,
-                success: function (data) {
-                    alert("LogIn successful!");
+                success: function (data, textStatus, xhr) {
+                    if (xhr.status === 200) {
+                        alert(data);
+                    }
+                    else if (xhr.status === 409)
+                    {
+                        alert("Error: " + data);
+                    }
+                    else {
+                        alert("Error: " + data);
+                    }
                 },
                 error: function (xhr, status, error) {
                     alert("Error: " + error);
                 }
             });
-        } else {
+        }
+        else
+        {
             alert("Please fill in all fields:Email, Password");
         }
     });

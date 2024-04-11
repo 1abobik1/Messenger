@@ -34,10 +34,12 @@ $(document).ready(function () {
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert("Error: " + error);
+                    alert("The site is temporarily down");
                 }
             });
-        } else {
+        }
+        else
+        {
             alert("Please fill in all fields: User name, Email, Password");
         }
     });
