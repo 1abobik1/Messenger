@@ -41,7 +41,12 @@ void Database::InsertUsers(const std::string& user_name, const std::string& emai
         NULL,   
         NULL,    
         0);      
- 
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        throw std::runtime_error("error adding user");
+    }
+
     PQclear(res);
 }
 
