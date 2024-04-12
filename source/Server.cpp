@@ -157,8 +157,8 @@ void Server::run()
 {
 	uWS::SSLApp({
 
-		.key_file_name = "C:/Users/dima1/source/repos/ChatServer/misc/key.pem",
-		.cert_file_name = "C:/Users/dima1/source/repos/ChatServer/misc/cert.pem",
+		.key_file_name = "../misc/key.pem",
+		.cert_file_name = "../misc/cert.pem",
 		.passphrase = "dima15042004"
 
 		}).post("/signup", [&](auto* res, auto* req) {
