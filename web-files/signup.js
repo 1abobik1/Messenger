@@ -1,7 +1,7 @@
 var bcrypt = dcodeIO.bcrypt;
 
 function createUser(userName, email, password) {
-    var salt = bcrypt.genSaltSync(10);
+    var salt = bcrypt.genSaltSync(13);
     var passwordToSave = bcrypt.hashSync(password, salt)
     return {
         user_name: userName,
