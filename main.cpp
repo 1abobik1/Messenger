@@ -12,7 +12,8 @@
 
 int main() {
 	setlocale(LC_ALL, "en_US.UTF-8");
-	Server server(9001);
+
+	Server server(9000);
 
 	server.run();
 
