@@ -66,6 +66,29 @@ bool Database::CheckEmailExists(const std::string& email) const
     const bool exists = PQgetvalue(res, 0, 0)[0] == 't'; // 't' == true
 
     PQclear(res);
-
     return exists;
+}
+
+std::string Database::GetPasswordByEmail(const std::string& email) const
+{
+    const std::string query = "SELECT password FROM users WHERE email = $1";
+    const char* param_values[1] = { email.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        return "";
+    }
+
+    std::string password = PQgetvalue(res, 0, 0);
+
+    PQclear(res);
+    return password;
 }

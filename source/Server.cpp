@@ -2,6 +2,7 @@
 
 #include "../header/Server.h"
 #include "../header/CommonConst.h"
+#include "../bcrypt-cpp/include/bcrypt.h"
 
 #include <iostream>
 
@@ -51,7 +52,7 @@ void Server::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 				catch (std::exception& e) {
 					std::cerr << e.what() << '\n';
 					res->writeStatus("409 Conflict");
-					res->end("User with this email already exists");
+					res->end(e.what());
 				}
 				
 				// send a message that the server has received the JSON data
@@ -79,6 +80,7 @@ void Server::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 			body->append(chunk.data(), chunk.length());
 
 			if (isFin && !*isAborted) {
+
 				// Parse JSON from the body
 				json userData = json::parse(std::move(*body));
 
@@ -86,8 +88,37 @@ void Server::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 				const std::string email = std::move(userData["email"]);
 				const std::string password = std::move(userData["pswd"]);
 
-				std::cout << "Received data in login: "<< ' ' << email << ' ' << password << '\n';
-
+				std::cout << "Received data in login: " << ' ' << email << ' ' << password << '\n';
+				try {
+					if (Database::getInstance()->CheckEmailExists(email))
+					{
+						if(bcrypt::validatePassword(password, /*hash-*/Database::getInstance()->GetPasswordByEmail(email)))
+						{
+							res->writeStatus("200 OK");
+							res->end("LogIn successful!");
+							std::cout << "LogIn successful!" << '\n';
+						}
+						else
+						{
+							throw std::exception("wrong password");
+						}
+					}
+					else
+					{
+						throw std::exception("wrong email");
+					}
+				}
+				catch (std::runtime_error& e) {
+					//  errors messages
+					std::cerr << e.what() << '\n';
+					res->writeStatus("500 Internal Server Error");
+					res->end("Internal Server Error");
+				}
+				catch (std::exception& e) {
+					std::cerr << e.what() << '\n';
+					res->writeStatus("409 Conflict");
+					res->end(e.what());
+				}
 				// send a message that the server has received the JSON data
 				res->end("The server received the login-data");
 			}

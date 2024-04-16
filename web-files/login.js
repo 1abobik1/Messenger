@@ -1,14 +1,3 @@
-var bcrypt = dcodeIO.bcrypt;
-
-function loginUser(email, password) {
-    var salt = bcrypt.genSaltSync(13);
-    var passwordToSave = bcrypt.hashSync(password, salt);
-    return {
-        email,
-        pswd: passwordToSave
-    };
-}
-
 function isValidEmail(email) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email.trim());
@@ -25,7 +14,10 @@ $(document).ready(function () {
         let password = window.$("input[name='pswd_log']").val();
 
         if (isValidEmail(email) && isValidPassword(password)) {
-            let userData = loginUser(email, password);
+            let userData = {
+                email: email,
+                pswd: password
+            };
 
             let jsonStr = JSON.stringify(userData);
 
@@ -50,7 +42,7 @@ $(document).ready(function () {
                     alert("Error: " + error);
                 }
             });
-            //window.location.replace("client.html");
+            window.location.replace("client.html");
         }
         else
         {

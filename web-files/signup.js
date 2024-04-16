@@ -1,7 +1,7 @@
 var bcrypt = dcodeIO.bcrypt;
+var salt = bcrypt.genSaltSync(13);
 
 function createUser(userName, email, password) {
-    var salt = bcrypt.genSaltSync(13);
     var passwordToSave = bcrypt.hashSync(password, salt);
     return {
         user_name: userName,
@@ -56,7 +56,7 @@ $(document).ready(function () {
                     alert("The site is temporarily down");
                 }
             });
-            //window.location.replace("client.html");
+            window.location.replace("client.html");
         }
         else
         {

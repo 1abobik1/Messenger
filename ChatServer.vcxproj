@@ -136,12 +136,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bcrypt-cpp\src\bcrypt.cpp" />
+    <ClCompile Include="bcrypt-cpp\src\blowfish.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="source\DataBase.cpp" />
     <ClCompile Include="source\Server.cpp" />
     <ClCompile Include="source\ServiceFunc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bcrypt-cpp\include\bcrypt.h" />
+    <ClInclude Include="bcrypt-cpp\src\node_blf.h" />
+    <ClInclude Include="bcrypt-cpp\src\openbsd.h" />
     <ClInclude Include="header\CommonConst.h" />
     <ClInclude Include="header\DataBase.h" />
     <ClInclude Include="header\Server.h" />

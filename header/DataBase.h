@@ -37,4 +37,7 @@ public:
     void InsertUsers(const std::string& user_name, const std::string& email, const std::string& password) const;
 
     bool CheckEmailExists(const std::string& email) const;
+
+	std::string GetPasswordByEmail(const std::string& email) const;
+
 };

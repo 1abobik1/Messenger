@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Файлы ресурсов\bcrypt-cpp">
+      <UniqueIdentifier>{76e2576e-32df-48ba-bfa7-c80c172730ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\bcrypt-cpp\include">
+      <UniqueIdentifier>{0b28cc52-0389-4d75-8e4e-6e604cc35620}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\bcrypt-cpp\src">
+      <UniqueIdentifier>{c8d061c3-f5f6-43bc-be5b-4df1d85476ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -27,6 +36,12 @@
     <ClCompile Include="source\ServiceFunc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="bcrypt-cpp\src\bcrypt.cpp">
+      <Filter>Файлы ресурсов\bcrypt-cpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="bcrypt-cpp\src\blowfish.cpp">
+      <Filter>Файлы ресурсов\bcrypt-cpp\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\CommonConst.h">
@@ -40,6 +55,15 @@
     </ClInclude>
     <ClInclude Include="header\ServiceFunc.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="bcrypt-cpp\src\node_blf.h">
+      <Filter>Файлы ресурсов\bcrypt-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="bcrypt-cpp\src\openbsd.h">
+      <Filter>Файлы ресурсов\bcrypt-cpp\src</Filter>
+    </ClInclude>
+    <ClInclude Include="bcrypt-cpp\include\bcrypt.h">
+      <Filter>Файлы ресурсов\bcrypt-cpp\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
