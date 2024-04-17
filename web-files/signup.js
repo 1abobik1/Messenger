@@ -39,24 +39,18 @@ $(document).ready(function () {
                 contentType: "application/json",
                 data: jsonStr,
                 success: function (data, textStatus, xhr) {
-                    if (xhr.status === 200)
+                    if (data === "Signup successful!")
                     {
+                        window.location.replace("client.html");
+                    }
+                    else{
                         alert(data);
-                    }
-                    else if (xhr.status === 409) // User with this email already exists
-                    {
-                        alert("Error: " + data);
-                    }
-                    else
-                    {
-                        alert("Error: " + data);
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert("The site is temporarily down");
+                    alert(data);
                 }
             });
-            window.location.replace("client.html");
         }
         else
         {

@@ -27,22 +27,18 @@ $(document).ready(function () {
                 contentType: "application/json",
                 data: jsonStr,
                 success: function (data, textStatus, xhr) {
-                    if (xhr.status === 200) {
-                        alert(data);
+                    if (data === "LogIn successful!") {
+                        window.location.replace("client.html");
                     }
-                    else if (xhr.status === 409) // User with this email already exists
-                    {
-                        alert("Error: " + data);
-                    }
-                    else {
-                        alert("Error: " + data);
+                    else{
+                        alert(data);    
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert("Error: " + error);
+                    alert(data);
                 }
             });
-            window.location.replace("client.html");
+            
         }
         else
         {

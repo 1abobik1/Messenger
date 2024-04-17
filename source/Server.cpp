@@ -39,11 +39,14 @@ void Server::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 					{
 						throw std::exception("User with this email already exists");
 					}
-					// save data in database
-					Database::getInstance()->InsertUsers(user_name, email, password);
-					res->writeStatus("200 OK");
-					res->end("Signup successful!");
-					std::cout << "Signup successful!" << '\n';
+					else
+					{
+						// save data in database
+						Database::getInstance()->InsertUsers(user_name, email, password);
+						res->writeStatus("200 OK");
+						res->end("Signup successful!");
+						std::cout << "Signup successful!" << '\n';
+					}
 				}
 				catch (std::runtime_error& e){
 					//  errors messages
