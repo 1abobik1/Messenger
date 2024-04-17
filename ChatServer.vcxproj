@@ -140,16 +140,20 @@
     <ClCompile Include="bcrypt-cpp\src\blowfish.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="source\DataBase.cpp" />
+    <ClCompile Include="source\FileSender.cpp" />
+    <ClCompile Include="source\MessagerHandler.cpp" />
+    <ClCompile Include="source\RequestHandler.cpp" />
     <ClCompile Include="source\Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bcrypt-cpp\include\bcrypt.h" />
     <ClInclude Include="bcrypt-cpp\src\node_blf.h" />
     <ClInclude Include="bcrypt-cpp\src\openbsd.h" />
-    <ClInclude Include="header\AsyncFileReader.h" />
-    <ClInclude Include="header\AsyncFileStreamer.h" />
     <ClInclude Include="header\CommonConst.h" />
     <ClInclude Include="header\DataBase.h" />
+    <ClInclude Include="header\FileSender.h" />
+    <ClInclude Include="header\MessagerHandler.h" />
+    <ClInclude Include="header\RequestHandler.h" />
     <ClInclude Include="header\Server.h" />
   </ItemGroup>
   <ItemGroup>

@@ -248,13 +248,8 @@ void Server::ProcessMessage(web_socket* WS, std::string_view message)
 
 void Server::run()
 {
-	uWS::SSLApp({
-
-		.key_file_name = "../misc/key.pem",
-		.cert_file_name = "../misc/cert.pem",
-		.passphrase = "dima15042004"
-
-		}).post("/signup", [&](auto* res, auto* req) {
+	ssl_app_
+		.post("/signup", [&](auto* res, auto* req) {
 			HandleSignUp(res, req);
 
 		}).post("/login", [&](auto* res, auto* req){
@@ -269,6 +264,7 @@ void Server::run()
 		}).get("/login.js", [this](auto* res, auto* req) {
 			RegPanelLoginJS(res, req);
 		})
+
 		.ws<UserData>("/*",{
 
 		.idleTimeout = 666,

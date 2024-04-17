@@ -17,8 +17,8 @@ namespace JsonChat
 
 	const std::string USER_ID_FROM = "user_id_from";
 
-
 	const std::string SET_NAME = "set_name";
+
 	const std::string NEW_NAME = "new_name";
 }
 

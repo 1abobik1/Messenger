@@ -4,14 +4,18 @@
 #include <nlohmann/json.hpp>
 
 #include "DataBase.h"
+#include "FileSender.h"
+#include "MessagerHandler.h"
+#include "RequestHandler.h"
 
 using json = nlohmann::json;
 
 class Server
 {
 private:
+    uWS::SSLApp ssl_app_;
 
-    struct UserData
+	struct UserData
     {
         uint64_t user_id;
         std::string name = "NO_NAME";
@@ -21,6 +25,10 @@ private:
 
     std::uint64_t cnt_user_;
     std::uint16_t port_ = 0;
+
+    std::shared_ptr<RequestHandler> request_handler_;
+    std::shared_ptr<MessagerHandler> message_handler_;
+    std::shared_ptr<FileSender> file_sender_;
 
     static void HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
@@ -44,7 +52,13 @@ private:
 
 public:
 
-    explicit Server(const uint16_t port) : cnt_user_(1), port_(port){}
+    explicit Server(const uint16_t port) : ssl_app_({
+		.key_file_name = "../misc/key.pem",
+		.cert_file_name = "../misc/cert.pem",
+		.passphrase = "dima15042004"
+	}), cnt_user_(1),port_(port)
+	{
+    }
 
 	void run();
 };
