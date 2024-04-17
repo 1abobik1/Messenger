@@ -3,12 +3,11 @@
 #include <uwebsockets/App.h>
 #include <nlohmann/json.hpp>
 
-#include "ServiceFunc.h"
 #include "DataBase.h"
 
 using json = nlohmann::json;
 
-class Server : protected ServiceFunc
+class Server
 {
 private:
 
@@ -23,14 +22,17 @@ private:
     std::uint64_t cnt_user_;
     std::uint16_t port_ = 0;
 
-public:
-    explicit Server(const uint16_t port) : cnt_user_(1), port_(port)
-    {
-    }
-
     static void HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
     static void HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
+
+    static void RegPanelHTML(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
+
+    static void RegPanelCSS(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
+
+    static void RegPanelLoginJS(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
+
+    static void RegPanelSignupJS(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
     static void ProcessSetName(web_socket* WS, json parsed, UserData* data);
 
@@ -40,7 +42,10 @@ public:
 
     static void ProcessMessage(web_socket* WS, std::string_view message);
 
-    void run();
+public:
 
+    explicit Server(const uint16_t port) : cnt_user_(1), port_(port){}
+
+	void run();
 };
 

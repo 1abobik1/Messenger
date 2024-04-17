@@ -33,9 +33,6 @@
     <ClCompile Include="source\DataBase.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="source\ServiceFunc.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="bcrypt-cpp\src\bcrypt.cpp">
       <Filter>Файлы ресурсов\bcrypt-cpp\src</Filter>
     </ClCompile>
@@ -53,9 +50,6 @@
     <ClInclude Include="header\DataBase.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="header\ServiceFunc.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="bcrypt-cpp\src\node_blf.h">
       <Filter>Файлы ресурсов\bcrypt-cpp\src</Filter>
     </ClInclude>
@@ -64,6 +58,12 @@
     </ClInclude>
     <ClInclude Include="bcrypt-cpp\include\bcrypt.h">
       <Filter>Файлы ресурсов\bcrypt-cpp\include</Filter>
+    </ClInclude>
+    <ClInclude Include="header\AsyncFileStreamer.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="header\AsyncFileReader.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

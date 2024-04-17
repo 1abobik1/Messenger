@@ -22,12 +22,6 @@ namespace JsonChat
 	const std::string NEW_NAME = "new_name";
 }
 
-namespace PathHTML
-{
-	// path to the HTMl-client file
-	constexpr std::string_view CLIENT_HTML_FILE_PATH = "web-files/client.htm";
-}
-
 namespace PathDB
 {
 	// path to the DB

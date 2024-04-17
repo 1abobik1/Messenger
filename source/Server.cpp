@@ -5,6 +5,8 @@
 #include "../bcrypt-cpp/include/bcrypt.h"
 
 #include <iostream>
+#include<fstream>
+#include <future>
 
 using namespace JsonChat;
 
@@ -130,6 +132,66 @@ void Server::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 		});
 }
 
+void Server::RegPanelHTML(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
+{
+	res->writeHeader("Content-Type", "text/html");
+
+	auto future_content = std::async(std::launch::async, [&]() {
+		std::ifstream file_path("C:/Users/dima1/source/repos/ChatServer/web-files/index.html");
+		if (file_path) {
+			return std::string((std::istreambuf_iterator<char>(file_path)), std::istreambuf_iterator<char>());
+		}
+		return std::string("File not found");
+		});
+
+	res->end(future_content.get());
+}
+
+void Server::RegPanelCSS(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
+{
+	res->writeHeader("Content-Type", "text/css");
+
+	auto future_content = std::async(std::launch::async, [&]() {
+		std::ifstream file_path("C:/Users/dima1/source/repos/ChatServer/web-files/style.css");
+		if (file_path) {
+			return std::string((std::istreambuf_iterator<char>(file_path)), std::istreambuf_iterator<char>());
+		}
+		return std::string("File not found");
+		});
+
+	res->end(future_content.get());
+}
+
+void Server::RegPanelLoginJS(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
+{
+	res->writeHeader("Content-Type", "text/css");
+
+	auto future_content = std::async(std::launch::async, [&]() {
+		std::ifstream file_path("C:/Users/dima1/source/repos/ChatServer/web-files/login.js");
+		if (file_path) {
+			return std::string((std::istreambuf_iterator<char>(file_path)), std::istreambuf_iterator<char>());
+		}
+		return std::string("File not found");
+		});
+
+	res->end(future_content.get());
+}
+
+void Server::RegPanelSignupJS(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
+{
+	res->writeHeader("Content-Type", "text/css");
+
+	auto future_content = std::async(std::launch::async, [&]() {
+		std::ifstream file_path("C:/Users/dima1/source/repos/ChatServer/web-files/signup.js");
+		if (file_path) {
+			return std::string((std::istreambuf_iterator<char>(file_path)), std::istreambuf_iterator<char>());
+		}
+		return std::string("File not found");
+		});
+
+	res->end(future_content.get());
+}
+
 void Server::ProcessSetName(web_socket* WS, json parsed, UserData* data)
 {
 	data->name = parsed[NEW_NAME];
@@ -197,8 +259,16 @@ void Server::run()
 
 		}).post("/login", [&](auto* res, auto* req){
 			HandleLogIn(res, req);
-		})
 
+		}).get("/", [this](auto* res, auto* req){
+			RegPanelHTML(res, req);
+		}).get("/style.css", [this](auto* res, auto* req){
+			RegPanelCSS(res, req);
+		}).get("/signup.js", [this](auto* res, auto* req) {
+			RegPanelSignupJS(res, req);
+		}).get("/login.js", [this](auto* res, auto* req) {
+			RegPanelLoginJS(res, req);
+		})
 		.ws<UserData>("/*",{
 
 		.idleTimeout = 666,
@@ -215,7 +285,7 @@ void Server::run()
 		    ws->subscribe("public_chat");
 		},
 
-		.message = [](auto* ws, std::string_view message, uWS::OpCode)
+		.message = [this](auto* ws, std::string_view message, uWS::OpCode)
 		{
 			ProcessMessage(ws,message);
 		},
