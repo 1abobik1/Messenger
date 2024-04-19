@@ -39,6 +39,15 @@
     <ClCompile Include="bcrypt-cpp\src\blowfish.cpp">
       <Filter>Файлы ресурсов\bcrypt-cpp\src</Filter>
     </ClCompile>
+    <ClCompile Include="source\FileSender.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MessagerHandler.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="source\RequestHandler.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\CommonConst.h">
@@ -59,10 +68,16 @@
     <ClInclude Include="bcrypt-cpp\include\bcrypt.h">
       <Filter>Файлы ресурсов\bcrypt-cpp\include</Filter>
     </ClInclude>
-    <ClInclude Include="header\AsyncFileStreamer.h">
+    <ClInclude Include="header\FileSender.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="header\AsyncFileReader.h">
+    <ClInclude Include="header\MessagerHandler.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="header\RequestHandler.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="header\UserData.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
