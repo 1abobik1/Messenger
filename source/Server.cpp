@@ -6,36 +6,39 @@
 
 void Server::run()
 {
-	ssl_app_
+	uWS::SSLApp({
+	.key_file_name = "../misc/key.pem",
+	.cert_file_name = "../misc/cert.pem",
+	.passphrase = "dima15042004"
+		})
 		.post("/signup", [&](auto* res, auto* req) {
-			HandleSignUp(res, req);
+		request_handler_->HandleSignUp(res, req);
 
 		}).post("/login", [&](auto* res, auto* req){
-			HandleLogIn(res, req);
+			request_handler_->HandleLogIn(res, req);
 
 		}).get("/", [this](auto* res, auto* req){
-			RegPanelHTML(res, req);
+			file_sender_->RegPanelHTML(res, req);
 		}).get("/style.css", [this](auto* res, auto* req){
-			RegPanelCSS(res, req);
+			file_sender_->RegPanelCSS(res, req);
 		}).get("/signup.js", [this](auto* res, auto* req) {
-			RegPanelSignupJS(res, req);
+			file_sender_->RegPanelSignupJS(res, req);
 		}).get("/login.js", [this](auto* res, auto* req) {
-			RegPanelLoginJS(res, req);
+			file_sender_->RegPanelLoginJS(res, req);
 		})
 
-		.ws<UserData>("/*",{
+		.ws<MessagerHandler::UserData>("/*",{
 		.idleTimeout = 666,
 
 		.open = [this](auto* ws){
-			ConnectedUser(ws);
+			 messager_handler_->ConnectedUser(ws);
 		},
 		.message = [this](auto* ws, std::string_view message, uWS::OpCode){
-			ProcessMessage(ws,message);
+			 messager_handler_->ProcessMessage(ws,message);
 		},
 		.close = [this](auto* ws, int code, std::string_view message){
-			DisconnectedUser(ws,code,message);
+			 messager_handler_->DisconnectedUser(ws,code,message);
 		}
-
 		})
 		.options("/*", [&](auto* res, auto* req) 
 		{

@@ -1,6 +1,9 @@
 #include"../header/DataBase.h"
 
+#include <mutex>
 #include <stdexcept>
+
+std::mutex mtx;
 
 //---------------initialization instance_---------------//
 Database* Database::instance_ = nullptr;
@@ -23,6 +26,7 @@ DBConnection::~DBConnection()
 Database* Database::getInstance()
 {
     if (!instance_) {
+        std::lock_guard<std::mutex> lock(mtx);
         instance_ = new Database();
     }
     return instance_;

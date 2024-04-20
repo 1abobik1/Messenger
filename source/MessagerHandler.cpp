@@ -3,6 +3,9 @@
 #include "../header/MessagerHandler.h"
 #include <iostream>
 
+#include "../header/Server.h"
+#include "../header/CommonConst.h"
+
 using namespace JsonChat;
 
 void MessagerHandler::ProcessSetName(web_socket* WS, json parsed, UserData* data)

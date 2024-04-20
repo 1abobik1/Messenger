@@ -1,6 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "../header/FileSender.h"
+#include "../header/Server.h"
+
+#include<fstream>
+#include <future>
 
 void FileSender::RegPanelHTML(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 {
@@ -61,3 +65,4 @@ void FileSender::RegPanelSignupJS(uWS::HttpResponse<true>* res, uWS::HttpRequest
 
 	res->end(future_content.get());
 }
+

@@ -1,8 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "../header/RequestHandler.h"
+#include "../header/Server.h"
+#include "../bcrypt-cpp/include/bcrypt.h"
+#include "../header/DataBase.h"
 
 #include <iostream>
+
 
 void RequestHandler::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 {
@@ -128,3 +132,4 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest*
 		*isAborted = true;
 		});
 }
+
