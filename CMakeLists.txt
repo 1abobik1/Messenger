@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.25)
 project(ChatServer)
 
 # Установка стандарта языка
@@ -25,19 +25,20 @@ set(HEADERS
     "header/DataBase.h"
 )
 
+# Пути к заголовочным файлам uwebsockets и nlohmann-json
+set(UWEBSOCKETS_INCLUDE_DIRS "C:/vcpkg/vcpkg-master/installed/x64-windows/include")
+set(NLOHMANN_JSON_INCLUDE_DIRS "C:/vcpkg/vcpkg-master/installed/x64-windows/include")
+
 # Найдем uwebsockets и установим пути к его заголовочным файлам
-find_path(UWEBSOCKETS_INCLUDE_DIRS "uwebsockets/App.h")
 if (UWEBSOCKETS_INCLUDE_DIRS)
     message("Found uwebsockets: ${UWEBSOCKETS_INCLUDE_DIRS}")
     include_directories(${UWEBSOCKETS_INCLUDE_DIRS})
 endif()
 
-# Найдем nlohmann-json и подключим его
-find_package(nlohmann_json CONFIG REQUIRED)
-if (nlohmann_json_FOUND)
-    message("Found nlohmann_json: ${nlohmann_json_INCLUDE_DIRS}")
-    include_directories(${nlohmann_json_INCLUDE_DIRS})
-    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+# Добавим путь к заголовочным файлам nlohmann-json
+if (NLOHMANN_JSON_INCLUDE_DIRS)
+    message("Found nlohmann_json: ${NLOHMANN_JSON_INCLUDE_DIRS}")
+    include_directories(${NLOHMANN_JSON_INCLUDE_DIRS})
 endif()
 
 # Найдем libpq (PostgreSQL) и подключим его
@@ -45,7 +46,7 @@ find_package(PostgreSQL REQUIRED)
 if (PostgreSQL_FOUND)
     message("Found PostgreSQL")
     include_directories(${PostgreSQL_INCLUDE_DIRS})
-    target_link_libraries(main PRIVATE ${PostgreSQL_LIBRARIES})
+    target_link_libraries(ChatServer PRIVATE ${PostgreSQL_LIBRARIES})
 endif()
 
 # Добавление исполняемого файла
