@@ -4,7 +4,6 @@
 #include "../header/Server.h"
 
 #include<fstream>
-#include <future>
 
 void FileSender::RegPanelHTML(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 {
@@ -20,7 +19,6 @@ void FileSender::RegPanelHTML(uWS::HttpResponse<true>* res, uWS::HttpRequest* re
 
 	res->end(future_content.get());
 }
-
 void FileSender::RegPanelCSS(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 {
 	res->writeHeader("Content-Type", "text/css");

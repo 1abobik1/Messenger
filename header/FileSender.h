@@ -5,6 +5,7 @@
 class FileSender
 {
 private:
+
     static void RegPanelHTML(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
     static void RegPanelCSS(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);

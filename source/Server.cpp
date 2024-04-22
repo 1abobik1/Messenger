@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "../header/Server.h"
+#include<uwebsockets/App.h>
 
 #include <iostream>
 
@@ -10,19 +11,22 @@ void Server::run()
 	.key_file_name = "../misc/key.pem",
 	.cert_file_name = "../misc/cert.pem",
 	.passphrase = "dima15042004"
-		})
+	})
 		.post("/signup", [&](auto* res, auto* req) {
-		request_handler_->HandleSignUp(res, req);
+			request_handler_->HandleSignUp(res, req);
 
 		}).post("/login", [&](auto* res, auto* req){
 			request_handler_->HandleLogIn(res, req);
 
 		}).get("/", [this](auto* res, auto* req){
 			file_sender_->RegPanelHTML(res, req);
+
 		}).get("/style.css", [this](auto* res, auto* req){
 			file_sender_->RegPanelCSS(res, req);
+
 		}).get("/signup.js", [this](auto* res, auto* req) {
 			file_sender_->RegPanelSignupJS(res, req);
+
 		}).get("/login.js", [this](auto* res, auto* req) {
 			file_sender_->RegPanelLoginJS(res, req);
 		})
@@ -31,14 +35,17 @@ void Server::run()
 		.idleTimeout = 666,
 
 		.open = [this](auto* ws){
-			 messager_handler_->ConnectedUser(ws);
+			  messager_handler_->ConnectedUser(ws);
 		},
+
 		.message = [this](auto* ws, std::string_view message, uWS::OpCode){
 			 messager_handler_->ProcessMessage(ws,message);
 		},
+
 		.close = [this](auto* ws, int code, std::string_view message){
-			 messager_handler_->DisconnectedUser(ws,code,message);
+			messager_handler_->DisconnectedUser(ws,code,message);
 		}
+
 		})
 		.options("/*", [&](auto* res, auto* req) 
 		{

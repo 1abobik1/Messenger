@@ -8,6 +8,7 @@ using json = nlohmann::json;
 class MessagerHandler
 {
 private:
+
 	std::uint64_t cnt_UserData_ = 1;
 
 	struct UserData
