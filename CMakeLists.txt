@@ -15,6 +15,7 @@ set(SOURCES
     "source/DataBase.cpp"
     "bcrypt-cpp/src/bcrypt.cpp"
     "bcrypt-cpp/src/blowfish.cpp"
+	
 )
 
 # Добавление заголовочных файлов
