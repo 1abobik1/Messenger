@@ -13,6 +13,8 @@ set(SOURCES
     "source/MessagerHandler.cpp"
     "source/RequestHandler.cpp"
     "source/DataBase.cpp"
+    "bcrypt-cpp/src/bcrypt.cpp"
+    "bcrypt-cpp/src/blowfish.cpp"
 )
 
 # Добавление заголовочных файлов
@@ -23,6 +25,9 @@ set(HEADERS
     "header/MessagerHandler.h"
     "header/RequestHandler.h"
     "header/DataBase.h"
+    "bcrypt-cpp/include/bcrypt.h"
+    "bcrypt-cpp/src/node_blf.h"
+    "bcrypt-cpp/src/openbsd.h"
 )
 
 # Пути к заголовочным файлам uwebsockets и nlohmann-json
@@ -46,8 +51,11 @@ find_package(PostgreSQL REQUIRED)
 if (PostgreSQL_FOUND)
     message("Found PostgreSQL")
     include_directories(${PostgreSQL_INCLUDE_DIRS})
-    target_link_libraries(ChatServer PRIVATE ${PostgreSQL_LIBRARIES})
 endif()
 
 # Добавление исполняемого файла
 add_executable(ChatServer ${SOURCES} ${HEADERS})
+
+if (PostgreSQL_FOUND)
+    target_link_libraries(ChatServer PRIVATE ${PostgreSQL_LIBRARIES})
+endif()
