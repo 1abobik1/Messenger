@@ -5,9 +5,6 @@
 
 std::mutex mtx;
 
-//---------------initialization instance_---------------//
-Database* Database::instance_ = nullptr;
-
 DBConnection::DBConnection() : connection_(PQconnectdb(PathDB::CONNECTION_DB.data()))
 {
 	if (PQstatus(connection_) != CONNECTION_OK) {
@@ -23,14 +20,23 @@ DBConnection::~DBConnection()
 }
 
 
-Database* Database::getInstance()
-{
+//---------------initialization instance_---------------//
+Database* Database::instance_ = nullptr;
+
+std::unique_ptr<Database> Database::createInstance() {
+    return std::unique_ptr<Database>(new Database());
+}
+
+Database* Database::getInstance() {
     if (!instance_) {
         std::lock_guard<std::mutex> lock(mtx);
-        instance_ = new Database();
+        if (!instance_) {
+            instance_ = createInstance().release();
+        }
     }
     return instance_;
 }
+
 
 void Database::InsertUsers(const std::string& user_name, const std::string& email, const std::string& password) const
 {

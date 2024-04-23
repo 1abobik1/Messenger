@@ -31,7 +31,14 @@ private:
 
     Database() = default;
 
+    static std::unique_ptr<Database> createInstance();
+
 public:
+    Database(const Database&) = delete;
+    Database& operator=(const Database&) = delete;
+
+    ~Database() = default;
+
     static Database* getInstance();
 
     void InsertUsers(const std::string& user_name, const std::string& email, const std::string& password) const;
