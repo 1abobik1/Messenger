@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <boost/asio.hpp>
 
 #include "FileSender.h"
 #include "MessagerHandler.h"

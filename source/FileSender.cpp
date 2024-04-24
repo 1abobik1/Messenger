@@ -4,6 +4,7 @@
 #include "../header/Server.h"
 
 #include<fstream>
+#include <future>
 
 void FileSender::RegPanelHTML(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
 {
