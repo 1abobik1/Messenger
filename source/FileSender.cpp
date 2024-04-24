@@ -2,7 +2,7 @@
 
 #include "../header/FileSender.h"
 #include "../header/Server.h"
-#include <future>
+
 #include<fstream>
 #include <future>
 
@@ -11,7 +11,7 @@ void FileSender::RegPanelHTML(uWS::HttpResponse<true>* res, uWS::HttpRequest* re
 	res->writeHeader("Content-Type", "text/html");
 
 	auto future_content = std::async(std::launch::async, [&]() {
-		std::ifstream file_path(" C:/Users/79259/source/repos/Messenger/web-files/index.html");
+		std::ifstream file_path(" C:/Users/dima1/source/repos/ChatServer/web-files/index.html");
 		if (file_path) {
 			return std::string((std::istreambuf_iterator<char>(file_path)), std::istreambuf_iterator<char>());
 		}

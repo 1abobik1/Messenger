@@ -19,7 +19,7 @@ const SendForm = ({active, setActive}) => {
 
   return (
       <div className={active ? 'flex flex-col flex-auto h-screen form active pl-4' : 'flex flex-col flex-auto h-screen form pl-4'}>
-        <div className="flex flex-col flex-auto flex-shrink-0  bg-gray-100 h-full p-4">
+        <div className="flex flex-cnpm startol flex-auto flex-shrink-0  bg-gray-100 h-full p-4">
           <div className="flex flex-col h-full overflow-x-auto mb-4">
             <div className="flex flex-col h-full">
               <div className="grid grid-cols-12 gap-y-2">

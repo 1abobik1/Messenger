@@ -160,6 +160,23 @@
     <None Include="web-files\client.html">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="web-files\front-end\package-lock.json" />
+    <None Include="web-files\front-end\package.json" />
+    <None Include="web-files\front-end\public\index.html" />
+    <None Include="web-files\front-end\src\App.css" />
+    <None Include="web-files\front-end\src\App.js" />
+    <None Include="web-files\front-end\src\components\BurgerMenu.jsx" />
+    <None Include="web-files\front-end\src\components\Client.jsx" />
+    <None Include="web-files\front-end\src\components\SendForm.jsx" />
+    <None Include="web-files\front-end\src\components\SignUpLogin.jsx" />
+    <None Include="web-files\front-end\src\css\burger.css" />
+    <None Include="web-files\front-end\src\css\form.css" />
+    <None Include="web-files\front-end\src\css\sign.css" />
+    <None Include="web-files\front-end\src\index.css" />
+    <None Include="web-files\front-end\src\index.js" />
+    <None Include="web-files\front-end\src\login.js" />
+    <None Include="web-files\front-end\src\signup.js" />
+    <None Include="web-files\front-end\tailwind.config.js" />
     <None Include="web-files\index.html">
       <DeploymentContent>true</DeploymentContent>
     </None>

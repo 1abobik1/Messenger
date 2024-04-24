@@ -22,6 +22,21 @@
     <Filter Include="Файлы ресурсов\bcrypt-cpp\src">
       <UniqueIdentifier>{c8d061c3-f5f6-43bc-be5b-4df1d85476ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы ресурсов\front-end">
+      <UniqueIdentifier>{a24b000a-4cd3-4852-8128-32279ecb6a24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\front-end\public">
+      <UniqueIdentifier>{698b7a8f-e983-41a6-9264-c70d22658aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\front-end\src">
+      <UniqueIdentifier>{669181a5-7c9e-4d27-962d-2d29849892dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\front-end\src\components">
+      <UniqueIdentifier>{4f81f5b0-a8a6-451d-9a3c-a8c6b268c308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\front-end\src\css">
+      <UniqueIdentifier>{f0b41ba0-8928-46be-bcc1-89c08ccacb50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -94,5 +109,54 @@
     <None Include="web-files\style.css">
       <Filter>Файлы ресурсов</Filter>
     </None>
+    <None Include="web-files\front-end\package.json">
+      <Filter>Файлы ресурсов\front-end</Filter>
+    </None>
+    <None Include="web-files\front-end\package-lock.json">
+      <Filter>Файлы ресурсов\front-end</Filter>
+    </None>
+    <None Include="web-files\front-end\public\index.html">
+      <Filter>Файлы ресурсов\front-end\public</Filter>
+    </None>
+    <None Include="web-files\front-end\src\App.css">
+      <Filter>Файлы ресурсов\front-end\src</Filter>
+    </None>
+    <None Include="web-files\front-end\src\App.js">
+      <Filter>Файлы ресурсов\front-end\src</Filter>
+    </None>
+    <None Include="web-files\front-end\src\index.css">
+      <Filter>Файлы ресурсов\front-end\src</Filter>
+    </None>
+    <None Include="web-files\front-end\src\index.js">
+      <Filter>Файлы ресурсов\front-end\src</Filter>
+    </None>
+    <None Include="web-files\front-end\src\signup.js">
+      <Filter>Файлы ресурсов\front-end\src</Filter>
+    </None>
+    <None Include="web-files\front-end\src\login.js">
+      <Filter>Файлы ресурсов\front-end\src</Filter>
+    </None>
+    <None Include="web-files\front-end\src\components\BurgerMenu.jsx">
+      <Filter>Файлы ресурсов\front-end\src\components</Filter>
+    </None>
+    <None Include="web-files\front-end\src\components\Client.jsx">
+      <Filter>Файлы ресурсов\front-end\src\components</Filter>
+    </None>
+    <None Include="web-files\front-end\src\css\sign.css">
+      <Filter>Файлы ресурсов\front-end\src\css</Filter>
+    </None>
+    <None Include="web-files\front-end\src\css\form.css">
+      <Filter>Файлы ресурсов\front-end\src\css</Filter>
+    </None>
+    <None Include="web-files\front-end\src\css\burger.css">
+      <Filter>Файлы ресурсов\front-end\src\css</Filter>
+    </None>
+    <None Include="web-files\front-end\src\components\SendForm.jsx">
+      <Filter>Файлы ресурсов\front-end\src\components</Filter>
+    </None>
+    <None Include="web-files\front-end\src\components\SignUpLogin.jsx">
+      <Filter>Файлы ресурсов\front-end\src\components</Filter>
+    </None>
+    <None Include="web-files\front-end\tailwind.config.js" />
   </ItemGroup>
 </Project>
