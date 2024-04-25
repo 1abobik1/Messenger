@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>WebSocket Client</title>
+</head>
+<body>
+<input type="text" id="messageInput" placeholder="Type your message...">
+<button onclick="sendMessage()">Send</button>
+<div id="messages"></div>
+
+<script>
+	const socket = new WebSocket("ws://localhost:9000/");
+
+        socket.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            document.getElementById("messages").innerHTML += `<p>${message.user_id_from}: ${message.message}</p>`;
+
+        };
+
+        function sendMessage() {
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value;
+            socket.send(JSON.stringify({ command: "public_msg", message: message }));
+            messageInput.value = "";
+		}
+    //connection = new WebSocket("ws://localhost:9000/"); connection.onmessage = ({data}) => console.log(data);
+    //connection.send(JSON.stringify({"command":"private_msg","receiver_id":1,"message":"hi, 1"}))
+    //this.socket_ = new WebSocket('wss://' + window.location.host);
+    //this.socket_.onopen = (evt) => {
+    //console.log('connect');
+    //this.wsTimeout_ = setTimeout(this.ping_.bind(this), 8000);
+    //};
+    </script>
+</body>
+</html>

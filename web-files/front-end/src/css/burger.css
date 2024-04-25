@@ -1,0 +1,16 @@
+.menu{
+  transform: translateX(-117%);
+  background-color: #FFFFFF;
+  transition: all 0.2s;
+}
+.menu.active{
+  transform: translateX(-17%);
+}
+@media screen and (max-width: 768px) {
+  .menu{
+    display: none;
+  }
+  .menu.active{
+    display: block;
+  }
+}
