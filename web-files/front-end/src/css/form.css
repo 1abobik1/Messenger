@@ -8,6 +8,13 @@
  textarea{
    resize: none;
  }
+.sendhund {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
 @media screen and (max-width: 768px) {
   .form.active{
     transform: translateX(100%);
