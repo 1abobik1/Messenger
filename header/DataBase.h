@@ -36,10 +36,10 @@ private:
 public:
     Database(const Database&) = delete;
     Database& operator=(const Database&) = delete;
-
     ~Database() = default;
 
     static Database* getInstance();
+
 
     void InsertUsers(const std::string& user_name, const std::string& email, const std::string& password) const;
 
@@ -47,4 +47,7 @@ public:
 
 	std::string GetPasswordByEmail(const std::string& email) const;
 
+    void InsertMessage(int sender_id, int receiver_id, const std::string& message_text) const;
+
+    std::string GetSentAt(int message_id) const;
 };

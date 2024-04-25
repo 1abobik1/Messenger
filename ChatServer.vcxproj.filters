@@ -94,69 +94,27 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="web-files\login.js">
-      <Filter>Файлы ресурсов</Filter>
-    </None>
-    <None Include="web-files\client.html">
-      <Filter>Файлы ресурсов</Filter>
-    </None>
-    <None Include="web-files\index.html">
-      <Filter>Файлы ресурсов</Filter>
-    </None>
-    <None Include="web-files\signup.js">
-      <Filter>Файлы ресурсов</Filter>
-    </None>
-    <None Include="web-files\style.css">
-      <Filter>Файлы ресурсов</Filter>
-    </None>
-    <None Include="web-files\front-end\package.json">
-      <Filter>Файлы ресурсов\front-end</Filter>
-    </None>
-    <None Include="web-files\front-end\package-lock.json">
-      <Filter>Файлы ресурсов\front-end</Filter>
-    </None>
-    <None Include="web-files\front-end\public\index.html">
-      <Filter>Файлы ресурсов\front-end\public</Filter>
-    </None>
-    <None Include="web-files\front-end\src\App.css">
-      <Filter>Файлы ресурсов\front-end\src</Filter>
-    </None>
-    <None Include="web-files\front-end\src\App.js">
-      <Filter>Файлы ресурсов\front-end\src</Filter>
-    </None>
-    <None Include="web-files\front-end\src\index.css">
-      <Filter>Файлы ресурсов\front-end\src</Filter>
-    </None>
-    <None Include="web-files\front-end\src\index.js">
-      <Filter>Файлы ресурсов\front-end\src</Filter>
-    </None>
-    <None Include="web-files\front-end\src\signup.js">
-      <Filter>Файлы ресурсов\front-end\src</Filter>
-    </None>
-    <None Include="web-files\front-end\src\login.js">
-      <Filter>Файлы ресурсов\front-end\src</Filter>
-    </None>
-    <None Include="web-files\front-end\src\components\BurgerMenu.jsx">
-      <Filter>Файлы ресурсов\front-end\src\components</Filter>
-    </None>
-    <None Include="web-files\front-end\src\components\Client.jsx">
-      <Filter>Файлы ресурсов\front-end\src\components</Filter>
-    </None>
-    <None Include="web-files\front-end\src\css\sign.css">
-      <Filter>Файлы ресурсов\front-end\src\css</Filter>
-    </None>
-    <None Include="web-files\front-end\src\css\form.css">
-      <Filter>Файлы ресурсов\front-end\src\css</Filter>
-    </None>
-    <None Include="web-files\front-end\src\css\burger.css">
-      <Filter>Файлы ресурсов\front-end\src\css</Filter>
-    </None>
-    <None Include="web-files\front-end\src\components\SendForm.jsx">
-      <Filter>Файлы ресурсов\front-end\src\components</Filter>
-    </None>
-    <None Include="web-files\front-end\src\components\SignUpLogin.jsx">
-      <Filter>Файлы ресурсов\front-end\src\components</Filter>
-    </None>
+    <None Include="web-files\front-end\public\index.html" />
+    <None Include="web-files\front-end\package.json" />
+    <None Include="web-files\front-end\package-lock.json" />
     <None Include="web-files\front-end\tailwind.config.js" />
+    <None Include="web-files\client.html" />
+    <None Include="web-files\index.html" />
+    <None Include="web-files\login.js" />
+    <None Include="web-files\signup.js" />
+    <None Include="web-files\style.css" />
+    <None Include="web-files\front-end\src\App.css" />
+    <None Include="web-files\front-end\src\App.js" />
+    <None Include="web-files\front-end\src\index.css" />
+    <None Include="web-files\front-end\src\index.js" />
+    <None Include="web-files\front-end\src\login.js" />
+    <None Include="web-files\front-end\src\signup.js" />
+    <None Include="web-files\front-end\src\components\BurgerMenu.jsx" />
+    <None Include="web-files\front-end\src\components\Client.jsx" />
+    <None Include="web-files\front-end\src\components\SendForm.jsx" />
+    <None Include="web-files\front-end\src\components\SignUpLogin.jsx" />
+    <None Include="web-files\front-end\src\css\burger.css" />
+    <None Include="web-files\front-end\src\css\form.css" />
+    <None Include="web-files\front-end\src\css\sign.css" />
   </ItemGroup>
 </Project>

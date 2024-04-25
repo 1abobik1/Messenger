@@ -32,7 +32,10 @@ void Server::run()
 		})
 
 		.ws<MessagerHandler::UserData>("/*",{
+		.compression = uWS::SHARED_COMPRESSOR,
+		.maxPayloadLength = 10 * 1024,
 		.idleTimeout = 666,
+		.maxBackpressure = 1 * 1024 * 1024,
 
 		.open = [this](auto* ws){
 			  messager_handler_->ConnectedUser(ws);
