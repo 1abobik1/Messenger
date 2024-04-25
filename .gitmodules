@@ -1,0 +1,9 @@
+[submodule "front-end"]
+	path = web-files
+	url = https://github.com/1abobik1/Messenger.git
+[submodule "web-files"]
+	path = webs
+	url = https://github.com/1abobik1/Messenger.git
+[submodule "webs"]
+	path = webs
+	url = https://github.com/1abobik1/Messenger.git

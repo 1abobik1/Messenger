@@ -30,7 +30,7 @@ void Server::run()
 		}).get("/login.js", [this](auto* res, auto* req) {
 			file_sender_->RegPanelLoginJS(res, req);
 		})
-
+ 
 		.ws<MessagerHandler::UserData>("/*",{
 		.compression = uWS::SHARED_COMPRESSOR,
 		.maxPayloadLength = 10 * 1024,
