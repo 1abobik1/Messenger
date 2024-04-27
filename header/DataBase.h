@@ -6,7 +6,7 @@
 #include <libpq-fe.h>
 #include <memory>
 
-//RAII for PGconn*
+// RAII for PGconn*
 class DBConnection {
 private:
     PGconn* connection_;
