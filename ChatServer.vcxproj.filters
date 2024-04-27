@@ -110,22 +110,8 @@
     <None Include="web-files\front-end\src\css\burger.css" />
     <None Include="web-files\front-end\src\css\form.css" />
     <None Include="web-files\front-end\src\css\sign.css" />
-    <None Include="front-end\public\index.html" />
-    <None Include="front-end\src\components\BurgerMenu.jsx" />
-    <None Include="front-end\src\components\Client.jsx" />
-    <None Include="front-end\src\components\SendForm.jsx" />
-    <None Include="front-end\src\components\SignUpLogin.jsx" />
     <None Include="front-end\src\css\burger.css" />
     <None Include="front-end\src\css\form.css" />
     <None Include="front-end\src\css\sign.css" />
-    <None Include="front-end\src\App.css" />
-    <None Include="front-end\src\App.js" />
-    <None Include="front-end\src\index.css" />
-    <None Include="front-end\src\index.js" />
-    <None Include="front-end\src\login.js" />
-    <None Include="front-end\src\signup.js" />
-    <None Include="front-end\package.json" />
-    <None Include="front-end\package-lock.json" />
-    <None Include="front-end\tailwind.config.js" />
   </ItemGroup>
 </Project>
