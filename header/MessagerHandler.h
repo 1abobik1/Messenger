@@ -19,6 +19,8 @@ private:
 
     typedef uWS::WebSocket<true, true, UserData> web_socket;
 
+    std::string ProcessUserStatus(UserData* data, bool online);
+
 	void ProcessSetName(web_socket* WS, json parsed, UserData* data);
 
 	void ProcessPrivateMessage(web_socket* WS, json parsed, std::uint64_t user_id);

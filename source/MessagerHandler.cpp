@@ -8,9 +8,19 @@
 
 using namespace JsonChat;
 
+std::string MessagerHandler::ProcessUserStatus(UserData* data, bool online)
+{
+	json response;
+	response[COMMAND] = STATUS;
+	response[NAME] = data->name;
+	response[RECEIVER_ID] = data->user_id;
+	response[ONLINE] = online;
+	return response.dump();
+}
+
 void MessagerHandler::ProcessSetName(web_socket* WS, json parsed, UserData* data)
 {
-	data->name = parsed[NEW_NAME];
+	data->name = parsed[NAME];
 }
 
 void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed, std::uint64_t user_id)

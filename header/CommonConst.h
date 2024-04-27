@@ -19,7 +19,11 @@ namespace JsonChat
 
 	const std::string SET_NAME = "set_name";
 
-	const std::string NEW_NAME = "new_name";
+	const std::string NAME = "new_name";
+
+	const std::string STATUS = "status";
+
+	const std::string ONLINE = "online";
 }
 
 namespace PathDB

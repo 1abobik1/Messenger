@@ -10,6 +10,8 @@ int main() {
 
 	Server server(9000);
 
+	std::cout << "Server is running" << '\n';
+
 	server.run();
 
 	return 0;
