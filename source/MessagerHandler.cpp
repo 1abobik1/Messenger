@@ -67,7 +67,6 @@ void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed, std::ui
 	response[USER_ID_FROM] = data->get_id();
 
 	WS->publish("userN" + std::to_string(user_id_to), response.dump()); // sending a message
-	//response.dump() sends a message to the user
 }
 
 void MessagerHandler::ProcessPublicMessage(web_socket* WS, json parsed, std::uint64_t user_id)
@@ -106,6 +105,5 @@ void MessagerHandler::ProcessMessage(web_socket* WS, std::string_view message)
 
 void MessagerHandler::DisconnectedUser(web_socket* ws, int code, std::string_view message)
 {
-	const UserData* data = ws->getUserData();
-	std::cout << "User disconnected ID: " << data->get_id() << "\n";
+	std::cout << "User disconnected" << "\n";
 }

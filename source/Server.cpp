@@ -20,19 +20,13 @@ void Server::run()
 		}).post("/login", [&](auto* res, auto* req){
 			request_handler_->HandleLogIn(res, req);
 
-		})/*.get("/", [this](auto* res, auto* req){
-			file_sender_->RegPanelHTML(res, req);
+		}).post("/client/DisplayUsers", [&](auto* res, auto* req) {
+			request_handler_->HandledDisplayUsers(res, req);
 
-		}).get("/style.css", [this](auto* res, auto* req){
-			file_sender_->RegPanelCSS(res, req);
-
-		}).get("/signup.js", [this](auto* res, auto* req) {
-			file_sender_->RegPanelSignupJS(res, req);
-
-		}).get("/login.js", [this](auto* res, auto* req) {
-			file_sender_->RegPanelLoginJS(res, req);
+		}).post("/client/SearchUser", [&](auto* res, auto* req) {
+			request_handler_->HandleSearchUser(res, req);
 		})
- */
+
 		.ws<UserData>("/*",{
 		.compression = uWS::SHARED_COMPRESSOR,
 		.maxPayloadLength = 10 * 1024,

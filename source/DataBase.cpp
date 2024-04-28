@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <stdexcept>
+#include <iostream>
 
 std::mutex mtx;
 
@@ -187,4 +188,55 @@ int64_t Database::GetUserIdByEmail(const std::string& email) const {
     PQclear(res);
 
     return user_id;
+}
+
+json Database::GetAllUsersNamesInJson() const
+{
+    json usersJson;
+
+    try
+    {
+        const std::string query = "SELECT username FROM users";
+        PGresult* res = PQexec(connection_, query.c_str());
+
+        if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+            PQclear(res);
+            throw std::runtime_error("Failed to fetch user names");
+        }
+
+        for (int i = 0; i < PQntuples(res); ++i) {
+            usersJson.push_back(PQgetvalue(res, i, 0));
+        }
+
+        PQclear(res);
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Error fetching user names: " << e.what() << '\n';
+    }
+
+    return usersJson;
+}
+
+std::string Database::FindUserByEmail(const std::string& email) const {
+    const std::string query = "SELECT username FROM users WHERE email = $1";
+    const char* param_values[1] = { email.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQntuples(res) == 0) {
+        PQclear(res);
+        return "User not found";
+    }
+
+    std::string username = PQgetvalue(res, 0, 0);
+    PQclear(res);
+
+    return username;
 }

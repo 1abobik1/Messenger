@@ -2,6 +2,8 @@
 
 #include"CommonConst.h"
 
+#include <nlohmann/json.hpp>
+
 #include <string>
 #include <libpq-fe.h>
 #include <memory>
@@ -23,6 +25,8 @@ public:
     }
 
 };
+
+using json = nlohmann::json;
 
 class Database {
 private:
@@ -52,4 +56,8 @@ public:
     std::string GetSentAt(int message_id) const;
 
     int64_t GetUserIdByEmail(const std::string& email) const;
+
+    json GetAllUsersNamesInJson() const;
+
+    std::string FindUserByEmail(const std::string& name) const;
 };
