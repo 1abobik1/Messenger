@@ -160,3 +160,31 @@ std::string Database::GetSentAt(const int message_id) const {
 
     return sent_at;
 }
+
+int64_t Database::GetUserIdByEmail(const std::string& email) const {
+    const std::string query = "SELECT id FROM users WHERE email = $1";
+    const char* param_values[1] = { email.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        throw std::runtime_error("Failed to fetch user ID by email");
+    }
+
+    if (PQntuples(res) == 0) {
+        PQclear(res);
+        throw std::runtime_error("No matching user found for the provided email");
+    }
+
+    int64_t user_id = std::stoi(PQgetvalue(res, 0, 0));
+    PQclear(res);
+
+    return user_id;
+}

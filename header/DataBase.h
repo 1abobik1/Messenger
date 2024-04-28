@@ -50,4 +50,6 @@ public:
     void InsertMessage(int sender_id, int receiver_id, const std::string& message_text) const;
 
     std::string GetSentAt(int message_id) const;
+
+    int64_t GetUserIdByEmail(const std::string& email) const;
 };

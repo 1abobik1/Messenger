@@ -1,6 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "../header/Server.h"
+#include "../header/UserData.h"
+
 #include<uwebsockets/App.h>
 
 #include <iostream>
@@ -18,7 +20,7 @@ void Server::run()
 		}).post("/login", [&](auto* res, auto* req){
 			request_handler_->HandleLogIn(res, req);
 
-		}).get("/", [this](auto* res, auto* req){
+		})/*.get("/", [this](auto* res, auto* req){
 			file_sender_->RegPanelHTML(res, req);
 
 		}).get("/style.css", [this](auto* res, auto* req){
@@ -30,8 +32,8 @@ void Server::run()
 		}).get("/login.js", [this](auto* res, auto* req) {
 			file_sender_->RegPanelLoginJS(res, req);
 		})
- 
-		.ws<MessagerHandler::UserData>("/*",{
+ */
+		.ws<UserData>("/*",{
 		.compression = uWS::SHARED_COMPRESSOR,
 		.maxPayloadLength = 10 * 1024,
 		.idleTimeout = 666,

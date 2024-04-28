@@ -16,31 +16,31 @@ void RequestHandler::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest
 	auto isAborted = std::make_shared<bool>(false);
 	auto body = std::make_shared<std::string>();
 
-	res->onData([res, isAborted, body](std::string_view chunk, bool isFin) mutable {
+	res->onData([res, isAborted, body, this](std::string_view chunk, bool isFin) mutable {
 		if (!chunk.empty()) {
 			// fill in the request body
 			body->append(chunk.data(), chunk.length());
 
 			if (isFin && !*isAborted) {
 				// Parse JSON from the body
-				json userData = json::parse(std::move(*body));
+				json userDataJson = json::parse(std::move(*body));
 
 				// Retrieving data from a request
-				const auto email = std::make_unique<std::string>(std::move(userData["email"]));
-				const auto password = std::make_unique<std::string>(std::move(userData["pswd"]));
-				const auto user_name = std::make_unique<std::string>(std::move(userData["user_name"]));
+				UserData_->set_email(std::move(userDataJson["email"]));
+				UserData_->set_password(std::move(userDataJson["pswd"]));
+				UserData_->set_name(std::move(userDataJson["user_name"]));
 
-				std::cout << "Received data in signup: " << *user_name << ' ' << *email << ' ' << *password << '\n';
+				std::cout << "Received data in signup: " << UserData_->get_name() << ' ' << UserData_->get_email() << ' ' << UserData_->get_password() << '\n';
 
 				try {
-					if (Database::getInstance()->CheckEmailExists(*email))
+					if (Database::getInstance()->CheckEmailExists(UserData_->get_email()))
 					{
 						throw std::exception("User with this email already exists");
 					}
 					else
 					{
 						// save data in database
-						Database::getInstance()->InsertUsers(*user_name, *email, *password);
+						Database::getInstance()->InsertUsers(UserData_->get_name(), UserData_->get_email(), UserData_->get_password());
 						res->writeStatus("200 OK");
 						res->end("Signup successful!");
 						std::cout << "Signup successful!" << '\n';
@@ -77,7 +77,7 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest*
 	auto isAborted = std::make_shared<bool>(false);
 	auto body = std::make_shared<std::string>();
 
-	res->onData([res, isAborted, body](std::string_view chunk, bool isFin) mutable {
+	res->onData([res, isAborted, body, this](std::string_view chunk, bool isFin) mutable {
 		if (!chunk.empty()) {
 			// fill in the request body
 			body->append(chunk.data(), chunk.length());
@@ -85,17 +85,17 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest*
 			if (isFin && !*isAborted) {
 
 				// Parse JSON from the body
-				json userData = json::parse(std::move(*body));
+				json userDataJson = json::parse(std::move(*body));
 
 				// Retrieving data from a request
-				const auto email = std::make_unique<std::string>(std::move(userData["email"]));
-				const auto password = std::make_unique<std::string>(std::move(userData["pswd"]));
+				UserData_->set_email(std::move(userDataJson["email"]));
+				UserData_->set_password(std::move(userDataJson["pswd"]));
 
-				std::cout << "Received data in login: " << ' ' << *email << ' ' << *password << '\n';
+				std::cout << "Received data in login:  " << Database::getInstance()->GetUserIdByEmail(UserData_->get_email()) << ' ' << UserData_->get_email() << ' ' << UserData_->get_password() << '\n';
 				try {
-					if (Database::getInstance()->CheckEmailExists(*email))
+					if (Database::getInstance()->CheckEmailExists(UserData_->get_email()))
 					{
-						if (bcrypt::validatePassword(*password, /*hash-*/Database::getInstance()->GetPasswordByEmail(*email)))
+						if (bcrypt::validatePassword(UserData_->get_password(), /*hash-*/Database::getInstance()->GetPasswordByEmail(UserData_->get_email())))
 						{
 							res->writeStatus("200 OK");
 							res->end("LogIn successful!");
