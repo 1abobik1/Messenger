@@ -159,9 +159,6 @@
     <ClInclude Include="header\UserData.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="front-end\src\css\burger.css" />
-    <None Include="front-end\src\css\form.css" />
-    <None Include="front-end\src\css\sign.css" />
     <None Include="web-files\front-end\package-lock.json" />
     <None Include="web-files\front-end\package.json" />
     <None Include="web-files\front-end\src\App.css" />

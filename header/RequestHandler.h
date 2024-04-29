@@ -3,6 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <uwebsockets/HttpResponse.h>
 
+#include "MessagerHandler.h"
 #include "UserData.h"
 
 using json = nlohmann::json;

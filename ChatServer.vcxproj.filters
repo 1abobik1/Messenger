@@ -116,8 +116,5 @@
     <None Include="web-files\front-end\src\css\burger.css" />
     <None Include="web-files\front-end\src\css\form.css" />
     <None Include="web-files\front-end\src\css\sign.css" />
-    <None Include="front-end\src\css\burger.css" />
-    <None Include="front-end\src\css\form.css" />
-    <None Include="front-end\src\css\sign.css" />
   </ItemGroup>
 </Project>

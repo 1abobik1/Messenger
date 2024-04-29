@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+ï»¿import React, { useState } from 'react';
 import '../css/sign.css'
 import { useNavigate } from "react-router-dom";
 
@@ -30,7 +30,7 @@ function createUser(userName, email, password) {
 
 const SignUpLogin = () => {
 
-    // Ïðè ðåãèñòðàöèè
+    // ÃÃ°Ã¨ Ã°Ã¥Ã£Ã¨Ã±Ã²Ã°Ã Ã¶Ã¨Ã¨
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -81,7 +81,7 @@ const SignUpLogin = () => {
     }
 
 
-    // Ïðè ëîãèíå
+    // ÃÃ°Ã¨ Ã«Ã®Ã£Ã¨Ã­Ã¥
     const [emailLogin, setEmailLogin] = useState('');
     const [passwordLogin, setPasswordLogin] = useState('');
 
@@ -165,7 +165,6 @@ const SignUpLogin = () => {
 
 
     );
-}
-    ;
+};
 
 export default SignUpLogin;
