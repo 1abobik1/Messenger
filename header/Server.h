@@ -5,7 +5,6 @@
 #include "MessagerHandler.h"
 #include "RequestHandler.h"
 
-
 class Server
 {
 private:

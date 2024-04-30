@@ -8,19 +8,51 @@
 
 using namespace JsonChat;
 
+
+void MessagerHandler::ConnectedUser(web_socket* ws)
+{
+	try
+	{
+		UserData* data = ws->getUserData();
+
+		if (Database::getInstance()->CheckEmailExists(data->get_email()))
+		{
+			data->set_id(Database::getInstance()->GetUserIdByEmail(data->get_email()));
+			std::cout << "User connected ID: " << data->get_id() << "\n";
+		}
+
+		else
+		{
+			std::string errorMessage = "User with email " + data->get_email() + " not found";
+			ws->send(errorMessage);
+		}
+
+		// connect the person to a private channel (for personal messages)
+		ws->subscribe("userN" + std::to_string(data->get_id()));
+		// connect to a common channel (for general chat)
+		ws->subscribe("public_chat");
+
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	
+}
+
 std::string MessagerHandler::ProcessUserStatus(UserData* data, bool online)
 {
 	json response;
 	response[COMMAND] = STATUS;
-	response[NAME] = data->name;
-	response[RECEIVER_ID] = data->user_id;
+	response[NAME] = data->get_name();
+	response[RECEIVER_ID] = data->get_id();
 	response[ONLINE] = online;
 	return response.dump();
 }
 
 void MessagerHandler::ProcessSetName(web_socket* WS, json parsed, UserData* data)
 {
-	data->name = parsed[NAME];
+	data->set_name(std::move(parsed[NAME]));
 }
 
 void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed, std::uint64_t user_id)
@@ -32,21 +64,21 @@ void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed, std::ui
 
 	response[COMMAND] = PRIVATE_MSG;
 	response[MESSAGE] = user_msg;
-	response[USER_ID_FROM] = data->user_id;
+	response[USER_ID_FROM] = data->get_id();
 
 	WS->publish("userN" + std::to_string(user_id_to), response.dump()); // sending a message
-	//response.dump() sends a message to the user
 }
 
 void MessagerHandler::ProcessPublicMessage(web_socket* WS, json parsed, std::uint64_t user_id)
 {
 	UserData* data = WS->getUserData();
 	std::string user_msg = parsed[MESSAGE];
+
 	json response; // create a response for the general chat
 
 	response[COMMAND] = PUBLIC_MSG;
 	response[MESSAGE] = user_msg;
-	response[USER_ID_FROM] = data->user_id;
+	response[USER_ID_FROM] = data->get_id();
 
 	WS->publish("public_chat", response.dump()); // sending a message
 }
@@ -55,15 +87,15 @@ void MessagerHandler::ProcessMessage(web_socket* WS, std::string_view message)
 {
 	UserData* data = WS->getUserData();
 
-	std::cout << "Message from user ID: " << data->user_id << "--message: " << message << '\n';
+	std::cout << "Message from user ID: " << data->get_id() << "--message: " << message << '\n';
 	auto parsed = json::parse(message);
 
 	if (parsed[COMMAND] == PRIVATE_MSG) {
-		ProcessPrivateMessage(WS, parsed, data->user_id);
+		ProcessPrivateMessage(WS, parsed, data->get_id());
 	}
 
 	if (parsed[COMMAND] == PUBLIC_MSG) {
-		ProcessPublicMessage(WS, parsed, data->user_id);
+		ProcessPublicMessage(WS, parsed, data->get_id());
 	}
 
 	if (parsed[COMMAND] == SET_NAME) {
@@ -71,19 +103,7 @@ void MessagerHandler::ProcessMessage(web_socket* WS, std::string_view message)
 	}
 }
 
-void MessagerHandler::ConnectedUser(web_socket* ws)
-{
-	UserData* data = ws->getUserData();
-	data->user_id = this->cnt_UserData_++;
-	std::cout << "New user connected ID: " << data->user_id << "\n";
-	// connect the person to a private channel (for personal messages)
-	ws->subscribe("userN" + std::to_string(data->user_id));
-	// connect to a common channel (for general chat)
-	ws->subscribe("public_chat");
-}
-
 void MessagerHandler::DisconnectedUser(web_socket* ws, int code, std::string_view message)
 {
-	const UserData* data = ws->getUserData();
-	std::cout << "User disconnected ID: " << data->user_id << "\n";
+	std::cout << "User disconnected" << "\n";
 }

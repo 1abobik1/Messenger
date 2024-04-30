@@ -3,21 +3,17 @@
 #include <uwebsockets/WebSocket.h>
 #include <nlohmann/json.hpp>
 
+#include "UserData.h"
+#include "DataBase.h"
+
 using json = nlohmann::json;
 
 class MessagerHandler
 {
 private:
-
-	std::uint64_t cnt_UserData_ = 1;
-
-	struct UserData
-    {
-        uint64_t user_id;
-        std::string name = "NO_NAME";
-    };
-
     typedef uWS::WebSocket<true, true, UserData> web_socket;
+
+    void ConnectedUser(web_socket* ws);
 
     std::string ProcessUserStatus(UserData* data, bool online);
 
@@ -28,8 +24,6 @@ private:
 	void ProcessPublicMessage(web_socket* WS, json parsed, std::uint64_t user_id);
 
 	void ProcessMessage(web_socket* WS, std::string_view message);
-
-    void ConnectedUser(web_socket* ws);
 
     void DisconnectedUser(web_socket* ws, int code, std::string_view message);
 public:
