@@ -54,16 +54,16 @@
     <ClCompile Include="bcrypt-cpp\src\blowfish.cpp">
       <Filter>Файлы ресурсов\bcrypt-cpp\src</Filter>
     </ClCompile>
-    <ClCompile Include="source\FileSender.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="source\MessagerHandler.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="source\RequestHandler.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="source\UserData.cpp">
+    <ClCompile Include="source\UserModel.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="source\WebSocketUser.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,16 +86,16 @@
     <ClInclude Include="bcrypt-cpp\include\bcrypt.h">
       <Filter>Файлы ресурсов\bcrypt-cpp\include</Filter>
     </ClInclude>
-    <ClInclude Include="header\FileSender.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="header\MessagerHandler.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="header\RequestHandler.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="header\UserData.h">
+    <ClInclude Include="header\UserModel.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="header\WebSocketUser.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

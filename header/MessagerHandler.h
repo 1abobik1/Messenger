@@ -3,21 +3,25 @@
 #include <uwebsockets/WebSocket.h>
 #include <nlohmann/json.hpp>
 
-#include "UserData.h"
+#include "UserModel.h"
+#include "WebSocketUser.h"
 #include "DataBase.h"
+#include "RequestHandler.h"
 
 using json = nlohmann::json;
 
 class MessagerHandler
 {
 private:
-    typedef uWS::WebSocket<true, true, UserData> web_socket;
+	RequestHandler* request_handler_;
 
-    void ConnectedUser(web_socket* ws);
+	typedef uWS::WebSocket<true, true, WebSocketUser> web_socket;
 
-    std::string ProcessUserStatus(UserData* data, bool online);
+    void ConnectedUser(web_socket* WS);
 
-	void ProcessSetName(web_socket* WS, json parsed, UserData* data);
+    std::string ProcessUserStatus(WebSocketUser* data, bool online);
+
+	void ProcessSetName(web_socket* WS, json parsed, WebSocketUser* data);
 
 	void ProcessPrivateMessage(web_socket* WS, json parsed, std::uint64_t user_id);
 
@@ -25,7 +29,9 @@ private:
 
 	void ProcessMessage(web_socket* WS, std::string_view message);
 
-    void DisconnectedUser(web_socket* ws, int code, std::string_view message);
+    void DisconnectedUser(web_socket* WS, int code, std::string_view message);
 public:
-    friend class Server;
+	MessagerHandler(RequestHandler* request_handler) : request_handler_(request_handler) {}
+
+	friend class Server;
 };

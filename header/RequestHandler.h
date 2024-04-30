@@ -3,15 +3,13 @@
 #include <nlohmann/json.hpp>
 #include <uwebsockets/HttpResponse.h>
 
-#include "MessagerHandler.h"
-#include "UserData.h"
+#include "UserModel.h"
 
 using json = nlohmann::json;
 
-class RequestHandler
-{
+class RequestHandler{
 private:
-	std::unique_ptr<UserData> UserData_;
+	std::unique_ptr<UserModel> user_model_;
 
 	void HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
@@ -20,8 +18,11 @@ private:
 	void HandledDisplayUsers(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
 	void HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
+
 public:
-	RequestHandler(): UserData_(std::make_unique<UserData>()){}
+	UserModel* getUserModel() const;
+
+	RequestHandler() : user_model_(std::make_unique<UserModel>()){}
 
     friend class Server;
 };
