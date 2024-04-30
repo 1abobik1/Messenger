@@ -58,7 +58,7 @@ std::string MessagerHandler::ProcessUserStatus(WebSocketUser* web_socket_data, b
 
 void MessagerHandler::ProcessSetName(web_socket* WS, json parsed, WebSocketUser* data)
 {
-	data->name_ = std::move(parsed[NAME]);
+	data->name_ = parsed[NAME];
 }
 
 void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed, std::uint64_t user_id)

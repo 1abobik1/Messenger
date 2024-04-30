@@ -15,7 +15,8 @@ set(SOURCES
     "source/DataBase.cpp"
     "bcrypt-cpp/src/bcrypt.cpp"
     "bcrypt-cpp/src/blowfish.cpp"
-	"source/UserData.cpp"
+	"source/UserModel.cpp"
+    "source/WebSocketUser.cpp"
 )
 
 # Добавление заголовочных файлов
@@ -29,7 +30,8 @@ set(HEADERS
     "bcrypt-cpp/include/bcrypt.h"
     "bcrypt-cpp/src/node_blf.h"
     "bcrypt-cpp/src/openbsd.h"
-    "header/UserData.h"
+    "header/UserModel.h"
+    "header/WebSocketUser.h"
 )
 
 # Пути к заголовочным файлам uwebsockets и nlohmann-json
