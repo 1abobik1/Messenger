@@ -4,21 +4,21 @@
 #include <cstdint>
 
 
-class UserData
+class UserModel
 {
 private:
-    uint64_t user_id_;
-    std::string name_ = "NO_NAME";
+    std::uint64_t user_id_;
+    std::string name_;
     std::string password_;
     std::string email_;
 
 public:
-    UserData() = default;
+    UserModel() = default;
 
-	UserData(const uint64_t user_id, std::string name,std::string password,std::string email)
+	UserModel(const uint64_t user_id, std::string name,std::string password,std::string email)
         : user_id_(user_id), name_(std::move(name)), password_(std::move(password)), email_(std::move(email)) {}
 
-    uint64_t get_id() const;
+    std::uint64_t get_id() const;
     std::string get_name() const;
     std::string get_password() const;
     std::string get_email() const;

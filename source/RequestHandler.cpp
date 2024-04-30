@@ -26,21 +26,21 @@ void RequestHandler::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest
 				json user_data_json = json::parse(std::move(*body));
 
 				// Retrieving data from a request
-				UserData_->set_email(std::move(user_data_json["email"]));
-				UserData_->set_password(std::move(user_data_json["pswd"]));
-				UserData_->set_name(std::move(user_data_json["user_name"]));
+				user_model_->set_email(std::move(user_data_json["email"]));
+				user_model_->set_password(std::move(user_data_json["pswd"]));
+				user_model_->set_name(std::move(user_data_json["user_name"]));
 
-				std::cout << "Received data in signup: " << UserData_->get_name() << ' ' << UserData_->get_email() << ' ' << UserData_->get_password() << '\n';
+				std::cout << "Received data in signup: " << user_model_->get_name() << ' ' << user_model_->get_email() << ' ' << user_model_->get_password() << '\n';
 
 				try {
-					if (Database::getInstance()->CheckEmailExists(UserData_->get_email()))
+					if (Database::getInstance()->CheckEmailExists(user_model_->get_email()))
 					{
 						throw std::exception("User with this email already exists");
 					}
 					else
 					{
 						// save data in database
-						Database::getInstance()->InsertUsers(UserData_->get_name(), UserData_->get_email(), UserData_->get_password());
+						Database::getInstance()->InsertUsers(user_model_->get_name(), user_model_->get_email(), user_model_->get_password());
 						res->writeStatus("200 OK");
 						res->end("Signup successful!");
 						std::cout << "Signup successful!" << '\n';
@@ -88,14 +88,14 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest*
 				json user_data_json = json::parse(std::move(*body));
 
 				// Retrieving data from a request
-				UserData_->set_email(std::move(user_data_json["email"]));
-				UserData_->set_password(std::move(user_data_json["pswd"]));
+				user_model_->set_email(std::move(user_data_json["email"]));
+				user_model_->set_password(std::move(user_data_json["pswd"]));
 
-				std::cout << "Received data in login:  " << Database::getInstance()->GetUserIdByEmail(UserData_->get_email()) << ' ' << UserData_->get_email() << ' ' << UserData_->get_password() << '\n';
+				std::cout << "Received data in login:  " << Database::getInstance()->GetUserIdByEmail(user_model_->get_email()) << ' ' << user_model_->get_email() << ' ' << user_model_->get_password() << '\n';
 				try {
-					if (Database::getInstance()->CheckEmailExists(UserData_->get_email()))
+					if (Database::getInstance()->CheckEmailExists(user_model_->get_email()))
 					{
-						if (bcrypt::validatePassword(UserData_->get_password(), /*hash-*/Database::getInstance()->GetPasswordByEmail(UserData_->get_email())))
+						if (bcrypt::validatePassword(user_model_->get_password(), /*hash-*/Database::getInstance()->GetPasswordByEmail(user_model_->get_email())))
 						{
 							res->writeStatus("200 OK");
 							res->end("LogIn successful!");
@@ -191,4 +191,7 @@ void RequestHandler::HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpReq
 		});
 }
 
-
+UserModel* RequestHandler::getUserModel() const
+{
+	return user_model_.get();
+}

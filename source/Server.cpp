@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "../header/Server.h"
-#include "../header/UserData.h"
+#include "../header/UserModel.h"
 
 #include<uwebsockets/App.h>
 
@@ -27,21 +27,21 @@ void Server::run()
 			request_handler_->HandleSearchUser(res, req);
 		})
 
-		.ws<UserData>("/*",{
+		.ws<WebSocketUser>("/*",{
 		.compression = uWS::SHARED_COMPRESSOR,
 		.maxPayloadLength = 10 * 1024,
 		.idleTimeout = 666,
 		.maxBackpressure = 1 * 1024 * 1024,
 
-		.open = [this](auto* ws){
+		.open = [&](auto* ws){
 			  messager_handler_->ConnectedUser(ws);
 		},
 
-		.message = [this](auto* ws, std::string_view message, uWS::OpCode){
+		.message = [&](auto* ws, std::string_view message, uWS::OpCode){
 			 messager_handler_->ProcessMessage(ws,message);
 		},
 
-		.close = [this](auto* ws, int code, std::string_view message){
+		.close = [&](auto* ws, int code, std::string_view message){
 			messager_handler_->DisconnectedUser(ws,code,message);
 		}
 
