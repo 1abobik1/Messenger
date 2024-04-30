@@ -8,7 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Добавление исходных файлов
 set(SOURCES
     "main.cpp"
-    "source/FileSender.cpp"
     "source/Server.cpp"
     "source/MessagerHandler.cpp"
     "source/RequestHandler.cpp"
@@ -23,7 +22,6 @@ set(SOURCES
 set(HEADERS
     "header/CommonConst.h"
     "header/Server.h"
-    "header/FileSender.h"
     "header/MessagerHandler.h"
     "header/RequestHandler.h"
     "header/DataBase.h"
