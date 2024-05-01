@@ -2,16 +2,25 @@ import './App.css';
 import Client from "./components/Client";
 import SignUpLogin from "./components/SignUpLogin";
 import {Route, Routes} from "react-router-dom";
+import RequireAuth from "./auth/RequireAuth";
+import {AuthProvider} from "./auth/AuthProvider";
+import NotFound from "./components/NotFound";
 
 
 function App() {
   return (
     <div className="App">
-      <Routes>
-        <Route path="/client" element={<Client/>}/>
-        <Route path="/" element={<SignUpLogin/>}/>
-      </Routes>
-
+      <AuthProvider>
+        <Routes>
+          <Route path="/client" element={
+            <RequireAuth>
+              <Client/>
+            </RequireAuth>
+          }/>
+          <Route path="/" element={<SignUpLogin/>}/>
+          <Route path="*" element={<NotFound/>}/>
+        </Routes>
+      </AuthProvider>
     </div>
   );
 }
