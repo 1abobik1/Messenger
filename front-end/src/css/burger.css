@@ -14,3 +14,7 @@
     display: block;
   }
 }
+.no-users-found {
+  font-size: 0.88rem; 
+  color: red; 
+}

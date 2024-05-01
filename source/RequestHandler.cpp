@@ -169,18 +169,27 @@ void RequestHandler::HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpReq
 			body->append(chunk.data(), chunk.length());
 
 			if (isFin && !*isAborted) {
-				json json_user_email = json::parse(std::move(*body));
-				const std::string email = std::move(json_user_email["email"]);
+				json json_user_data = json::parse(std::move(*body));
+				const std::string query = std::move(json_user_data["query"]);
 
-				std::cout << "searching email.. " << email << '\n';
+				std::cout << "searching user.. " << query << '\n';
 
-				if (Database::getInstance()->CheckEmailExists(email)) {
-					auto user_name = Database::getInstance()->FindUserByEmail(email);
-					res->end(json({ {"username", user_name} }).dump());
-					std::cout << "send: " << json({ {"username", user_name} }).dump() << '\n';
+				if (auto user_by_email = Database::getInstance()->FindUserByEmail(query);  user_by_email.empty()) 
+				{
+					if(const json user_by_name= Database::getInstance()->FindUserByName(query);  !user_by_name.empty())
+					{
+						res->end(json({ {"user_by_name", user_by_name} }).dump());
+						std::cout << "send: " << json({ {"user_by_name", user_by_name} }).dump() << '\n';
+					}
+					else
+					{
+						res->end(json({ {"error", "User not found"} }).dump());
+					}
 				}
-				else {
-					res->end(json({ {"error", "User not found"} }).dump());
+				else
+				{
+					res->end(json({ {"user_by_email", user_by_email} }).dump());
+					std::cout << "send: " << json({ {"user_by_email", user_by_email} }).dump() << '\n';
 				}
 			}
 		}
@@ -190,6 +199,7 @@ void RequestHandler::HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpReq
 		*isAborted = true;
 		});
 }
+
 
 UserModel* RequestHandler::getUserModel() const
 {

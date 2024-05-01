@@ -18,7 +18,6 @@ private:
 	void HandledDisplayUsers(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
 	void HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
-
 public:
 	UserModel* getUserModel() const;
 

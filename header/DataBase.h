@@ -60,4 +60,6 @@ public:
     json GetAllUsersNamesInJson() const;
 
     std::string FindUserByEmail(const std::string& name) const;
+
+    json FindUserByName(const std::string& name);
 };

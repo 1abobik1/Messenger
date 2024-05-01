@@ -1,11 +1,9 @@
 cmake_minimum_required(VERSION 3.25)
 project(ChatServer)
 
-# Установка стандарта языка
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Добавление исходных файлов
 set(SOURCES
     "main.cpp"
     "source/Server.cpp"
@@ -18,7 +16,6 @@ set(SOURCES
     "source/WebSocketUser.cpp"
 )
 
-# Добавление заголовочных файлов
 set(HEADERS
     "header/CommonConst.h"
     "header/Server.h"
@@ -36,26 +33,22 @@ set(HEADERS
 set(UWEBSOCKETS_INCLUDE_DIRS "C:/vcpkg/vcpkg-master/installed/x64-windows/include")
 set(NLOHMANN_JSON_INCLUDE_DIRS "C:/vcpkg/vcpkg-master/installed/x64-windows/include")
 
-# Найдем uwebsockets и установим пути к его заголовочным файлам
 if (UWEBSOCKETS_INCLUDE_DIRS)
     message("Found uwebsockets: ${UWEBSOCKETS_INCLUDE_DIRS}")
     include_directories(${UWEBSOCKETS_INCLUDE_DIRS})
 endif()
 
-# Добавим путь к заголовочным файлам nlohmann-json
 if (NLOHMANN_JSON_INCLUDE_DIRS)
     message("Found nlohmann_json: ${NLOHMANN_JSON_INCLUDE_DIRS}")
     include_directories(${NLOHMANN_JSON_INCLUDE_DIRS})
 endif()
 
-# Найдем libpq (PostgreSQL) и подключим его
 find_package(PostgreSQL REQUIRED)
 if (PostgreSQL_FOUND)
     message("Found PostgreSQL")
     include_directories(${PostgreSQL_INCLUDE_DIRS})
 endif()
 
-# Добавление исполняемого файла
 add_executable(ChatServer ${SOURCES} ${HEADERS})
 
 if (PostgreSQL_FOUND)

@@ -232,7 +232,7 @@ std::string Database::FindUserByEmail(const std::string& email) const {
 
     if (PQntuples(res) == 0) {
         PQclear(res);
-        return "User not found";
+        return "";
     }
 
     std::string username = PQgetvalue(res, 0, 0);
@@ -240,3 +240,38 @@ std::string Database::FindUserByEmail(const std::string& email) const {
 
     return username;
 }
+
+json Database::FindUserByName(const std::string& name)
+{
+    json usersJson;
+
+    const std::string query = "SELECT username FROM users WHERE username = $1";
+    const char* param_values[1] = { name.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        return usersJson;
+    }
+
+    if (PQntuples(res) == 0) {
+        PQclear(res);
+        return usersJson;
+    }
+
+    for (int i = 0; i < PQntuples(res); ++i) {
+        usersJson.push_back(PQgetvalue(res, i, 0));
+    }
+
+    PQclear(res);
+
+    return usersJson;
+}
+
