@@ -5,19 +5,22 @@ import { useNavigate } from "react-router-dom";
 
 const BurgerMenu = ({ active, setActive }) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResult, setSearchResult] = useState([]);
+    const [searchResult, setSearchResult] = useState(['krasava','legenda krasava','aye','lox_pidor','legenda','legenda','legenda','legenda']);
     const [errorMessage, setErrorMessage] = useState('');
     const [searching, setSearching] = useState(false);
-    const [searchPerformed, setSearchPerformed] = useState(false); 
+    const [searchPerformed, setSearchPerformed] = useState(false);
     const { signout } = useAuth();
     const navigate = useNavigate();
+    const filteredUsers = searchResult.filter(user=>{
+      return user.toLowerCase().includes(searchQuery.toLowerCase())
+    })
 
     const handleSearch = async () => {
         try {
             if (!searchQuery.trim()) {
                 return;
             }
-            setSearchPerformed(true); 
+            setSearchPerformed(true);
             setSearching(true);
             const response = await fetch('http://localhost:9000/client/SearchUser', {
                 method: 'POST',
@@ -79,8 +82,8 @@ const BurgerMenu = ({ active, setActive }) => {
                         <div className="flex flex-row items-center justify-between text-xs">
                             <span className={`font-bold ${searchPerformed && searchResult.length === 0 ? 'no-users-found' : 'invisible'}`}>{searchResult.length > 0 ? `Users (${searchResult.length})` : 'No users found'}</span>
                         </div>
-                        <div className="flex flex-col space-y-1 mt-4 -mx-2 min-h-10 overflow-y-auto">
-                            {searchResult.map((user, index) => (
+                        <div className="flex flex-col space-y-1 mt-4 mx-2 max-h-72 overflow-y-auto scrollbar">
+                            {filteredUsers.map((user, index) => (
                                 <button
                                     key={index}
                                     className="flex flex-row items-center hover:bg-gray-100 rounded-xl p-2"
