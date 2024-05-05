@@ -5,6 +5,8 @@ import {Route, Routes} from "react-router-dom";
 import RequireAuth from "./auth/RequireAuth";
 import {AuthProvider} from "./auth/AuthProvider";
 import NotFound from "./components/NotFound";
+import ClientID from "./components/ClientId";
+import ClientId from "./components/ClientId";
 
 
 function App() {
@@ -15,6 +17,11 @@ function App() {
           <Route path="/client" element={
             <RequireAuth>
               <Client/>
+            </RequireAuth>
+          }/>
+          <Route path="/client/:id" element={
+            <RequireAuth>
+              <ClientId/>
             </RequireAuth>
           }/>
           <Route path="/" element={<SignUpLogin/>}/>

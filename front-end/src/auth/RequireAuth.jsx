@@ -7,7 +7,7 @@ const RequireAuth = ({children}) => {
   const {user} = useAuth();
 
   if (!user){
-    return <Navigate to='/' state={{from: location}} replace={true}/>
+    // return <Navigate to='/' state={{from: location}} replace={true}/>
   }
   return children;
 };

@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import BurgerMenu from "./BurgerMenu";
-import SendForm from "./SendForm";
+import WhoToWrite from "./WhoToWrite";
 
 const Client = () => {
-    const [menuActive, setMenuActive] = useState(false);
-    const [socket, setSocket] = useState(null);
-
-    useEffect(() => {
-        const ws = new WebSocket("ws://localhost:9000/");
-        setSocket(ws);
-
-        return () => {
-            ws.close();
-        };
-    }, []);
+    const [menuActive, setMenuActive] = useState(true);
 
     return (
         <div className="flex h-screen antialiased text-gray-800 w-screen">
@@ -24,7 +14,7 @@ const Client = () => {
                     </svg>
                 </button>
                 <BurgerMenu active={menuActive} setActive={setMenuActive} />
-                {socket && <SendForm active={menuActive} setActive={setMenuActive} socket={socket} />}
+                <WhoToWrite active={menuActive} setActive={setMenuActive}/>
             </div>
         </div>
     );
