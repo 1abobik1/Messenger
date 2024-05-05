@@ -133,32 +133,31 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest*
 		});
 }
 
-void RequestHandler::HandledDisplayUsers(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
-{
-	res->writeHeader("Access-Control-Allow-Origin", "*");
+//void RequestHandler::HandledDisplayUsers(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
+//{
+//	res->writeHeader("Access-Control-Allow-Origin", "*");
+//
+//	auto isAborted = std::make_shared<bool>(false);
+//
+//	std::cout << "HandledDisplayUsers working.." << '\n';
+//
+//	res->onData([res, isAborted](std::string_view chunk, bool isFin) mutable {
+//		if (!chunk.empty()) {
+//			if (isFin && !*isAborted) {
+//
+//				const json display_users = Database::getInstance()->GetAllUsersNamesInJson();
+//				res->end(display_users.dump()); //conversion to string 
+//				std::cout << "send: " << display_users.dump();
+//			}
+//		}
+//		});
+//
+//	res->onAborted([&isAborted]() {
+//		*isAborted = true;
+//		});
+//}
 
-	auto isAborted = std::make_shared<bool>(false);
-
-	std::cout << "HandledDisplayUsers working.." << '\n';
-
-	res->onData([res, isAborted](std::string_view chunk, bool isFin) mutable {
-		if (!chunk.empty()) {
-			if (isFin && !*isAborted) {
-
-				const json display_users = Database::getInstance()->GetAllUsersNamesInJson();
-				res->end(display_users.dump()); //conversion to string 
-				std::cout << "send: " << display_users.dump();
-			}
-		}
-		});
-
-	res->onAborted([&isAborted]() {
-		*isAborted = true;
-		});
-}
-
-void RequestHandler::HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
-{
+void RequestHandler::HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpRequest* req) {
 	res->writeHeader("Access-Control-Allow-Origin", "*");
 
 	auto isAborted = std::make_shared<bool>(false);
@@ -172,24 +171,18 @@ void RequestHandler::HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpReq
 				json json_user_data = json::parse(std::move(*body));
 				const std::string query = std::move(json_user_data["query"]);
 
-				std::cout << "searching user.. " << query << '\n';
+				std::cout << "Searching user.. " << query << '\n';
 
-				if (auto user_by_email = Database::getInstance()->FindUserByEmail(query);  user_by_email.empty()) 
-				{
-					if(const json user_by_name= Database::getInstance()->FindUserByName(query);  !user_by_name.empty())
-					{
-						res->end(json({ {"user_by_name", user_by_name} }).dump());
-						std::cout << "send: " << json({ {"user_by_name", user_by_name} }).dump() << '\n';
-					}
-					else
-					{
-						res->end(json({ {"error", "User not found"} }).dump());
-					}
+				auto user = Database::getInstance()->FindUserByEmail(query);
+				if (!user.empty()) {
+					uint64_t user_id = Database::getInstance()->GetUserIdByEmail(query);
+					
+					res->end(json({ {"user_by_email", user}, {"user_id", user_id} }).dump());
+
+					std::cout << json({ {"user_by_email", user}, {"user_id", user_id} }) << '\n';
 				}
-				else
-				{
-					res->end(json({ {"user_by_email", user_by_email} }).dump());
-					std::cout << "send: " << json({ {"user_by_email", user_by_email} }).dump() << '\n';
+				else {
+					res->end(json({ {"error", "User not found"} }).dump());
 				}
 			}
 		}
@@ -199,6 +192,7 @@ void RequestHandler::HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpReq
 		*isAborted = true;
 		});
 }
+
 
 
 UserModel* RequestHandler::getUserModel() const

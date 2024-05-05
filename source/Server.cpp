@@ -20,8 +20,8 @@ void Server::run()
 		}).post("/login", [&](auto* res, auto* req){
 			request_handler_->HandleLogIn(res, req);
 
-		}).post("/client/DisplayUsers", [&](auto* res, auto* req) {
-			request_handler_->HandledDisplayUsers(res, req);
+		/*}).post("/client/DisplayUsers", [&](auto* res, auto* req) {
+			request_handler_->HandledDisplayUsers(res, req);*/
 
 		}).post("/client/SearchUser", [&](auto* res, auto* req) {
 			request_handler_->HandleSearchUser(res, req);
@@ -58,10 +58,10 @@ void Server::run()
 		.listen(this->port_, [&](const auto* listenSocket)
 		{
 			if (listenSocket) {
-				//std::cout << "Listening on port 9000 thread: "<< std::this_thread::get_id() << '\n';
+				std::cout << "Server is running" << '\n';
 			}
 			else {
-				std::cout << "Failed to load certificates or bind to port." << '\n';
+				std::cout << "Server Failed" << '\n';
 			}
 		}).run();
 }

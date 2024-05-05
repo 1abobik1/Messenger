@@ -5,7 +5,8 @@
 
 struct WebSocketUser
 {
-    std::uint64_t id_ = 404;
-    std::string name_ = "example";
-    std::string email_ = "example";
+    std::string email_sender_id_;
+    std::uint64_t receiver_id_;
+    std::uint64_t sender_id_;
+    std::string message_;
 };

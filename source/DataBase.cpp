@@ -56,6 +56,31 @@ void Database::InsertUsers(const std::string& user_name, const std::string& emai
     PQclear(res);
 }
 
+bool Database::CheckUserIdExists(const uint64_t user_id) const
+{
+    const std::string query = "SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)";
+    const std::string user_id_str = std::to_string(user_id);
+    const char* param_values[1] = { user_id_str.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        return false;
+    }
+
+    const bool exists = PQgetvalue(res, 0, 0)[0] == 't'; // 't' == true
+
+    PQclear(res);
+    return exists;
+}
+
 bool Database::CheckEmailExists(const std::string& email) const
 {
     const std::string query = "SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)";
@@ -162,7 +187,7 @@ std::string Database::GetSentAt(const int message_id) const {
     return sent_at;
 }
 
-int64_t Database::GetUserIdByEmail(const std::string& email) const {
+uint64_t Database::GetUserIdByEmail(const std::string& email) const {
     const std::string query = "SELECT id FROM users WHERE email = $1";
     const char* param_values[1] = { email.c_str() };
 
@@ -274,4 +299,5 @@ json Database::FindUserByName(const std::string& name)
 
     return usersJson;
 }
+
 

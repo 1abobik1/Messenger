@@ -15,7 +15,7 @@ private:
 
 	void HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
-	void HandledDisplayUsers(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
+	//void HandledDisplayUsers(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
 	void HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 public:

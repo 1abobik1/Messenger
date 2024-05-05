@@ -21,11 +21,11 @@ private:
 
     std::string ProcessUserStatus(WebSocketUser* data, bool online);
 
-	void ProcessSetName(web_socket* WS, json parsed, WebSocketUser* data);
+	/*void ProcessSetName(web_socket* WS, json parsed, WebSocketUser* data);*/
 
-	void ProcessPrivateMessage(web_socket* WS, json parsed, std::uint64_t user_id);
+	void ProcessPrivateMessage(web_socket* WS, json parsed);
 
-	void ProcessPublicMessage(web_socket* WS, json parsed, std::uint64_t user_id);
+	void ProcessPublicMessage(web_socket* WS, json parsed);
 
 	void ProcessMessage(web_socket* WS, std::string_view message);
 

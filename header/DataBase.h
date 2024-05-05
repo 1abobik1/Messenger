@@ -44,10 +44,13 @@ public:
 
     static Database* getInstance();
 
+    //--- FOR THE USERS TABLE ---//
 
     void InsertUsers(const std::string& user_name, const std::string& email, const std::string& password) const;
 
-    bool CheckEmailExists(const std::string& email) const;
+    bool CheckUserIdExists(const uint64_t user_id) const;
+
+	bool CheckEmailExists(const std::string& email) const;
 
 	std::string GetPasswordByEmail(const std::string& email) const;
 
@@ -55,11 +58,15 @@ public:
 
     std::string GetSentAt(int message_id) const;
 
-    int64_t GetUserIdByEmail(const std::string& email) const;
+    uint64_t GetUserIdByEmail(const std::string& email) const;
 
     json GetAllUsersNamesInJson() const;
 
     std::string FindUserByEmail(const std::string& name) const;
 
     json FindUserByName(const std::string& name);
+
+    //--- FOR THE MESSAGES TABLE---//
+
+
 };
