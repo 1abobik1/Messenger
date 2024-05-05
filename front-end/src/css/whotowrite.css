@@ -1,0 +1,15 @@
+.message{
+  transform: translateX(0);
+  transition: all 0.2s;
+  align-items: center;
+  margin-left: 4.5rem;
+}
+.text{
+  background-color: rgb(99 102 241);
+  padding: 5px;
+  color: #FFFFFF;
+  border-radius: 8px;
+}
+.message.active{
+  transform: translateX(-17%);
+}
