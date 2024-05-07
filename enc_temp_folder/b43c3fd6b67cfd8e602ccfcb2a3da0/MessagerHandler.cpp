@@ -49,8 +49,8 @@ void MessagerHandler::ProcessPrivateMessage( web_socket* WS, json parsed)
 
 	WebSocketUser* web_socket_data = WS->getUserData();
 
-	const std::string user_msg = parsed[MESSAGE];
 	web_socket_data->receiver_id_ = parsed[RECEIVER_ID];
+	const std::string user_msg = parsed[MESSAGE];
 
 	const std::string sent_at = Database::getInstance()->InsertAndGetSentAt(web_socket_data->sender_id_, web_socket_data->receiver_id_, user_msg);
 	const std::string time_only = time_utils::ExtractTime(sent_at);
