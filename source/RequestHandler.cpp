@@ -8,7 +8,7 @@
 #include <iostream>
 
 
-void RequestHandler::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
+void RequestHandler::HandleSignUp(uWS::HttpResponse<false>* res, uWS::HttpRequest* req)
 {
 	// CORS policy
 	res->writeHeader("Access-Control-Allow-Origin", "*");
@@ -69,7 +69,7 @@ void RequestHandler::HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest
 		});
 }
 
-void RequestHandler::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
+void RequestHandler::HandleLogIn(uWS::HttpResponse<false>* res, uWS::HttpRequest* req)
 {
 	// CORS policy
 	res->writeHeader("Access-Control-Allow-Origin", "*");
@@ -157,7 +157,7 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest*
 //		});
 //}
 
-void RequestHandler::HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpRequest* req) {
+void RequestHandler::HandleSearchUser(uWS::HttpResponse<false>* res, uWS::HttpRequest* req) {
 	res->writeHeader("Access-Control-Allow-Origin", "*");
 
 	auto isAborted = std::make_shared<bool>(false);

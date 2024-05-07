@@ -13,9 +13,9 @@ namespace JsonChat
 
 	const std::string PUBLIC_MSG = "public_msg";
 
-	const std::string RECEIVER_ID = "receiver_id";
+	const std::string RECEIVER_ID = "receiver_id"; // получатель 
 
-	const std::string SENDER_ID = "sender_id";
+	const std::string SENDER_ID = "sender_id"; // отправитель
 
 	const std::string SET_NAME = "set_name";
 
@@ -24,6 +24,8 @@ namespace JsonChat
 	const std::string STATUS = "status";
 
 	const std::string ONLINE = "online";
+
+	const std::string SENT_AT = "sent_at";
 }
 
 namespace PathDB

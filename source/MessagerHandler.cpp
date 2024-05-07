@@ -8,6 +8,14 @@
 
 using namespace JsonChat;
 
+std::string time_utils::ExtractTime(const std::string& sent_at)
+{
+	if (const size_t space_pos = sent_at.find(' '); space_pos != std::string::npos && space_pos + 1 < sent_at.size()) {
+		return sent_at.substr(space_pos + 1, 5);
+	}
+
+	return "";
+}
 
 void MessagerHandler::ConnectedUser(web_socket* WS) {
 	//debugging code
@@ -29,67 +37,35 @@ void MessagerHandler::ConnectedUser(web_socket* WS) {
 		std::cout << errorMessage;
 	}
 
-	WS->subscribe("userN" + std::to_string(web_socket_data->sender_id_));// sending a message
+	WS->subscribe("userN");
 	std::cout << '\n';
 	std::cout << "ConnectedUser__END.." << '\n';
 }
 
 
-std::string MessagerHandler::ProcessUserStatus(WebSocketUser* web_socket_data, bool online)
+void MessagerHandler::ProcessPrivateMessage( web_socket* WS, json parsed)
 {
-	json response;
-	response[COMMAND] = STATUS;
-	response[RECEIVER_ID] = web_socket_data->sender_id_;
-	response[ONLINE] = online;
-	return response.dump();
-}
-
-void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed)
-{
-	//WebSocketUser* web_socket_data = WS->getUserData();
-
-	//const uint64_t received_id = parsed[RECEIVER_ID]; // здесь будет скорее всего метод, в котором пользователь получает receiver_id(то есть id к кому хочет написать), 
-	//std::string user_msg = parsed[MESSAGE];
-	//json response;
-
-	//response[COMMAND] = PRIVATE_MSG;
-	//response[MESSAGE] = user_msg;
-	//response[SENDER_ID] = web_socket_data->sender_id_;
-
-	//// sending a message
-	//std::string response_str = response.dump();
-	//WS->publish("userN" + std::to_string(received_id), response_str);
-
-	//// Отправка подтверждения отправки сообщения отправителю
-	//response["status"] = "sent";
-	//WS->publish("userN" + std::to_string(web_socket_data->sender_id_), response.dump());
+	std::cout << "start ProcessPrivateMessage.." << '\n';
 
 	WebSocketUser* web_socket_data = WS->getUserData();
 
-	const uint64_t received_id = parsed[RECEIVER_ID];
-	std::string user_msg = parsed[MESSAGE];
-	json response;
+	web_socket_data->receiver_id_ = parsed[RECEIVER_ID];
+	const std::string user_msg = parsed[MESSAGE];
 
+	const std::string sent_at = Database::getInstance()->InsertAndGetSentAt(web_socket_data->sender_id_, web_socket_data->receiver_id_, user_msg);
+	const std::string time_only = time_utils::ExtractTime(sent_at);
+
+	std::cout << "time_only  " << time_only << '\n';
+
+	json response;
 	response[COMMAND] = PRIVATE_MSG;
+	response[SENDER_ID] = web_socket_data->receiver_id_;
 	response[MESSAGE] = user_msg;
-	response[SENDER_ID] = web_socket_data->sender_id_;
+	response[SENT_AT] = time_only;
 
-	WS->publish("userN" + std::to_string(received_id), response.dump()); // sending a message
-}
+	WS->publish("userN", response.dump()); // sending a message
 
-void MessagerHandler::ProcessPublicMessage(web_socket* WS, json parsed)
-{
-	WebSocketUser* web_socket_data = WS->getUserData();
-
-	std::string user_msg = parsed[MESSAGE];
-
-	json response; 
-
-	response[COMMAND] = PUBLIC_MSG;
-	response[MESSAGE] = user_msg;
-	response[SENDER_ID] = web_socket_data->sender_id_;
-
-	WS->publish("public_chat", response.dump()); // sending a message
+	std::cout << "end ProcessPrivateMessage.." << '\n';
 }
 
 void MessagerHandler::ProcessMessage(web_socket* WS, std::string_view message)
@@ -101,10 +77,6 @@ void MessagerHandler::ProcessMessage(web_socket* WS, std::string_view message)
 
 	if (parsed[COMMAND] == PRIVATE_MSG) {
 		ProcessPrivateMessage(WS, parsed);
-	}
-
-	if (parsed[COMMAND] == PUBLIC_MSG) {
-		ProcessPublicMessage(WS, parsed);
 	}
 }
 

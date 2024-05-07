@@ -38,6 +38,7 @@ Database* Database::getInstance() {
     return instance_;
 }
 
+//--- FOR THE USERS TABLE ---//
 
 void Database::InsertUsers(const std::string& user_name, const std::string& email, const std::string& password) const
 {
@@ -127,64 +128,6 @@ std::string Database::GetPasswordByEmail(const std::string& email) const
 
     PQclear(res);
     return password;
-}
-
-void Database::InsertMessage(const int sender_id, const int receiver_id, const std::string& message_text) const {
-
-    const std::string query = "INSERT INTO messages (sender_id, receiver_id, message_text, sent_at) VALUES ($1, $2, $3, NOW())";
-
-    const std::string sender_id_str = std::to_string(sender_id);
-    const std::string receiver_id_str = std::to_string(receiver_id);
-
-    const char* param_values[3] = { sender_id_str.c_str(), receiver_id_str.c_str(), message_text.c_str() };
-
-    PGresult* res = PQexecParams(connection_,
-        query.c_str(),
-        3,
-        NULL,
-        param_values,
-        NULL, NULL,
-        0);
-
-    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-        PQclear(res);
-        throw std::runtime_error("Failed to insert message");
-    }
-
-    PQclear(res);
-}
-
-std::string Database::GetSentAt(const int message_id) const {
-    const std::string query = "SELECT sent_at FROM messages WHERE message_id = $1";
-
-    const std::string message_id_str = std::to_string(message_id);
-
-    const char* param_values[1] = {
-        message_id_str.c_str()
-    };
-
-    PGresult* res = PQexecParams(connection_,
-        query.c_str(),
-        1,
-        NULL,
-        param_values,
-        NULL, NULL,
-        0);
-
-    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        PQclear(res);
-        throw std::runtime_error("Failed to fetch sent time");
-    }
-
-    if (PQntuples(res) == 0) {
-        PQclear(res);
-        throw std::runtime_error("No matching message found");
-    }
-
-    std::string sent_at = PQgetvalue(res, 0, 0);
-    PQclear(res);
-
-    return sent_at;
 }
 
 uint64_t Database::GetUserIdByEmail(const std::string& email) const {
@@ -300,4 +243,61 @@ json Database::FindUserByName(const std::string& name)
     return usersJson;
 }
 
+//--- FOR THE MESSAGES TABLE---//
 
+void Database::InsertMessage(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const {
+
+    const std::string query = "INSERT INTO messages (sender_id, receiver_id, message_text, sent_at) VALUES ($1, $2, $3, NOW())";
+
+    const std::string sender_id_str = std::to_string(sender_id);
+    const std::string receiver_id_str = std::to_string(receiver_id);
+
+    const char* param_values[3] = { sender_id_str.c_str(), receiver_id_str.c_str(), message_text.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        3,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        PQclear(res);
+        throw std::runtime_error("Failed to insert message");
+    }
+
+    PQclear(res);
+}
+
+std::string Database::InsertAndGetSentAt(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const {
+    const std::string query = "INSERT INTO messages (sender_id, receiver_id, message_text, sent_at) VALUES ($1, $2, $3, NOW()) RETURNING sent_at";
+
+    const std::string sender_id_str = std::to_string(sender_id);
+    const std::string receiver_id_str = std::to_string(receiver_id);
+
+    const char* param_values[3] = { sender_id_str.c_str(), receiver_id_str.c_str(), message_text.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        3,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        throw std::runtime_error("Failed to insert message or fetch sent time");
+    }
+
+    if (PQntuples(res) == 0) {
+        PQclear(res);
+        throw std::runtime_error("No sent time returned");
+    }
+
+    std::string sent_at = PQgetvalue(res, 0, 0);
+    PQclear(res);
+
+    return sent_at;
+}

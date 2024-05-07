@@ -10,22 +10,20 @@
 
 using json = nlohmann::json;
 
+namespace time_utils {
+	std::string ExtractTime(const std::string& sent_at);
+};
+
 class MessagerHandler
 {
 private:
 	RequestHandler* request_handler_;
 
-	typedef uWS::WebSocket<true, true, WebSocketUser> web_socket;
+	typedef uWS::WebSocket<false, true, WebSocketUser> web_socket;
 
     void ConnectedUser(web_socket* WS);
 
-    std::string ProcessUserStatus(WebSocketUser* data, bool online);
-
-	/*void ProcessSetName(web_socket* WS, json parsed, WebSocketUser* data);*/
-
 	void ProcessPrivateMessage(web_socket* WS, json parsed);
-
-	void ProcessPublicMessage(web_socket* WS, json parsed);
 
 	void ProcessMessage(web_socket* WS, std::string_view message);
 

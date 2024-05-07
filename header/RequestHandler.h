@@ -11,13 +11,13 @@ class RequestHandler{
 private:
 	std::unique_ptr<UserModel> user_model_;
 
-	void HandleSignUp(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
+	void HandleSignUp(uWS::HttpResponse<false>* res, uWS::HttpRequest* req);
 
-	void HandleLogIn(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
+	void HandleLogIn(uWS::HttpResponse<false>* res, uWS::HttpRequest* req);
 
 	//void HandledDisplayUsers(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
 
-	void HandleSearchUser(uWS::HttpResponse<true>* res, uWS::HttpRequest* req);
+	void HandleSearchUser(uWS::HttpResponse<false>* res, uWS::HttpRequest* req);
 public:
 	UserModel* getUserModel() const;
 

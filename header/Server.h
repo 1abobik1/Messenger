@@ -7,7 +7,7 @@
 class Server
 {
 private:
-	std::uint16_t port_ = 0;
+	std::uint16_t port_;
 
 	std::unique_ptr<RequestHandler> request_handler_;
 	std::unique_ptr<MessagerHandler> messager_handler_;

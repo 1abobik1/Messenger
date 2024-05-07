@@ -9,11 +9,7 @@
 
 void Server::run()
 {
-	uWS::SSLApp({
-	.key_file_name = "../misc/key.pem",
-	.cert_file_name = "../misc/cert.pem",
-	.passphrase = "dima15042004"
-	})
+	uWS::App()
 		.post("/signup", [&](auto* res, auto* req) {
 			request_handler_->HandleSignUp(res, req);
 
@@ -28,10 +24,7 @@ void Server::run()
 		})
 
 		.ws<WebSocketUser>("/*",{
-		.compression = uWS::SHARED_COMPRESSOR,
-		.maxPayloadLength = 10 * 1024,
 		.idleTimeout = 666,
-		.maxBackpressure = 1 * 1024 * 1024,
 
 		.open = [&](auto* ws){
 			  messager_handler_->ConnectedUser(ws);
@@ -52,7 +45,6 @@ void Server::run()
 			res->writeHeader("Access-Control-Allow-Origin", "*");
 			res->writeHeader("Access-Control-Allow-Headers", "Content-Type");
 			res->writeHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-			res->writeStatus("200 OK");
 			res->end();
 		})
 		.listen(this->port_, [&](const auto* listenSocket)

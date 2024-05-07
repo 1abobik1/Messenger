@@ -54,11 +54,7 @@ public:
 
 	std::string GetPasswordByEmail(const std::string& email) const;
 
-    void InsertMessage(int sender_id, int receiver_id, const std::string& message_text) const;
-
-    std::string GetSentAt(int message_id) const;
-
-    uint64_t GetUserIdByEmail(const std::string& email) const;
+	uint64_t GetUserIdByEmail(const std::string& email) const;
 
     json GetAllUsersNamesInJson() const;
 
@@ -68,5 +64,8 @@ public:
 
     //--- FOR THE MESSAGES TABLE---//
 
+    void InsertMessage(const uint64_t sender_id,const uint64_t receiver_id, const std::string& message_text) const;
+
+    std::string InsertAndGetSentAt(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const;
 
 };
