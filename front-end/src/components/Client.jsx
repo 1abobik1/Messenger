@@ -10,13 +10,16 @@ const Client = () => {
   const {id} = useParams();
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:9000/');
-    setSocket(ws);
+      const ws = new WebSocket('ws://localhost:9000/');
+      setSocket(ws);
 
-    return () => {
-      ws.close();
-    };
+      return () => {
+          if (ws && ws.readyState === WebSocket.OPEN) {
+              ws.close();
+          }
+      };
   }, []);
+
   return (
     <SocketContext.Provider value={socket}>
       <div className="flex h-screen antialiased text-gray-800 w-screen">

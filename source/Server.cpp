@@ -16,44 +16,50 @@ void Server::run()
 		}).post("/login", [&](auto* res, auto* req){
 			request_handler_->HandleLogIn(res, req);
 
-		/*}).post("/client/DisplayUsers", [&](auto* res, auto* req) {
-			request_handler_->HandledDisplayUsers(res, req);*/
+		}).get("/*", [&](auto* res, auto* req) {
+			res->end("Server get method");
 
 		}).post("/client/SearchUser", [&](auto* res, auto* req) {
 			request_handler_->HandleSearchUser(res, req);
 		})
 
 		.ws<WebSocketUser>("/*",{
-		.idleTimeout = 666,
+			.maxPayloadLength = 16 * 1024,
+			.idleTimeout = 120,
+			.resetIdleTimeoutOnSend = true,
 
-		.open = [&](auto* ws){
-			  messager_handler_->ConnectedUser(ws);
-		},
+			.open = [&](auto* ws){
+				  messager_handler_->ConnectedUser(ws);
+			},
 
-		.message = [&](auto* ws, std::string_view message, uWS::OpCode){
-			 messager_handler_->ProcessMessage(ws,message);
-		},
+			.message = [&](auto* ws, std::string_view message, uWS::OpCode){
+				 messager_handler_->ProcessMessage(ws,message);
+			},
 
-		.close = [&](auto* ws, int code, std::string_view message){
-			messager_handler_->DisconnectedUser(ws,code,message);
-		}
+			.pong = [](auto* ws, std::string_view message) {
+				std::cout << " ---pong--- " << message << '\n';
+			},
 
-		})
-		.options("/*", [&](auto* res, auto* req) 
-		{
-			// for policy CORS and not only
-			res->writeHeader("Access-Control-Allow-Origin", "*");
-			res->writeHeader("Access-Control-Allow-Headers", "Content-Type");
-			res->writeHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-			res->end();
-		})
-		.listen(this->port_, [&](const auto* listenSocket)
-		{
-			if (listenSocket) {
-				std::cout << "Server is running" << '\n';
+			.close = [&](auto* ws, int code, std::string_view message){
+				messager_handler_->DisconnectedUser(ws,code,message);
 			}
-			else {
-				std::cout << "Server Failed" << '\n';
-			}
-		}).run();
+			
+			})
+			.options("/*", [&](auto* res, auto* req) 
+			{
+				// for policy CORS and not only
+				res->writeHeader("Access-Control-Allow-Origin", "*");
+				res->writeHeader("Access-Control-Allow-Headers", "Content-Type");
+				res->writeHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+				res->end();
+			})
+			.listen(this->port_, [&](const auto* listenSocket)
+			{
+				if (listenSocket) {
+					std::cout << "Server is running" << '\n';
+				}
+				else {
+					std::cout << "Server Failed" << '\n';
+				}
+			}).run();
 }
