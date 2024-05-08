@@ -42,7 +42,7 @@ const BurgerMenu = ({active, setActive}) => {
       }
     } catch (error) {
       console.error(error);
-      setSearchResult({});
+      setSearchResult({user_by_email: null, user_id: null});
       setErrorMessage(error.message + ' No such user exists');
     } finally {
       setSearching(false);
@@ -88,7 +88,7 @@ const BurgerMenu = ({active, setActive}) => {
           <div className="flex flex-col mt-8">
             <div className="flex flex-row items-center justify-between text-xs">
               <span
-                className={`font-bold ${searchPerformed && searchResult.length === 0 ? 'no-users-found' : 'invisible'}`}>{searchResult.length > 0 ? `Users (${searchResult.length})` : 'No users found'}</span>
+                className={`font-bold ${searchPerformed && searchResult.user_by_email === null ? 'no-users-found' : 'invisible'}`}>{searchResult.length > 0 ? `Users (${searchResult.length})` : 'No users found'}</span>
             </div>
             <div className="flex flex-col space-y-1 mt-4 -mx-2 min-h-10 overflow-y-auto">
 

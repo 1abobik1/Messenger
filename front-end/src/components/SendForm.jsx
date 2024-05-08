@@ -1,6 +1,5 @@
 // SendForm.jsx
 
-import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import '../css/form.css';
 
@@ -9,16 +8,13 @@ const SendForm = ({ active, setActive, socket, receiverId }) => {
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
-        // Подписываемся на сообщения от сервера
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
             if (data.command === 'private_msg' && data.sender_id === receiverId) {
-                // Обновляем состояние, добавляя новое сообщение в массив сообщений
                 setMessages(prevMessages => [...prevMessages, { content: data.message, timestamp: data.sent_at }]);
             }
         };
 
-        // Отписываемся от сообщений при размонтировании компонента
         return () => {
             socket.onmessage = null;
         };
@@ -32,7 +28,7 @@ const SendForm = ({ active, setActive, socket, receiverId }) => {
     }
 
     function sendMessage() {
-        if (message.trim() !== '') { 
+        if (message.trim() !== '') {
             const newMessage = { content: message, timestamp: getCurrentTime() };
             socket.send(JSON.stringify({ "command": "private_msg", "receiver_id": receiverId, "message": message }));
             setMessages([...messages, newMessage]);
@@ -88,13 +84,6 @@ const SendForm = ({ active, setActive, socket, receiverId }) => {
             </div>
         </div>
     );
-};
-
-SendForm.propTypes = {
-    active: PropTypes.bool.isRequired,
-    setActive: PropTypes.func.isRequired,
-    socket: PropTypes.object.isRequired,
-    receiverId: PropTypes.number.isRequired,
 };
 
 export default SendForm;
