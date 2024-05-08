@@ -91,7 +91,7 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<false>* res, uWS::HttpRequest
 				user_model_->set_email(std::move(user_data_json["email"]));
 				user_model_->set_password(std::move(user_data_json["pswd"]));
 
-				std::cout << "Received data in login:  " << Database::getInstance()->GetUserIdByEmail(user_model_->get_email()) << ' ' << user_model_->get_email() << ' ' << user_model_->get_password() << '\n';
+				std::cout << "Received data in login:  " << ' ' << user_model_->get_email() << ' ' << user_model_->get_password() << '\n';
 				try {
 					if (Database::getInstance()->CheckEmailExists(user_model_->get_email()))
 					{
