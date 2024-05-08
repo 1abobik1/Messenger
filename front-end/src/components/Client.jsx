@@ -1,27 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import BurgerMenu from "./BurgerMenu";
 import WhoToWrite from "./WhoToWrite";
-import {Outlet, useParams} from "react-router-dom";
-import {SocketContext} from "./SocketContext";
+import { Outlet, useParams } from "react-router-dom";
+import { SocketContext } from "./SocketContext";
 
 const Client = () => {
   const [menuActive, setMenuActive] = useState(true);
-  const [socket, setSocket] = useState(null);
-  const {id} = useParams();
+  const socketRef = useRef(null);
+  const { id } = useParams();
 
   useEffect(() => {
-      const ws = new WebSocket('ws://localhost:9000/');
-      setSocket(ws);
+
+    if (!socketRef.current) {
+      socketRef.current = new WebSocket('ws://localhost:9000/');
+
 
       return () => {
-          if (ws && ws.readyState === WebSocket.OPEN) {
-              ws.close();
-          }
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+          socketRef.current.close();
+        }
       };
+    }
   }, []);
 
   return (
-    <SocketContext.Provider value={socket}>
+    <SocketContext.Provider value={socketRef.current}>
       <div className="flex h-screen antialiased text-gray-800 w-screen">
         <div className="flex flex-row h-full w-full overflow-x-hidden bg-gray-100">
           <button className="burger m-5 h-1 w-1 z-10" onClick={() => setMenuActive(!menuActive)}>
@@ -33,7 +36,7 @@ const Client = () => {
           <BurgerMenu active={menuActive} setActive={setMenuActive}/>
           {id === undefined ?
             <WhoToWrite active={menuActive} setActive={setMenuActive}/>
-            : <Outlet context={{menuActive, setMenuActive, id, socket}}/>
+            : <Outlet context={{menuActive, setMenuActive, id, socket: socketRef.current}}/>
           }
         </div>
       </div>

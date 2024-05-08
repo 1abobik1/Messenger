@@ -8,7 +8,7 @@ const ClientId = () => {
 
     return socket ? (
         <SendForm active={menuActive} setActive={setMenuActive} socket={socket} receiverId={receiverId} />
-    ) : null;  // ћожно вернуть null или <LoadingIndicator /> если сокет еще не готов
+    ) : null;
 };
 
 export default ClientId;
