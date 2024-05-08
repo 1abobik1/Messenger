@@ -326,7 +326,7 @@ json Database::PrintClientsMessages(const uint64_t sender_id, const uint64_t rec
         message["sender_id"] = std::stoull(PQgetvalue(res, i, 0));
         message["receiver_id"] = std::stoull(PQgetvalue(res, i, 1));
         message["message_text"] = PQgetvalue(res, i, 2);
-        message["sent_at"] = time_utils::ExtractTime(PQgetvalue(res, i, 3));
+        message["sent_at"] = PQgetvalue(res, i, 3);
 
         messages.push_back(message); // Add the message JSON object to the array
     }
