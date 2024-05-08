@@ -7,20 +7,20 @@ const SendForm = ({ active, setActive, socket, receiverId }) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
 
-    useEffect(() => {
-        socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.command === 'private_msg' && data.sender_id === receiverId) {
-                setMessages(prevMessages => [...prevMessages, { content: data.message, timestamp: data.sent_at }]);
-            }
-        };
+  useEffect(() => {
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.command === "private_msg") {
+        setMessages(prevMessages => [...prevMessages, { content: data.message, timestamp: data.sent_at }]);
+      }
+    };
 
-        return () => {
-            socket.onmessage = null;
-        };
-    }, [socket, receiverId]);
+    return () => {
+      socket.onmessage = null;
+    };
+  }, [socket, receiverId]);
 
-    function getCurrentTime() {
+  function getCurrentTime() {
         const date = new Date();
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
