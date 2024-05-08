@@ -68,4 +68,5 @@ public:
 
     std::string InsertAndGetSentAt(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const;
 
+    json PrintClientsMessages(const uint64_t sender_id, const uint64_t receiver_id) const;
 };

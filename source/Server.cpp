@@ -16,8 +16,8 @@ void Server::run()
 		}).post("/login", [&](auto* res, auto* req){
 			request_handler_->HandleLogIn(res, req);
 
-		}).get("/*", [&](auto* res, auto* req) {
-			res->end("Server get method");
+		}).post("/client/PrintMessages", [&](auto* res, auto* req) {
+			request_handler_->HandleClientsMessages(res, req);
 
 		}).post("/client/SearchUser", [&](auto* res, auto* req) {
 			request_handler_->HandleSearchUser(res, req);

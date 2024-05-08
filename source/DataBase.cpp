@@ -1,4 +1,5 @@
 #include"../header/DataBase.h"
+#include"../header/TimeUtils.h"
 
 #include <mutex>
 #include <stdexcept>
@@ -162,26 +163,19 @@ json Database::GetAllUsersNamesInJson() const
 {
     json usersJson;
 
-    try
-    {
-        const std::string query = "SELECT username FROM users";
-        PGresult* res = PQexec(connection_, query.c_str());
+    const std::string query = "SELECT username FROM users";
+    PGresult* res = PQexec(connection_, query.c_str());
 
-        if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-            PQclear(res);
-            throw std::runtime_error("Failed to fetch user names");
-        }
-
-        for (int i = 0; i < PQntuples(res); ++i) {
-            usersJson.push_back(PQgetvalue(res, i, 0));
-        }
-
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         PQclear(res);
+        throw std::runtime_error("Failed to fetch user names");
     }
-    catch (const std::exception& e)
-    {
-        std::cerr << "Error fetching user names: " << e.what() << '\n';
+
+    for (int i = 0; i < PQntuples(res); ++i) {
+        usersJson.push_back(PQgetvalue(res, i, 0));
     }
+
+    PQclear(res);
 
     return usersJson;
 }
@@ -300,4 +294,44 @@ std::string Database::InsertAndGetSentAt(const uint64_t sender_id, const uint64_
     PQclear(res);
 
     return sent_at;
+}
+
+json Database::PrintClientsMessages(const uint64_t sender_id, const uint64_t receiver_id) const {
+    const std::string query = "SELECT sender_id, receiver_id, message_text, sent_at FROM messages WHERE sender_id = $1 AND receiver_id = $2 ORDER BY sent_at DESC";
+
+    const std::string sender_id_str = std::to_string(sender_id);
+    const std::string receiver_id_str = std::to_string(receiver_id);
+
+    const char* param_values[2] = { sender_id_str.c_str(), receiver_id_str.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        2,           
+        NULL,        
+        param_values,
+        NULL,     
+        NULL,     
+        0);       
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        throw std::runtime_error("Failed to retrieve messages");
+    }
+
+    const int rows = PQntuples(res);
+    json messages = json::array(); // Create a JSON array to store the messages
+
+    for (int i = 0; i < rows; ++i) {
+        json message;
+        message["sender_id"] = std::stoull(PQgetvalue(res, i, 0));
+        message["receiver_id"] = std::stoull(PQgetvalue(res, i, 1));
+        message["message_text"] = PQgetvalue(res, i, 2);
+        message["sent_at"] = time_utils::ExtractTime(PQgetvalue(res, i, 3));
+
+        messages.push_back(message); // Add the message JSON object to the array
+    }
+
+    PQclear(res);
+
+    return messages;
 }

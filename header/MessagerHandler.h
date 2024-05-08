@@ -10,10 +10,6 @@
 
 using json = nlohmann::json;
 
-namespace time_utils {
-	std::string ExtractTime(const std::string& sent_at);
-};
-
 class MessagerHandler
 {
 private:

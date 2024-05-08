@@ -10,6 +10,8 @@
 
 void RequestHandler::HandleSignUp(uWS::HttpResponse<false>* res, uWS::HttpRequest* req)
 {
+	std::cout << '\n';
+
 	// CORS policy
 	res->writeHeader("Access-Control-Allow-Origin", "*");
 
@@ -71,6 +73,8 @@ void RequestHandler::HandleSignUp(uWS::HttpResponse<false>* res, uWS::HttpReques
 
 void RequestHandler::HandleLogIn(uWS::HttpResponse<false>* res, uWS::HttpRequest* req)
 {
+	std::cout << '\n';
+
 	// CORS policy
 	res->writeHeader("Access-Control-Allow-Origin", "*");
 
@@ -133,31 +137,43 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<false>* res, uWS::HttpRequest
 		});
 }
 
-//void RequestHandler::HandledDisplayUsers(uWS::HttpResponse<true>* res, uWS::HttpRequest* req)
-//{
-//	res->writeHeader("Access-Control-Allow-Origin", "*");
-//
-//	auto isAborted = std::make_shared<bool>(false);
-//
-//	std::cout << "HandledDisplayUsers working.." << '\n';
-//
-//	res->onData([res, isAborted](std::string_view chunk, bool isFin) mutable {
-//		if (!chunk.empty()) {
-//			if (isFin && !*isAborted) {
-//
-//				const json display_users = Database::getInstance()->GetAllUsersNamesInJson();
-//				res->end(display_users.dump()); //conversion to string 
-//				std::cout << "send: " << display_users.dump();
-//			}
-//		}
-//		});
-//
-//	res->onAborted([&isAborted]() {
-//		*isAborted = true;
-//		});
-//}
+void RequestHandler::HandleClientsMessages(uWS::HttpResponse<false>* res,uWS::HttpRequest* req)
+{
+	std::cout << '\n';
+	res->writeHeader("Access-Control-Allow-Origin", "*");
+	std::cout << "HandleClientsMessages working.." << '\n';
 
-void RequestHandler::HandleSearchUser(uWS::HttpResponse<false>* res, uWS::HttpRequest* req) {
+	auto isAborted = std::make_shared<bool>(false);
+	auto body = std::make_shared<std::string>();
+
+	res->onData([res, isAborted, body](std::string_view chunk, bool isFin) mutable {
+		if (!chunk.empty()) {
+			body->append(chunk.data(), chunk.length());
+
+			if (isFin && !*isAborted) {
+				// Parse JSON from the body
+				json user_data_json = json::parse(std::move(*body));
+				json array_users_msg = json::array();
+
+				const uint64_t sender_id = std::move(user_data_json["sender_id"]);
+				const uint64_t receiver_id = std::move(user_data_json["receiver_id"]);
+
+				array_users_msg = Database::getInstance()->PrintClientsMessages(sender_id, receiver_id);
+
+				res->end(array_users_msg.dump());
+			}
+		}
+		});
+
+	res->onAborted([&isAborted]() {
+		*isAborted = true;
+		});
+}
+
+void RequestHandler::HandleSearchUser(uWS::HttpResponse<false>* res, uWS::HttpRequest* req)
+{
+	std::cout << '\n';
+
 	res->writeHeader("Access-Control-Allow-Origin", "*");
 
 	auto isAborted = std::make_shared<bool>(false);

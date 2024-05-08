@@ -5,17 +5,9 @@
 
 #include "../header/Server.h"
 #include "../header/CommonConst.h"
+#include "../header/TimeUtils.h"
 
 using namespace JsonChat;
-
-std::string time_utils::ExtractTime(const std::string& sent_at)
-{
-	if (const size_t space_pos = sent_at.find(' '); space_pos != std::string::npos && space_pos + 1 < sent_at.size()) {
-		return sent_at.substr(space_pos + 1, 5);
-	}
-
-	return "";
-}
 
 void MessagerHandler::ConnectedUser(web_socket* WS) {
 	//debugging code
