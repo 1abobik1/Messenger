@@ -6,9 +6,19 @@ const ClientId = () => {
     const { menuActive, setMenuActive, id, socket } = useOutletContext();
     const receiverId = parseInt(id);
 
-    return socket ? (
-        <SendForm active={menuActive} setActive={setMenuActive} socket={socket} receiverId={receiverId} />
-    ) : null;
+    return (
+        <div>
+            {socket ?
+                <SendForm
+                    active={menuActive}
+                    setActive={setMenuActive}
+                    socket={socket}
+                    receiverId={receiverId}
+                />
+                : null
+            }
+        </div>
+    );
 };
 
 export default ClientId;

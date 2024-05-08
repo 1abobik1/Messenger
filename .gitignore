@@ -370,3 +370,4 @@ FodyWeavers.xsd
 ChatServer.vcxproj
 ChatServer.vcxproj.filters
 Messenger.sln
+enc_temp_folder

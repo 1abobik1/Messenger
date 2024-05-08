@@ -20,7 +20,7 @@ std::string time_utils::ExtractTime(const std::string& sent_at)
 void MessagerHandler::ConnectedUser(web_socket* WS) {
 	//debugging code
 	std::cout << '\n';
-	std::cout << "ConnectedUser__Start.." << '\n' << '\n';
+	std::cout << "ConnectedUser__Start.." << '\n';
 
 	WebSocketUser* web_socket_data = WS->getUserData();
 	web_socket_data->email_sender_id_ = request_handler_->getUserModel()->get_email();
@@ -37,14 +37,14 @@ void MessagerHandler::ConnectedUser(web_socket* WS) {
 		std::cout << errorMessage;
 	}
 
-	WS->subscribe("userN");
-	std::cout << '\n';
+	WS->subscribe("userN" + std::to_string(web_socket_data->sender_id_));
 	std::cout << "ConnectedUser__END.." << '\n';
 }
 
 
 void MessagerHandler::ProcessPrivateMessage( web_socket* WS, json parsed)
 {
+	std::cout << '\n';
 	std::cout << "start ProcessPrivateMessage.." << '\n';
 
 	WebSocketUser* web_socket_data = WS->getUserData();
@@ -63,13 +63,14 @@ void MessagerHandler::ProcessPrivateMessage( web_socket* WS, json parsed)
 	response[MESSAGE] = user_msg;
 	response[SENT_AT] = time_only;
 
-	WS->publish("userN", response.dump()); // sending a message
+	WS->publish("userN" + std::to_string(web_socket_data->receiver_id_), response.dump()); // sending a message
 
 	std::cout << "end ProcessPrivateMessage.." << '\n';
 }
 
 void MessagerHandler::ProcessMessage(web_socket* WS, std::string_view message)
 {
+	std::cout << '\n';
 	WebSocketUser* web_socket_data = WS->getUserData();
 
 	std::cout << "Message from user ID: " << web_socket_data->sender_id_ << "--message: " << message << '\n';
@@ -82,6 +83,7 @@ void MessagerHandler::ProcessMessage(web_socket* WS, std::string_view message)
 
 void MessagerHandler::DisconnectedUser(web_socket* WS, int code, std::string_view message)
 {
+	std::cout << '\n';
 	WebSocketUser* web_socket_data = WS->getUserData();
 
 	std::cout << "User disconnected:  " << web_socket_data->sender_id_ <<  '\n';
