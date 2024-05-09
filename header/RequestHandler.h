@@ -15,9 +15,13 @@ private:
 
 	void HandleLogIn(uWS::HttpResponse<false>* res, uWS::HttpRequest* req);
 
-	void HandleClientsMessages(uWS::HttpResponse<false>* res, uWS::HttpRequest* req);
+	void HandlePrintClientsMessages(uWS::HttpResponse<false>* res, uWS::HttpRequest* req);
 
 	void HandleSearchUser(uWS::HttpResponse<false>* res, uWS::HttpRequest* req);
+
+	void HandleSearchUserFriends(uWS::HttpResponse<false>* res, uWS::HttpRequest* req);
+
+	void HandleAddFriend(uWS::HttpResponse<false>* res, uWS::HttpRequest* req);
 public:
 	UserModel* getUserModel() const;
 

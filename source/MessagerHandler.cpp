@@ -18,9 +18,9 @@ void MessagerHandler::ConnectedUser(web_socket* WS) {
 	web_socket_data->email_sender_id_ = request_handler_->getUserModel()->get_email();
 	std::cout << "web_socket_data->email_: " << web_socket_data->email_sender_id_ << '\n';
 
-	if (Database::getInstance()->CheckEmailExists(web_socket_data->email_sender_id_))
+	if (Database::getSingleItem()->CheckEmailExists(web_socket_data->email_sender_id_))
 	{
-		web_socket_data->sender_id_ = Database::getInstance()->GetUserIdByEmail(web_socket_data->email_sender_id_);
+		web_socket_data->sender_id_ = Database::getSingleItem()->GetUserIdByEmail(web_socket_data->email_sender_id_);
 		std::cout << "User connected ID: " << web_socket_data->sender_id_ << '\n';
 	}
 	else
@@ -44,7 +44,7 @@ void MessagerHandler::ProcessPrivateMessage( web_socket* WS, json parsed)
 	const std::string user_msg = parsed[MESSAGE];
 	web_socket_data->receiver_id_ = parsed[RECEIVER_ID];
 
-	const std::string sent_at = Database::getInstance()->InsertAndGetSentAt(web_socket_data->sender_id_, web_socket_data->receiver_id_, user_msg);
+	const std::string sent_at = Database::getSingleItem()->InsertAndGetSentAt(web_socket_data->sender_id_, web_socket_data->receiver_id_, user_msg);
 	const std::string time_only = time_utils::ExtractTime(sent_at);
 
 	std::cout << "time_only  " << time_only << '\n';

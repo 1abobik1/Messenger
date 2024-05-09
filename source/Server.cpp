@@ -17,10 +17,16 @@ void Server::run()
 			request_handler_->HandleLogIn(res, req);
 
 		}).post("/client/PrintMessages", [&](auto* res, auto* req) {
-			request_handler_->HandleClientsMessages(res, req);
+			request_handler_->HandlePrintClientsMessages(res, req);
 
 		}).post("/client/SearchUser", [&](auto* res, auto* req) {
 			request_handler_->HandleSearchUser(res, req);
+
+		}).post("/client/SearchUserFriends", [&](auto* res, auto* req) {
+			request_handler_->HandleSearchUserFriends(res, req);
+
+		}).post("/client/AddFriends", [&](auto* res, auto* req) {
+			request_handler_->HandleAddFriend(res, req); 
 		})
 
 		.ws<WebSocketUser>("/*",{

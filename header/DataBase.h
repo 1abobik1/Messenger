@@ -42,7 +42,7 @@ public:
     Database& operator=(const Database&) = delete;
     ~Database() = default;
 
-    static Database* getInstance();
+    static Database* getSingleItem();
 
     //--- FOR THE USERS TABLE ---//
 
@@ -62,11 +62,16 @@ public:
 
     json FindUserByName(const std::string& name);
 
-    //--- FOR THE MESSAGES TABLE---//
+    json GetFriendIdsByUserId(const uint64_t user_id) const;
+
+	void AddFriendForUser(const uint64_t user_id, const uint64_t friend_id) const;
+
+	//--- FOR THE MESSAGES TABLE---//
 
     void InsertMessage(const uint64_t sender_id,const uint64_t receiver_id, const std::string& message_text) const;
 
     std::string InsertAndGetSentAt(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const;
 
     json PrintClientsMessages(const uint64_t sender_id, const uint64_t receiver_id) const;
+
 };

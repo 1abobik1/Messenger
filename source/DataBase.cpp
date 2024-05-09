@@ -4,6 +4,7 @@
 #include <mutex>
 #include <stdexcept>
 #include <iostream>
+#include <set>
 
 std::mutex mtx;
 
@@ -29,7 +30,7 @@ std::unique_ptr<Database> Database::createInstance() {
     return std::unique_ptr<Database>(new Database());
 }
 
-Database* Database::getInstance() {
+Database* Database::getSingleItem() {
     if (!instance_) {
         std::lock_guard<std::mutex> lock(mtx);
         if (!instance_) {
@@ -334,4 +335,75 @@ json Database::PrintClientsMessages(const uint64_t sender_id, const uint64_t rec
     PQclear(res);
 
     return messages;
+}
+
+json Database::GetFriendIdsByUserId(const uint64_t user_id) const
+{
+    const std::string query = "SELECT friend_ids FROM users WHERE id = $1";
+    const std::string user_id_str = std::to_string(user_id);
+    const char* param_values[1] = { user_id_str.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        throw std::runtime_error("Failed to retrieve friend ids");
+    }
+
+    if (PQntuples(res) == 0) {
+        PQclear(res);
+        return json(); // Return empty JSON if no friend ids found
+    }
+
+    std::string friend_ids_str = PQgetvalue(res, 0, 0);
+    PQclear(res);
+
+    std::set<int64_t> friend_ids;
+    std::istringstream iss(friend_ids_str);
+    for (size_t i = 1; i < friend_ids_str.size(); ++i) {
+        if (friend_ids_str[i] == ',') {
+            continue;
+        }
+        else
+        {
+            friend_ids.insert(friend_ids_str[i]);
+        }
+    }
+
+    json friend_ids_json(friend_ids);
+
+    return friend_ids_json;
+}
+
+
+
+
+void Database::AddFriendForUser(const uint64_t user_id, const uint64_t friend_id) const
+{
+    // Execute SQL query to update friend_ids for the user
+    const std::string query = "UPDATE users SET friend_ids = ARRAY_APPEND(users.friend_ids, $1) WHERE id = $2";
+    const std::string friend_id_str = std::to_string(friend_id);
+    const std::string user_id_str = std::to_string(user_id);
+    const char* param_values[2] = { friend_id_str.c_str(), user_id_str.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        2,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        PQclear(res);
+        throw std::runtime_error("Failed to add friend for user");
+    }
+
+    PQclear(res);
 }
