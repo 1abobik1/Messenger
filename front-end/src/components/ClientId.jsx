@@ -7,7 +7,7 @@ const ClientId = () => {
     const receiverId = parseInt(id);
 
     return (
-        <div>
+        <div className='w-screen'>
             {socket ?
                 <SendForm
                     active={menuActive}
