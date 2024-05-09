@@ -143,9 +143,7 @@
     <ClCompile Include="source\MessagerHandler.cpp" />
     <ClCompile Include="source\RequestHandler.cpp" />
     <ClCompile Include="source\Server.cpp" />
-    <ClCompile Include="source\TimeUtils.cpp" />
     <ClCompile Include="source\UserModel.cpp" />
-    <ClCompile Include="source\WebSocketUser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bcrypt-cpp\include\bcrypt.h" />
@@ -156,7 +154,6 @@
     <ClInclude Include="header\MessagerHandler.h" />
     <ClInclude Include="header\RequestHandler.h" />
     <ClInclude Include="header\Server.h" />
-    <ClInclude Include="header\TimeUtils.h" />
     <ClInclude Include="header\UserModel.h" />
     <ClInclude Include="header\WebSocketUser.h" />
   </ItemGroup>

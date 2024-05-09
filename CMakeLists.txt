@@ -13,8 +13,6 @@ set(SOURCES
     "bcrypt-cpp/src/bcrypt.cpp"
     "bcrypt-cpp/src/blowfish.cpp"
 	"source/UserModel.cpp"
-    "source/WebSocketUser.cpp"
-    "source/TimeUtils.cpp"
 )
 
 set(HEADERS
@@ -28,7 +26,6 @@ set(HEADERS
     "bcrypt-cpp/src/openbsd.h"
     "header/UserModel.h"
     "header/WebSocketUser.h"
-    "header/TimeUtils.h"
 )
 
 # Пути к заголовочным файлам uwebsockets и nlohmann-json

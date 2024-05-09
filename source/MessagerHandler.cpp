@@ -45,15 +45,14 @@ void MessagerHandler::ProcessPrivateMessage( web_socket* WS, json parsed)
 	web_socket_data->receiver_id_ = parsed[RECEIVER_ID];
 
 	const std::string sent_at = Database::getSingleItem()->InsertAndGetSentAt(web_socket_data->sender_id_, web_socket_data->receiver_id_, user_msg);
-	const std::string time_only = time_utils::ExtractTime(sent_at);
 
-	std::cout << "time_only  " << time_only << '\n';
+	std::cout << "time_only  " << sent_at << '\n';
 
 	json response;
 	response[COMMAND] = PRIVATE_MSG;
 	response[SENDER_ID] = web_socket_data->receiver_id_;
 	response[MESSAGE] = user_msg;
-	response[SENT_AT] = time_only;
+	response[SENT_AT] = sent_at;
 
 	WS->publish("userN" + std::to_string(web_socket_data->receiver_id_), response.dump()); // sending a message
 
