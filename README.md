@@ -1,4 +1,4 @@
-## Сборка с помощью CMake
+## Сборка бэкэнда с помощью CMake
 ```powershell
 mkdir build
 cd build
