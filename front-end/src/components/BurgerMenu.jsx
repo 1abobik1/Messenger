@@ -13,7 +13,7 @@ const BurgerMenu = ({ active, setActive }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [friends, setFriends] = useState([]);
     const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail'));
-    const [friendAdded, setFriendAdded] = useState(false); // Локальное состояние для отслеживания добавления в друзья
+    const [friendAdded, setFriendAdded] = useState(false);
     const navigate = useNavigate();
     const { signout, user } = useAuth() || {};
 
@@ -77,7 +77,7 @@ const BurgerMenu = ({ active, setActive }) => {
     const handleAddFriend = async () => {
         try {
             if (friendAdded) {
-                return; // Предотвращаем многократные запросы на добавление в друзья
+                return;
             }
             const response = await fetch('http://localhost:9000/client/AddFriends', {
                 method: 'POST',
@@ -87,7 +87,7 @@ const BurgerMenu = ({ active, setActive }) => {
                 body: JSON.stringify({ user_email: userEmail, new_friend_id: searchResult.user_id })
             });
             if (response.ok) {
-                setFriendAdded(true); // Устанавливаем локальное состояние, чтобы предотвратить дальнейшие запросы
+                setFriendAdded(true);
             }
         } catch (error) {
             console.error(error);

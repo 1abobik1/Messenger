@@ -7,7 +7,7 @@ const SendForm = ({active, setActive, socket, receiverId}) => {
   const [yourMessages, setYourMessages] = useState([]);
   const [otherMessages, setOtherMessages] = useState([]);
 
-  function parseDate(dateString){
+  function parseDate(dateString) {
     const [datePart] = dateString.split('.');
     const date = new Date(datePart);
     return Math.floor(date.getTime());
@@ -16,7 +16,11 @@ const SendForm = ({active, setActive, socket, receiverId}) => {
   useEffect(() => {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      setOtherMessages(prevMessages => [...prevMessages, {content: data.message, timestamp: parseDate(data.sent_at), isYours: false}]);
+      setOtherMessages(prevMessages => [...prevMessages, {
+        content: data.message,
+        timestamp: parseDate(data.sent_at),
+        isYours: false
+      }]);
     };
 
     return () => {
@@ -37,6 +41,12 @@ const SendForm = ({active, setActive, socket, receiverId}) => {
     }
   }
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter' && event.ctrlKey) {
+      sendMessage();
+    }
+  }
+
   return (
     <div
       className={active ? 'flex flex-col flex-auto h-screen form active pl-4' : 'flex flex-col flex-auto h-screen form pl-4'}>
@@ -51,8 +61,12 @@ const SendForm = ({active, setActive, socket, receiverId}) => {
                                 <textarea
                                   className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10 messageInput"
                                   onChange={(event) => setMessage(event.target.value)}
+                                  onKeyUp={handleKeyPress}
                                   value={message}
-                                  id="messageInput"/>
+                                  id="messageInput"
+                                  maxLength={3500}
+                                  autoFocus={true}
+                                placeholder={`Message`}/>
               </div>
             </div>
             <div className="ml-4">

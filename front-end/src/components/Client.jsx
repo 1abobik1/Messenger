@@ -7,21 +7,30 @@ import { SocketContext } from "./SocketContext";
 const Client = () => {
   const [menuActive, setMenuActive] = useState(true);
   const socketRef = useRef(null);
+  const [isSocketReady, setIsSocketReady] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
-
-    if (!socketRef.current) {
-      socketRef.current = new WebSocket('ws://localhost:9000/');
-
-
-      return () => {
-        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-          socketRef.current.close();
-        }
-      };
+    if (socketRef.current) {
+      socketRef.current.close();
     }
+
+    // Создание нового WebSocket соединения
+    socketRef.current = new WebSocket('ws://localhost:9000/');
+    socketRef.current.onopen = () => {
+      setIsSocketReady(true);
+    };
+    socketRef.current.onclose = () => {
+      setIsSocketReady(false);
+    };
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
   }, []);
+
 
   return (
     <SocketContext.Provider value={socketRef.current}>
@@ -36,7 +45,7 @@ const Client = () => {
           <BurgerMenu active={menuActive} setActive={setMenuActive}/>
           {id === undefined ?
             <WhoToWrite active={menuActive} setActive={setMenuActive}/>
-            : <Outlet context={{menuActive, setMenuActive, id, socket: socketRef.current}}/>
+            : <Outlet context={{menuActive, setMenuActive, id, socket: socketRef.current, isSocketReady}} />
           }
         </div>
       </div>

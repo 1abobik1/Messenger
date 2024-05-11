@@ -1,24 +1,26 @@
 import React from 'react';
 import SendForm from "./SendForm";
 import { useOutletContext } from "react-router-dom";
+import LoadingSpinner from "./LoadingSpinner";
 
 const ClientId = () => {
-    const { menuActive, setMenuActive, id, socket } = useOutletContext();
-    const receiverId = parseInt(id);
+  const { menuActive, setMenuActive, id, socket, isSocketReady } = useOutletContext();
+  const receiverId = parseInt(id);
 
-    return (
-        <div className='w-screen'>
-            {socket ?
-                <SendForm
-                    active={menuActive}
-                    setActive={setMenuActive}
-                    socket={socket}
-                    receiverId={receiverId}
-                />
-                : null
-            }
-        </div>
-    );
+  return (
+    <div className='w-screen'>
+      {isSocketReady ? (
+        socket ? <SendForm
+          active={menuActive}
+          setActive={setMenuActive}
+          socket={socket}
+          receiverId={receiverId}
+        /> : <div>Error: Socket not available</div>
+      ) : (
+        <div className='flex h-screen justify-center w-full'><LoadingSpinner/></div>
+      )}
+    </div>
+  );
 };
 
 export default ClientId;
