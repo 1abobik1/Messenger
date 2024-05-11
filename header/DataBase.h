@@ -7,6 +7,7 @@
 #include <string>
 #include <libpq-fe.h>
 #include <memory>
+#include <set>
 
 // RAII for PGconn*
 class DBConnection {
@@ -42,7 +43,7 @@ public:
     Database& operator=(const Database&) = delete;
     ~Database() = default;
 
-    static Database* getSingleItem();
+    static Database* getDatabase();
 
     //--- FOR THE USERS TABLE ---//
 
@@ -56,13 +57,15 @@ public:
 
 	uint64_t GetUserIdByEmail(const std::string& email) const;
 
+    std::string GetUsernameById(const uint64_t user_id) const;
+
     json GetAllUsersNamesInJson() const;
 
     std::string FindUserByEmail(const std::string& name) const;
 
     json FindUserByName(const std::string& name);
 
-    json GetFriendIdsByUserId(const uint64_t user_id) const;
+	std::set<int> GetFriendIdsByUserId(const uint64_t user_id) const;
 
 	void AddFriendForUser(const uint64_t user_id, const uint64_t friend_id) const;
 

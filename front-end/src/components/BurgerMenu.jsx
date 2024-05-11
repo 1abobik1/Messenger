@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../css/burger.css';
 import useAuth from "../auth/useAuth";
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
 
 const BurgerMenu = ({ active, setActive }) => {
@@ -13,10 +13,10 @@ const BurgerMenu = ({ active, setActive }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [friends, setFriends] = useState([]);
     const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail'));
-    const [friendAdded, setFriendAdded] = useState(false);
+    const [addedFriends, setAddedFriends] = useState([]);
     const navigate = useNavigate();
     const { signout, user } = useAuth() || {};
-
+    const [showFriends, setShowFriends] = useState(true);
 
     const handleSearch = async () => {
         try {
@@ -74,9 +74,10 @@ const BurgerMenu = ({ active, setActive }) => {
         }
     };
 
+
     const handleAddFriend = async () => {
         try {
-            if (friendAdded) {
+            if (addedFriends.includes(searchResult.user_id)) {
                 return;
             }
             const response = await fetch('http://localhost:9000/client/AddFriends', {
@@ -87,7 +88,7 @@ const BurgerMenu = ({ active, setActive }) => {
                 body: JSON.stringify({ user_email: userEmail, new_friend_id: searchResult.user_id })
             });
             if (response.ok) {
-                setFriendAdded(true);
+                setAddedFriends(prevFriends => [...prevFriends, searchResult.user_id]);
             }
         } catch (error) {
             console.error(error);
@@ -100,15 +101,9 @@ const BurgerMenu = ({ active, setActive }) => {
         }
     };
 
-    const handleUserClick = async (email, userId) => {
-        try {
-            setSelectedUser({ email, userId });
-        } catch (error) {
-            console.error("Error fetching user ID:", error);
-        }
+    const toggleShowFriends = () => {
+        setShowFriends(prevState => !prevState);
     };
-
-    const initiateChat = (userId) => { };
 
     return (
         <div className={active ? 'menu active h-screen' : 'menu h-screen'}>
@@ -162,6 +157,35 @@ const BurgerMenu = ({ active, setActive }) => {
                             )}
                         </div>
                     </div>
+                    {/* List of friends */}
+                    <div className="flex flex-col mt-8">
+                        <div className="flex flex-row items-center justify-between text-xs">
+                            <span className="font-bold text-lg text-gray-800">Friends</span>
+                            {/* Иконка для переключения отображения списка друзей */}
+                            <button onClick={toggleShowFriends} className="focus:outline-none">
+                                {showFriends ? <FaMinus /> : <FaPlus />}
+                            </button>
+                        </div>
+                        {/* Условное отображение списка друзей */}
+                        {showFriends && (
+                            <div className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto max-h-100">
+                                {friends.map((friend, index) => (
+                                    <Link to={`${friend.friend_id}`} key={index}>
+                                        <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2">
+                                            <div className="flex items-center">
+                                                <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
+                                                    {friend.friend_name.charAt(0)}
+                                                </div>
+                                                <div className="ml-2 text-sm font-semibold">
+                                                    {friend.friend_name} (id-{friend.friend_id})
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div className="flex justify-center mb-2">
                     <button className="bg-green-600 text-white font-semibold py-2 mt-2 rounded">
@@ -171,6 +195,7 @@ const BurgerMenu = ({ active, setActive }) => {
             </div>
         </div>
     );
+
 };
 
 export default BurgerMenu;

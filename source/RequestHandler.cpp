@@ -35,14 +35,14 @@ void RequestHandler::HandleSignUp(uWS::HttpResponse<false>* res, uWS::HttpReques
 				std::cout << "Received data in signup: " << user_model_->get_name() << ' ' << user_model_->get_email() << ' ' << user_model_->get_password() << '\n';
 
 				try {
-					if (Database::getSingleItem()->CheckEmailExists(user_model_->get_email()))
+					if (Database::getDatabase()->CheckEmailExists(user_model_->get_email()))
 					{
 						throw std::exception("User with this email already exists");
 					}
 					else
 					{
 						// save data in database
-						Database::getSingleItem()->InsertUsers(user_model_->get_name(), user_model_->get_email(), user_model_->get_password());
+						Database::getDatabase()->InsertUsers(user_model_->get_name(), user_model_->get_email(), user_model_->get_password());
 						res->writeStatus("200 OK");
 						res->end("Signup successful!");
 						std::cout << "Signup successful!" << '\n';
@@ -97,9 +97,9 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<false>* res, uWS::HttpRequest
 
 				std::cout << "Received data in login:  " << ' ' << user_model_->get_email() << ' ' << user_model_->get_password() << '\n';
 				try {
-					if (Database::getSingleItem()->CheckEmailExists(user_model_->get_email()))
+					if (Database::getDatabase()->CheckEmailExists(user_model_->get_email()))
 					{
-						if (bcrypt::validatePassword(user_model_->get_password(), /*hash-*/Database::getSingleItem()->GetPasswordByEmail(user_model_->get_email())))
+						if (bcrypt::validatePassword(user_model_->get_password(), /*hash-*/Database::getDatabase()->GetPasswordByEmail(user_model_->get_email())))
 						{
 							res->writeStatus("200 OK");
 							res->end("LogIn successful!");
@@ -158,7 +158,7 @@ void RequestHandler::HandlePrintClientsMessages(uWS::HttpResponse<false>* res,uW
 				const uint64_t sender_id = std::move(client_json["sender_id"]);
 				const uint64_t receiver_id = std::move(client_json["receiver_id"]);
 
-				array_users_msg = Database::getSingleItem()->PrintClientsMessages(sender_id, receiver_id);
+				array_users_msg = Database::getDatabase()->PrintClientsMessages(sender_id, receiver_id);
 
 				res->end(array_users_msg.dump());
 			}
@@ -189,9 +189,9 @@ void RequestHandler::HandleSearchUser(uWS::HttpResponse<false>* res, uWS::HttpRe
 
 				std::cout << "Searching user.. " << query << '\n';
 
-				auto user = Database::getSingleItem()->FindUserByEmail(query);
+				auto user = Database::getDatabase()->FindUserByEmail(query);
 				if (!user.empty()) {
-					uint64_t user_id = Database::getSingleItem()->GetUserIdByEmail(query);
+					uint64_t user_id = Database::getDatabase()->GetUserIdByEmail(query);
 					
 					res->end(json({ {"user_by_email", user}, {"user_id", user_id} }).dump());
 
@@ -225,16 +225,20 @@ void RequestHandler::HandleSearchUserFriends(uWS::HttpResponse<false>* res, uWS:
 			if (isFin && !*isAborted) {
 				// Parse JSON from the body
 				json client_json = json::parse(std::move(*body));
-				json users_friends = json::array();
 
-				std::cout<< "client_json_email " << client_json["user_email"] << '\n';
+				std::cout << "client_json_email " << client_json["user_email"] << '\n';
 				const std::string user_email = std::move(client_json["user_email"]);
 
-				const uint64_t user_id = Database::getSingleItem()->GetUserIdByEmail(user_email);
-				users_friends = Database::getSingleItem()->GetFriendIdsByUserId(user_id);
+				const uint64_t user_id = Database::getDatabase()->GetUserIdByEmail(user_email);
+				const std::set<int> friends = Database::getDatabase()->GetFriendIdsByUserId(user_id);
 
-				std::cout << users_friends.dump();
-				res->end(users_friends.dump());
+				json UserFriends;
+				for(const int& fr : friends)
+				{
+					UserFriends["friends"].push_back({ {"friend_name", Database::getDatabase()->GetUsernameById(fr)}, {"friend_id", fr} });
+				}
+
+				res->end(UserFriends.dump());
 			}
 		}
 	});
@@ -262,10 +266,11 @@ void RequestHandler::HandleAddFriend(uWS::HttpResponse<false>* res, uWS::HttpReq
 				json client_json = json::parse(std::move(*body));
 				const std::string user_email = std::move(client_json["user_email"]);
 				const uint64_t new_friend_id = std::move(client_json["new_friend_id"]);
+
 				std::cout << "user_email  " << user_email << " new_friend_id  " << new_friend_id<< '\n';
 
-				const uint64_t user_id = Database::getSingleItem()->GetUserIdByEmail(user_email);
-				Database::getSingleItem()->AddFriendForUser(user_id, new_friend_id);
+				const uint64_t user_id = Database::getDatabase()->GetUserIdByEmail(user_email);
+				Database::getDatabase()->AddFriendForUser(user_id, new_friend_id);
 
 				res->end("200");
 			}

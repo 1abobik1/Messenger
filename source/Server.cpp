@@ -42,10 +42,6 @@ void Server::run()
 				 messager_handler_->ProcessMessage(ws,message);
 			},
 
-			.pong = [](auto* ws, std::string_view message) {
-				std::cout << " ---pong--- " << message << '\n';
-			},
-
 			.close = [&](auto* ws, int code, std::string_view message){
 				messager_handler_->DisconnectedUser(ws,code,message);
 			}

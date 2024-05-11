@@ -17,9 +17,9 @@ void MessagerHandler::ConnectedUser(web_socket* WS) {
 	web_socket_data->email_sender_id_ = request_handler_->getUserModel()->get_email();
 	std::cout << "web_socket_data->email_: " << web_socket_data->email_sender_id_ << '\n';
 
-	if (Database::getSingleItem()->CheckEmailExists(web_socket_data->email_sender_id_))
+	if (Database::getDatabase()->CheckEmailExists(web_socket_data->email_sender_id_))
 	{
-		web_socket_data->sender_id_ = Database::getSingleItem()->GetUserIdByEmail(web_socket_data->email_sender_id_);
+		web_socket_data->sender_id_ = Database::getDatabase()->GetUserIdByEmail(web_socket_data->email_sender_id_);
 		std::cout << "User connected ID: " << web_socket_data->sender_id_ << '\n';
 	}
 	else
@@ -43,9 +43,7 @@ void MessagerHandler::ProcessPrivateMessage( web_socket* WS, json parsed)
 	const std::string user_msg = parsed[MESSAGE];
 	web_socket_data->receiver_id_ = parsed[RECEIVER_ID];
 
-	const std::string sent_at = Database::getSingleItem()->InsertAndGetSentAt(web_socket_data->sender_id_, web_socket_data->receiver_id_, user_msg);
-
-	std::cout << "time_only  " << sent_at << '\n';
+	const std::string sent_at = Database::getDatabase()->InsertAndGetSentAt(web_socket_data->sender_id_, web_socket_data->receiver_id_, user_msg);
 
 	json response;
 	response[COMMAND] = PRIVATE_MSG;
@@ -64,8 +62,8 @@ void MessagerHandler::ProcessMessage(web_socket* WS, std::string_view message)
 	WebSocketUser* web_socket_data = WS->getUserData();
 
 	std::cout << "Message from user ID: " << web_socket_data->sender_id_ << "--message: " << message << '\n';
-	auto parsed = json::parse(message);
 
+	auto parsed = json::parse(message);
 	if (parsed[COMMAND] == PRIVATE_MSG) {
 		ProcessPrivateMessage(WS, parsed);
 	}
