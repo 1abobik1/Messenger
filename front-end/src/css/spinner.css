@@ -1,0 +1,7 @@
+.spinner{
+  transform: translateX(0);
+  transition: all 0.2s;
+}
+.spinner.active{
+  transform: translateX(-97%);
+}
