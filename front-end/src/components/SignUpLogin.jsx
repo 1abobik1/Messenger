@@ -55,12 +55,13 @@ const SignUpLogin = () => {
                     }
                 })
                 .then(data => {
-                    if (data === 'Signup successful!') {
-                        // Сохраняем email при успешной регистрации в состоянии userEmail
+                    const userData = JSON.parse(data);
+                    if (userData.id) {
                         localStorage.setItem('userEmail', email);
+                        localStorage.setItem('userId', userData.id);
                         signin(userName, () => navigate('/client', { replace: true }));
                     } else {
-                        alert(data);
+                        alert();
                     }
                 })
                 .catch(error => {
@@ -108,8 +109,10 @@ const SignUpLogin = () => {
                     }
                 })
                 .then(data => {
-                    if (data === 'LogIn successful!') {
+                    const userData = JSON.parse(data);
+                    if (userData.id) {
                         localStorage.setItem('userEmail', emailLogin);
+                        localStorage.setItem('userId', userData.id);
                         signin(emailLogin, () => navigate('/client', { replace: true }));
                     } else {
                         alert(data);

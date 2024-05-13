@@ -15,7 +15,6 @@ const Client = () => {
       socketRef.current.close();
     }
 
-    // Создание нового WebSocket соединения
     socketRef.current = new WebSocket('ws://localhost:9000/');
     socketRef.current.onopen = () => {
       setIsSocketReady(true);

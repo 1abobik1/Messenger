@@ -339,6 +339,7 @@ void Database::AddFriendForUser(const uint64_t user_id, const uint64_t friend_id
 //--- FOR THE MESSAGES TABLE---//
 
 void Database::InsertMessage(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const {
+    PQsetClientEncoding(connection_, "UTF8");
 
     const std::string query = "INSERT INTO messages (sender_id, receiver_id, message_text, sent_at) VALUES ($1, $2, $3, NOW())";
 
@@ -364,7 +365,9 @@ void Database::InsertMessage(const uint64_t sender_id, const uint64_t receiver_i
 }
 
 std::string Database::InsertAndGetSentAt(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const {
-    const std::string query = "INSERT INTO messages (sender_id, receiver_id, message_text, sent_at) VALUES ($1, $2, $3, NOW()) RETURNING sent_at";
+    PQsetClientEncoding(connection_, "UTF8");
+
+	const std::string query = "INSERT INTO messages (sender_id, receiver_id, message_text, sent_at) VALUES ($1, $2, $3, NOW()) RETURNING sent_at";
 
     const std::string sender_id_str = std::to_string(sender_id);
     const std::string receiver_id_str = std::to_string(receiver_id);
@@ -396,7 +399,9 @@ std::string Database::InsertAndGetSentAt(const uint64_t sender_id, const uint64_
 }
 
 json Database::PrintClientsMessages(const uint64_t sender_id, const uint64_t receiver_id) const {
-    const std::string query = "SELECT sender_id, receiver_id, message_text, sent_at FROM messages WHERE sender_id = $1 AND receiver_id = $2 ORDER BY sent_at DESC";
+    PQsetClientEncoding(connection_, "UTF8");
+
+	const std::string query = "SELECT sender_id, receiver_id, message_text, sent_at FROM messages WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1) ORDER BY sent_at DESC";
 
     const std::string sender_id_str = std::to_string(sender_id);
     const std::string receiver_id_str = std::to_string(receiver_id);
@@ -405,12 +410,12 @@ json Database::PrintClientsMessages(const uint64_t sender_id, const uint64_t rec
 
     PGresult* res = PQexecParams(connection_,
         query.c_str(),
-        2,           
-        NULL,        
+        2,
+        NULL,
         param_values,
-        NULL,     
-        NULL,     
-        0);       
+        NULL,
+        NULL,
+        0);
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         PQclear(res);

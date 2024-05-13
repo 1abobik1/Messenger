@@ -1,55 +1,114 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import '../css/form.css';
 import MessageList from "./MessageList";
 
-const SendForm = ({active, setActive, socket, receiverId}) => {
-  const [message, setMessage] = useState('');
-  const [yourMessages, setYourMessages] = useState([]);
-  const [otherMessages, setOtherMessages] = useState([]);
+const SendForm = ({ active, setActive, socket, receiverId }) => {
+    const [message, setMessage] = useState('');
+    const [allMessages, setAllMessages] = useState([]);
+    const [yourMessages, setYourMessages] = useState([]);
+    const [otherMessages, setOtherMessages] = useState([]);
+    const [yourUserId, setUserId] = useState(localStorage.getItem('userId'));
 
-  function parseDate(dateString) {
-    const [datePart] = dateString.split('.');
-    const date = new Date(datePart);
-    return Math.floor(date.getTime());
-  }
-
-  useEffect(() => {
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setOtherMessages(prevMessages => [...prevMessages, {
-        content: data.message,
-        timestamp: parseDate(data.sent_at),
-        isYours: false
-      }]);
-    };
-
-    return () => {
-      socket.onmessage = null;
-    };
-  }, [socket, receiverId]);
-
-  function getCurrentTime() {
-    return Date.now();
-  }
-
-  function sendMessage() {
-    if (message.trim() !== '') {
-      const newMessage = {content: message, timestamp: getCurrentTime(), isYours: true};
-      socket.send(JSON.stringify({"command": "private_msg", "receiver_id": receiverId, "message": message}));
-      setYourMessages([...yourMessages, newMessage]);
-      setMessage('');
+    function parseDate(dateString) {
+        const [datePart] = dateString.split('.');
+        const date = new Date(datePart);
+        return Math.floor(date.getTime());
     }
-  }
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter' && event.ctrlKey) {
-      sendMessage();
+    const fetchAllMessages = useCallback(async () => {
+        try {
+            const requestBody = {
+                sender_id: parseInt(yourUserId),
+                receiver_id: receiverId
+            };
+
+            const response = await fetch('http://localhost:9000/client/PrintClientsMessages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setAllMessages(data);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }, [yourUserId, receiverId]); 
+
+
+    useEffect(() => {
+        if (receiverId && yourUserId) {
+            fetchAllMessages();
+        }
+    }, [fetchAllMessages, receiverId, yourUserId]);
+
+    useEffect(() => {
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            setOtherMessages(prevMessages => [...prevMessages, {
+                content: data.message,
+                timestamp: parseDate(data.sent_at),
+                isYours: false
+            }]);
+        };
+
+        return () => {
+            socket.onmessage = null;
+        };
+    }, [socket, receiverId]);
+
+    function getCurrentTime() {
+        return Date.now();
     }
-  }
+
+    function sendMessage() {
+        if (message.trim() !== '') {
+            const newMessage = { content: message, timestamp: getCurrentTime(), isYours: true };
+            socket.send(JSON.stringify({ "command": "private_msg", "receiver_id": receiverId, "message": message }));
+            setYourMessages([...yourMessages, newMessage]);
+            setMessage('');
+        }
+    }
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter' && event.ctrlKey) {
+            sendMessage();
+        }
+    }
+
+    useEffect(() => {
+        // Группировка сообщений на основе того, чей это ID (отправителя или получателя)
+        const yourMsgs = allMessages.filter(msg => msg.sender_id.toString() === yourUserId);
+        const otherMsgs = allMessages.filter(msg => msg.receiver_id.toString() === yourUserId);
+
+        // Форматирование сообщений для отображения в интерфейсе
+        const formattedYourMsgs = yourMsgs.map(msg => ({
+            content: msg.message_text,
+            timestamp: parseDate(msg.sent_at),
+            isYours: true
+        }));
+
+        const formattedOtherMsgs = otherMsgs.map(msg => ({
+            content: msg.message_text,
+            timestamp: parseDate(msg.sent_at),
+            isYours: false
+        }));
+
+        // Сортировка сообщений по времени отправки
+        const combinedMessages = [...formattedYourMsgs, ...formattedOtherMsgs];
+        combinedMessages.sort((a, b) => a.timestamp - b.timestamp);
+
+        setYourMessages(combinedMessages.filter(msg => msg.isYours));
+        setOtherMessages(combinedMessages.filter(msg => !msg.isYours));
+    }, [allMessages, yourUserId]);
+
 
   return (
-    <div
-      className={active ? 'flex flex-col flex-auto h-screen form active pl-4' : 'flex flex-col flex-auto h-screen form pl-4'}>
+    <div className={active ? 'flex flex-col flex-auto h-screen form active pl-4' : 'flex flex-col flex-auto h-screen form pl-4'}>
       <div className="flex flex-cnpm startol flex-auto flex-shrink-0  bg-gray-100 h-full p-4">
         <div className="sendhund">
           <div className="flex flex-col h-full overflow-y-scroll">

@@ -4,7 +4,7 @@ import useAuth from "../auth/useAuth";
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
 
-const BurgerMenu = ({ active, setActive }) => {
+const BurgerMenu = ({ active, setActive, fetchAllMessages }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResult, setSearchResult] = useState({ user_by_email: null, user_id: null });
     const [errorMessage, setErrorMessage] = useState('');
@@ -139,7 +139,7 @@ const BurgerMenu = ({ active, setActive }) => {
                         </div>
                         <div className="flex flex-col space-y-1 mt-4 -mx-2 min-h-10 overflow-y-auto">
                             {searchResult.user_by_email && (
-                                <Link to={`${searchResult.user_id}`}>
+                                <Link to={`${searchResult.user_id}`} onClick={() => fetchAllMessages()}>
                                     <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2">
                                         <div className="flex items-center">
                                             <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
@@ -170,7 +170,7 @@ const BurgerMenu = ({ active, setActive }) => {
                         {showFriends && (
                             <div className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto max-h-100">
                                 {friends.map((friend, index) => (
-                                    <Link to={`${friend.friend_id}`} key={index}>
+                                    <Link to={`${friend.friend_id}`} key={index} onClick={() => fetchAllMessages()}>
                                         <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2">
                                             <div className="flex items-center">
                                                 <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
@@ -195,7 +195,6 @@ const BurgerMenu = ({ active, setActive }) => {
             </div>
         </div>
     );
-
 };
 
 export default BurgerMenu;

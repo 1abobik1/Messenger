@@ -43,8 +43,8 @@ void RequestHandler::HandleSignUp(uWS::HttpResponse<false>* res, uWS::HttpReques
 					{
 						// save data in database
 						Database::getDatabase()->InsertUsers(user_model_->get_name(), user_model_->get_email(), user_model_->get_password());
-						res->writeStatus("200 OK");
-						res->end("Signup successful!");
+						const uint64_t id = Database::getDatabase()->GetUserIdByEmail(user_model_->get_email());
+						res->end(json({ {"id", id} }).dump());
 						std::cout << "Signup successful!" << '\n';
 					}
 				}
@@ -101,8 +101,8 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<false>* res, uWS::HttpRequest
 					{
 						if (bcrypt::validatePassword(user_model_->get_password(), /*hash-*/Database::getDatabase()->GetPasswordByEmail(user_model_->get_email())))
 						{
-							res->writeStatus("200 OK");
-							res->end("LogIn successful!");
+							const uint64_t id = Database::getDatabase()->GetUserIdByEmail(user_model_->get_email());
+							res->end(json({ {"id", id} }).dump());
 							std::cout << "LogIn successful!" << '\n';
 						}
 						else
