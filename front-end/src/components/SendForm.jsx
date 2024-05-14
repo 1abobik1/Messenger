@@ -7,7 +7,7 @@ const SendForm = ({ active, setActive, socket, receiverId }) => {
     const [allMessages, setAllMessages] = useState([]);
     const [yourMessages, setYourMessages] = useState([]);
     const [otherMessages, setOtherMessages] = useState([]);
-    const [yourUserId, setUserId] = useState(localStorage.getItem('userId'));
+    const yourUserId = localStorage.getItem('userId');
 
     function parseDate(dateString) {
         const [datePart] = dateString.split('.');
@@ -37,7 +37,7 @@ const SendForm = ({ active, setActive, socket, receiverId }) => {
         } catch (error) {
             console.error(error);
         }
-    }, [yourUserId, receiverId]); 
+    }, [yourUserId, receiverId]);
 
 
     useEffect(() => {

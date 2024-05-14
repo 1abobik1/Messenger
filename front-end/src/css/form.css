@@ -1,5 +1,5 @@
 .form{
-  transform: translateX(-17%);
+  transform: translateX(-10%);
   transition: all 0.2s;
 }
  .form.active{
@@ -15,22 +15,64 @@
     overflow-x: auto;
     margin-bottom: 1rem;
 }
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 501px) and (max-width: 767px) {
   .form.active{
     transform: translateX(100%);
     transition: all 0.2s;
   }
   .form{
     transform: translateX(0);
-    width: 100vw;
+    width: 100%;
   }
   .input{
-    height:180px;
+    height:120px;
   }
   .input textarea{
-    height: 100px;
+    height: 70px;
   }
   .send{
     padding: 5px;
+  }
+}
+@media screen and (min-width: 768px )and (max-width: 1000px) {
+  .form.active{
+    transform: translateX(100%);
+    transition: all 0.2s;
+  }
+  .form{
+    transform: translateX(-28%);
+    width: 100%;
+  }
+  .input{
+    height:120px;
+  }
+  .input textarea{
+    height: 50px;
+  }
+  .send{
+    padding: 5px;
+  }
+}
+@media screen and (max-width: 500px ){
+  .form.active{
+    transform: translateX(100%);
+    transition: all 0.2s;
+  }
+  .form{
+    transform: translateX(0);
+    width: 100%;
+  }
+  .input{
+    height:80px;
+    padding: 8px;
+  }
+  .input textarea{
+    height: 70px;
+  }
+  .send{
+    padding: 5px;
+  }
+  .sendhund{
+    font-size: 13px;
   }
 }
