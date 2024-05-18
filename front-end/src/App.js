@@ -6,6 +6,7 @@ import RequireAuth from "./auth/RequireAuth";
 import {AuthProvider} from "./auth/AuthProvider";
 import NotFound from "./components/NotFound";
 import ClientId from "./components/ClientId";
+import URLGuard from "./components/URLGuard";
 
 
 function App() {
@@ -13,8 +14,8 @@ function App() {
     <div className="App">
       <AuthProvider>
         <Routes>
-          <Route path="/client" element={<RequireAuth><Client/></RequireAuth>}>
-            <Route path=":id" element={<RequireAuth><ClientId/></RequireAuth>}/>
+          <Route path="/client" element={<RequireAuth><URLGuard><Client/></URLGuard></RequireAuth>}>
+            <Route path=":id" element={<RequireAuth><URLGuard><ClientId/></URLGuard></RequireAuth>}/>
           </Route>
           <Route path="/" element={<SignUpLogin/>}/>
           <Route path="*" element={<NotFound/>}/>

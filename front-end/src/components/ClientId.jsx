@@ -1,10 +1,10 @@
 import React from 'react';
 import SendForm from "./SendForm";
-import { useOutletContext } from "react-router-dom";
+import {useOutletContext} from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
 
 const ClientId = () => {
-  const { menuActive, setMenuActive, id, socket, isSocketReady } = useOutletContext();
+  const {menuActive, setMenuActive, id, socket, isSocketReady} = useOutletContext();
   const receiverId = parseInt(id);
 
   return (
