@@ -35,7 +35,7 @@ const Profile = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
-        className="h-12 w-12 bg-purple-400 rounded-full flex items-center justify-center overflow-hidden"
+        className="h-10 w-10 bg-purple-400 rounded-full flex items-center justify-center overflow-hidden"
       >
         {userEmail ? userEmail[0].toUpperCase() : ''}
       </button>
