@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import '../css/burger.css';
 import useAuth from "../auth/useAuth";
-import {FaPlus, FaMinus} from 'react-icons/fa';
-import {Link, useNavigate} from "react-router-dom";
+import {FaPlus, FaMinus, FaCheck} from 'react-icons/fa';
+import {useNavigate} from "react-router-dom";
+import {allowedRoutes} from "./URLGuard";
 
 const BurgerMenu = ({active, setActive}) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,6 +16,7 @@ const BurgerMenu = ({active, setActive}) => {
   const userEmail = localStorage.getItem('userEmail');
   const [addedFriends, setAddedFriends] = useState([]);
   const [showFriends, setShowFriends] = useState(true);
+  const navigate = useNavigate();
 
   const handleSearch = async () => {
     try {
@@ -71,8 +73,6 @@ const BurgerMenu = ({active, setActive}) => {
       console.error(error);
     }
   };
-
-
   const handleAddFriend = async (e) => {
     e.preventDefault();
     try {
@@ -95,13 +95,16 @@ const BurgerMenu = ({active, setActive}) => {
   };
 
   const handleFriendsClick = () => {
-      handleSearchFriends();
+    handleSearchFriends();
   };
 
   const toggleShowFriends = () => {
     setShowFriends(prevState => !prevState);
   };
-
+  const handleClientIdClick = (userId) => {
+    allowedRoutes.add(`/client/${userId}`);
+    navigate(`${userId}`);
+  };
   return (
     <div className={active ? 'menu active h-screen' : 'menu h-screen'}>
       <div className="flex justify-between h-screen flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
@@ -136,22 +139,34 @@ const BurgerMenu = ({active, setActive}) => {
             </div>
             <div className="flex flex-col space-y-1 mt-4 -mx-2 min-h-10 overflow-y-auto">
               {searchResult.user_by_email && (
-                <Link to={`${searchResult.user_id}`}>
-                  <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2">
-                    <div className="flex items-center">
-                      <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-                        {searchResult.user_by_email.charAt(0)}
-                      </div>
-                      <div className="ml-2 text-sm font-semibold">
-                        {searchResult.user_by_email} (id-{searchResult.user_id})
-                      </div>
+                <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
+                     onClick={() => handleClientIdClick(searchResult.user_id)}>
+                  <div className="flex items-center">
+                    <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
+                      {searchResult.user_by_email.charAt(0)}
                     </div>
-                    <button onClick={handleAddFriend}
-                            className="ml-2 text-green-500 hover:bg-green-200 rounded-full p-1">
-                      <FaPlus/>
-                    </button>
+                    <div className="ml-2 text-sm font-semibold">
+                      {searchResult.user_by_email} (id-{searchResult.user_id})
+                    </div>
                   </div>
-                </Link>
+                  <button
+                    onClick={
+                      friends.some(friend => friend.friend_id === searchResult.user_id)
+                        ? () => {}
+                        : handleAddFriend
+                    }
+                    className={
+                      friends.some(friend => friend.friend_id === searchResult.user_id)
+                        ? "ml-2 text-green-500 rounded-full p-1"
+                        : "ml-2 text-green-500 hover:bg-green-200 rounded-full p-1"
+                    }
+                  >
+                    {friends.some(friend => friend.friend_id === searchResult.user_id)
+                      ? <FaCheck/>
+                      : <FaPlus/>}
+                  </button>
+
+                </div>
               )}
             </div>
           </div>
@@ -168,27 +183,21 @@ const BurgerMenu = ({active, setActive}) => {
             {showFriends && (
               <div className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto max-h-100">
                 {friends.map((friend, index) => (
-                  <Link to={`${friend.friend_id}`} key={index}>
-                    <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2">
-                      <div className="flex items-center">
-                        <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-                          {friend.friend_name.charAt(0)}
-                        </div>
-                        <div className="ml-2 text-sm font-semibold">
-                          {friend.friend_name} (id-{friend.friend_id})
-                        </div>
+                  <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
+                       onClick={() => handleClientIdClick(friend.friend_id)} key={index}>
+                    <div className="flex items-center">
+                      <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
+                        {friend.friend_name.charAt(0)}
+                      </div>
+                      <div className="ml-2 text-sm font-semibold">
+                        {friend.friend_name} (id-{friend.friend_id})
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
             )}
           </div>
-        </div>
-        <div className="flex justify-center mb-2">
-          <button className="bg-green-600 text-white font-semibold py-2 mt-2 rounded">
-            Search Random Friend
-          </button>
         </div>
       </div>
     </div>
