@@ -118,15 +118,12 @@ const SignUpLogin = () => {
             alert(data);
           }
         })
-        .catch(error => {
-          alert(error.message);
+        .catch(()=> {
+          alert("Wrong email or password");
         });
     } else {
-      if (!isValidEmail(emailLogin)) {
-        alert("Wrong email");
-      }
-      if (!isValidPassword(passwordLogin)) {
-        alert("Wrong password");
+      if (!isValidEmail(emailLogin) || !isValidPassword(passwordLogin)) {
+        alert("Wrong email or password");
       }
     }
   };
@@ -138,29 +135,31 @@ const SignUpLogin = () => {
         <div className="signup" id="signup_id">
           <form id="signup_form">
             <label htmlFor="chk" aria-hidden="true">Sign up</label>
-            <input type="text" name="user_name_sign" placeholder="User name" required=""
+            <input type="text" name="user_name_sign" placeholder="User name" required={true}
                    value={userName}
+                   minLength={1}
                    onChange={(e) => setUserName(e.target.value)}/>
-            <input type="email" name="email_sign" placeholder="Email" required=""
+            <input type="email" name="email_sign" placeholder="Email" required={true}
                    value={email}
                    onChange={(e) => setEmail(e.target.value)}/>
-            <input type="password" name="pswd_sign" placeholder="Password" required=""
+            <input type="password" name="pswd_sign" placeholder="Password" required={true}
+                   minLength={10}
                    value={password}
                    onChange={(e) => setPassword(e.target.value)}/>
-            <button type="button" id="signup_button" onClick={handleSignUp}>Sign up</button>
+            <button type="button" id="signup_button" onClick={handleSignUp} className='hover:bg-indigo-900'>Sign up</button>
           </form>
         </div>
 
         <div className="login" id="login_id">
           <form id="login_form">
             <label htmlFor="chk" aria-hidden="true">Login</label>
-            <input type="email" name="email_log" placeholder="Email" required=""
+            <input type="email" name="email_log" placeholder="Email" required={true}
                    value={emailLogin}
                    onChange={(e) => setEmailLogin(e.target.value)}/>
-            <input type="password" name="pswd_log" placeholder="Password" required=""
+            <input type="password" name="pswd_log" placeholder="Password" required={true}
                    value={passwordLogin}
                    onChange={(e) => setPasswordLogin(e.target.value)}/>
-            <button type="button" id="login_button" onClick={handleLogin}>Login</button>
+            <button type="button" id="login_button" onClick={handleLogin} className='hover:bg-indigo-900'>Login</button>
           </form>
         </div>
       </div>
