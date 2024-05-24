@@ -121,10 +121,10 @@ const BurgerMenu = ({active, setActive}) => {
               onChange={e => setSearchQuery(e.target.value)}
               className="border border-gray-200 rounded p-2"
             />
-            <button onClick={handleSearch} className="bg-indigo-500 text-white font-semibold py-2 mt-2 rounded">
+            <button onClick={handleSearch} className="bg-indigo-500 text-white font-semibold py-2 mt-2 rounded hover:bg-indigo-400">
               {searching ? 'Searching...' : 'Search'}
             </button>
-            <button onClick={handleFriendsClick} className="bg-blue-600 text-white font-semibold py-1 mt-1 rounded">
+            <button onClick={handleFriendsClick} className="bg-blue-600 text-white font-semibold py-1 mt-1 rounded hover:bg-blue-500">
               Friends
             </button>
           </div>
