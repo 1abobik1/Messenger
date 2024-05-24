@@ -73,8 +73,7 @@ const BurgerMenu = ({active, setActive}) => {
       console.error(error);
     }
   };
-  const handleAddFriend = async (e) => {
-    e.preventDefault();
+  const handleAddFriend = async () => {
     try {
       if (addedFriends.includes(searchResult.user_id)) {
         return;
@@ -101,13 +100,14 @@ const BurgerMenu = ({active, setActive}) => {
   const toggleShowFriends = () => {
     setShowFriends(prevState => !prevState);
   };
-  const handleClientIdClick = (userId) => {
+  const handleClientIdClick = (userId, event) => {
+    event.stopPropagation();
     allowedRoutes.add(`/client/${userId}`);
     navigate(`${userId}`);
   };
   return (
     <div className={active ? 'menu active h-screen' : 'menu h-screen'}>
-      <div className="flex justify-between h-screen flex-col py-8 pl-6 pr-2 w-64 bg-white flex-shrink-0">
+      <div className="flex justify-between h-screen flex-col py-8 pl-6 pr-6 w-64 bg-white flex-shrink-0">
         <div>
           <div className="flex flex-row items-center justify-center h-12 w-full">
             <div className="ml-2 font-bold text-2xl">BeBroVChat</div>
@@ -140,7 +140,7 @@ const BurgerMenu = ({active, setActive}) => {
             <div className="flex flex-col space-y-1 mt-4 -mx-2 min-h-10 overflow-y-auto">
               {searchResult.user_by_email && (
                 <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
-                     onClick={() => handleClientIdClick(searchResult.user_id)}>
+                     onClick={(event) => handleClientIdClick(searchResult.user_id,event)}>
                   <div className="flex items-center">
                     <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
                       {searchResult.user_by_email.charAt(0)}
@@ -150,11 +150,13 @@ const BurgerMenu = ({active, setActive}) => {
                     </div>
                   </div>
                   <button
-                    onClick={
-                      friends.some(friend => friend.friend_id === searchResult.user_id)
-                        ? () => {}
-                        : handleAddFriend
-                    }
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      if (friends.some(friend => friend.friend_id === searchResult.user_id)) {
+                      } else {
+                        handleAddFriend(searchResult.user_id);
+                      }
+                    }}
                     className={
                       friends.some(friend => friend.friend_id === searchResult.user_id)
                         ? "ml-2 text-green-500 rounded-full p-1"
@@ -184,7 +186,7 @@ const BurgerMenu = ({active, setActive}) => {
               <div className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto max-h-100">
                 {friends.map((friend, index) => (
                   <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
-                       onClick={() => handleClientIdClick(friend.friend_id)} key={index}>
+                       onClick={(event) => handleClientIdClick(friend.friend_id,event)} key={index}>
                     <div className="flex items-center">
                       <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
                         {friend.friend_name.charAt(0)}
