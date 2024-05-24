@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "../header/Server.h"
-#include "../header/UserModel.h"
 
 #include<uwebsockets/App.h>
 
