@@ -5,7 +5,7 @@ import {FaPlus, FaMinus, FaCheck} from 'react-icons/fa';
 import {useNavigate} from "react-router-dom";
 import {allowedRoutes} from "./URLGuard";
 
-const BurgerMenu = ({active, setActive}) => {
+const BurgerMenu = ({active, setActive, setSelectedUserName}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState({user_by_email: null, user_id: null});
   const [errorMessage, setErrorMessage] = useState('');
@@ -100,8 +100,9 @@ const BurgerMenu = ({active, setActive}) => {
   const toggleShowFriends = () => {
     setShowFriends(prevState => !prevState);
   };
-  const handleClientIdClick = (userId, event) => {
+  const handleClientIdClick = (userId, event, nickname) => {
     event.stopPropagation();
+    setSelectedUserName(nickname);
     allowedRoutes.add(`/client/${userId}`);
     navigate(`${userId}`);
   };
@@ -121,10 +122,12 @@ const BurgerMenu = ({active, setActive}) => {
               onChange={e => setSearchQuery(e.target.value)}
               className="border border-gray-200 rounded p-2"
             />
-            <button onClick={handleSearch} className="bg-indigo-500 text-white font-semibold py-2 mt-2 rounded hover:bg-indigo-400">
+            <button onClick={handleSearch}
+                    className="bg-indigo-500 text-white font-semibold py-2 mt-2 rounded hover:bg-indigo-400">
               {searching ? 'Searching...' : 'Search'}
             </button>
-            <button onClick={handleFriendsClick} className="bg-blue-600 text-white font-semibold py-1 mt-1 rounded hover:bg-blue-500">
+            <button onClick={handleFriendsClick}
+                    className="bg-blue-600 text-white font-semibold py-1 mt-1 rounded hover:bg-blue-500">
               Friends
             </button>
           </div>
@@ -140,7 +143,7 @@ const BurgerMenu = ({active, setActive}) => {
             <div className="flex flex-col space-y-1 mt-4 -mx-2 min-h-10 overflow-y-auto">
               {searchResult.user_by_email && (
                 <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
-                     onClick={(event) => handleClientIdClick(searchResult.user_id,event)}>
+                     onClick={(event) => handleClientIdClick(searchResult.user_id, event,searchResult.user_by_email)}>
                   <div className="flex items-center">
                     <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
                       {searchResult.user_by_email.charAt(0)}
@@ -186,7 +189,7 @@ const BurgerMenu = ({active, setActive}) => {
               <div className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto max-h-100">
                 {friends.map((friend, index) => (
                   <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
-                       onClick={(event) => handleClientIdClick(friend.friend_id,event)} key={index}>
+                       onClick={(event) => handleClientIdClick(friend.friend_id, event, friend.friend_name)} key={index}>
                     <div className="flex items-center">
                       <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
                         {friend.friend_name.charAt(0)}

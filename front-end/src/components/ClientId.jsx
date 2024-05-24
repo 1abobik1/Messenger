@@ -4,7 +4,7 @@ import {useOutletContext} from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
 
 const ClientId = () => {
-  const {menuActive, setMenuActive, id, socket, isSocketReady} = useOutletContext();
+  const {menuActive, setMenuActive, id, socket, isSocketReady, selectedUserName} = useOutletContext();
   const receiverId = parseInt(id);
 
   return (
@@ -15,6 +15,7 @@ const ClientId = () => {
           setActive={setMenuActive}
           socket={socket}
           receiverId={receiverId}
+          selectedUserName={selectedUserName}
         /> : <div>Error: Socket not available</div>
       ) : (
         <div className='flex h-screen justify-center w-full'><LoadingSpinner/></div>
