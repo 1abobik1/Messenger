@@ -1,15 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import BurgerMenu from "./BurgerMenu";
 import WhoToWrite from "./WhoToWrite";
-import { Outlet, useParams } from "react-router-dom";
-import { SocketContext } from "./SocketContext";
+import {Outlet, useParams} from "react-router-dom";
+import {SocketContext} from "./SocketContext";
 import Profile from "./Profile";
 
 const Client = () => {
   const [menuActive, setMenuActive] = useState(true);
   const socketRef = useRef(null);
   const [isSocketReady, setIsSocketReady] = useState(false);
-  const { id } = useParams();
+  const [selectedUserName, setSelectedUserName] = useState('');
+  const {id} = useParams();
 
   useEffect(() => {
     if (socketRef.current) {
@@ -43,10 +44,11 @@ const Client = () => {
             </svg>
           </button>
           <div className='absolute z-20 right-0 m-2'><Profile/></div>
-          <BurgerMenu active={menuActive} setActive={setMenuActive}/>
+          <BurgerMenu active={menuActive} setActive={setMenuActive} setSelectedUserName={setSelectedUserName}/>
           {id === undefined ?
             <WhoToWrite active={menuActive} setActive={setMenuActive}/>
-            : <Outlet context={{menuActive, setMenuActive, id, socket: socketRef.current, isSocketReady}} />
+            : <Outlet
+              context={{menuActive, setMenuActive, id, socket: socketRef.current, isSocketReady, selectedUserName}}/>
           }
         </div>
       </div>
