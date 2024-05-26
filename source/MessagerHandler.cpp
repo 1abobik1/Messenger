@@ -42,7 +42,7 @@ bool MessagerHandler::CheckAndHandleBlock(web_socket* WS) {
             json block_response;
             block_response[COMMAND] = "BLOCKED";
             block_response[MESSAGE] = "You are blocked from sending messages for 30 seconds.";
-            WS->publish("userN" + std::to_string(web_socket_user->receiver_id_), block_response.dump());
+            WS->send(block_response.dump(), uWS::OpCode::TEXT);
 
             return true;  
         }
@@ -94,7 +94,7 @@ bool MessagerHandler::CheckAndHandleSpam(web_socket* WS) {
             json block_response;
             block_response[COMMAND] = "BLOCKED";
             block_response[MESSAGE] = "You are blocked from sending messages for 30 seconds.";
-            WS->publish("userN" + std::to_string(web_socket_user->receiver_id_), block_response.dump());
+            WS->send(block_response.dump(), uWS::OpCode::TEXT);
 
             return true;
         }
@@ -112,7 +112,6 @@ void MessagerHandler::SendMsg(web_socket* WS) {
     response[SENT_AT] = web_socket_user->sent_at;
 
     WS->publish("userN" + std::to_string(web_socket_user->receiver_id_), response.dump());
-
 }
 
 void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed) {
@@ -134,7 +133,10 @@ void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed) {
         return;
     }
 
-    SendMsg(WS);
+    if (!CheckAndHandleSpam(WS) && !CheckAndHandleBlock(WS)) {
+        SendMsg(WS);
+    }
+
     std::cout << "end ProcessPrivateMessage..\n";
 }
 
