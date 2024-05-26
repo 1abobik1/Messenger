@@ -63,6 +63,9 @@
     <ClCompile Include="source\UserModel.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="source\TimeFunc.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\CommonConst.h">
@@ -95,6 +98,9 @@
     <ClInclude Include="header\WebSocketUser.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="header\TimeFunc.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="web-files\front-end\package.json" />
@@ -113,5 +119,6 @@
     <None Include="web-files\front-end\src\css\burger.css" />
     <None Include="web-files\front-end\src\css\form.css" />
     <None Include="web-files\front-end\src\css\sign.css" />
+    <None Include="create_db\database_setup.sql" />
   </ItemGroup>
 </Project>

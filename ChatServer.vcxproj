@@ -143,6 +143,7 @@
     <ClCompile Include="source\MessagerHandler.cpp" />
     <ClCompile Include="source\RequestHandler.cpp" />
     <ClCompile Include="source\Server.cpp" />
+    <ClCompile Include="source\TimeFunc.cpp" />
     <ClCompile Include="source\UserModel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,10 +155,12 @@
     <ClInclude Include="header\MessagerHandler.h" />
     <ClInclude Include="header\RequestHandler.h" />
     <ClInclude Include="header\Server.h" />
+    <ClInclude Include="header\TimeFunc.h" />
     <ClInclude Include="header\UserModel.h" />
     <ClInclude Include="header\WebSocketUser.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="create_db\database_setup.sql" />
     <None Include="web-files\front-end\package-lock.json" />
     <None Include="web-files\front-end\package.json" />
     <None Include="web-files\front-end\src\App.css" />
