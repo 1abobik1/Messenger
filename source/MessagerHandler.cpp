@@ -5,9 +5,12 @@
 
 #include "../header/Server.h"
 #include "../header/CommonConst.h"
-#include "../header/TimeFunc.h"
+#include "../header/TimeUtils.h"
 
 using namespace JsonChat;
+
+const int MAX_MESSAGE_COUNT = 8;
+const int MIN_SPAM_TIME = 9;
 
 void MessagerHandler::ConnectedUser(web_socket* WS) {
     std::cout << "\nConnectedUser__Start..\n";
@@ -58,7 +61,7 @@ bool MessagerHandler::CheckAndHandleBlock(web_socket* WS) {
 void MessagerHandler::RecordMessageTime(web_socket* WS) {
     WebSocketUser* web_socket_user = WS->getUserData();
     web_socket_user->message_times.push_back({ time_helper::helperGetMinutes(web_socket_user->sent_at), time_helper::helperGetSeconds(web_socket_user->sent_at) });
-    if (web_socket_user->message_times.size() > 8) {
+    if (web_socket_user->message_times.size() > MAX_MESSAGE_COUNT) {
         web_socket_user->message_times.pop_front();
     }
 
@@ -67,7 +70,7 @@ void MessagerHandler::RecordMessageTime(web_socket* WS) {
 bool MessagerHandler::CheckAndHandleSpam(web_socket* WS) {
     WebSocketUser* web_socket_user = WS->getUserData();
 
-    if (web_socket_user->message_times.size() == 8) {
+    if (web_socket_user->message_times.size() == MAX_MESSAGE_COUNT) {
         int sum_time_diff = 0;
 
         bool all_minute_equal = true;
@@ -84,7 +87,7 @@ bool MessagerHandler::CheckAndHandleSpam(web_socket* WS) {
             }
         }
 
-        if (sum_time_diff != 0 && sum_time_diff <= 9/*seconds*/) {
+        if (sum_time_diff != 0 && sum_time_diff <= MIN_SPAM_TIME) {
             std::cout << "sum_time_diff " << sum_time_diff << '\n';
             web_socket_user->is_blocked = true;
             web_socket_user->unblock_time = std::chrono::steady_clock::now() + std::chrono::seconds(30);

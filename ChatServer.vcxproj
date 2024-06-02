@@ -144,6 +144,7 @@
     <ClCompile Include="source\RequestHandler.cpp" />
     <ClCompile Include="source\Server.cpp" />
     <ClCompile Include="source\TimeFunc.cpp" />
+    <ClCompile Include="source\TimeUtils.cpp" />
     <ClCompile Include="source\UserModel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +157,7 @@
     <ClInclude Include="header\RequestHandler.h" />
     <ClInclude Include="header\Server.h" />
     <ClInclude Include="header\TimeFunc.h" />
+    <ClInclude Include="header\TimeUtils.h" />
     <ClInclude Include="header\UserModel.h" />
     <ClInclude Include="header\WebSocketUser.h" />
   </ItemGroup>
