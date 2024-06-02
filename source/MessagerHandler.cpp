@@ -9,9 +9,6 @@
 
 using namespace JsonChat;
 
-const int MAX_MESSAGE_COUNT = 8;
-const int MIN_SPAM_TIME = 9;
-
 void MessagerHandler::ConnectedUser(web_socket* WS) {
     std::cout << "\nConnectedUser__Start..\n";
 
@@ -19,8 +16,8 @@ void MessagerHandler::ConnectedUser(web_socket* WS) {
     web_socket_user->email_sender_id_ = request_handler_->getUserModel()->get_email();
     std::cout << "web_socket_user->email_: " << web_socket_user->email_sender_id_ << '\n';
 
-    if (Database::getDatabase()->CheckEmailExists(web_socket_user->email_sender_id_)) {
-        web_socket_user->sender_id_ = Database::getDatabase()->GetUserIdByEmail(web_socket_user->email_sender_id_);
+    if (Database::getDatabase()->getUserTable()->CheckEmailExists(web_socket_user->email_sender_id_)) {
+        web_socket_user->sender_id_ = Database::getDatabase()->getUserTable()->GetUserIdByEmail(web_socket_user->email_sender_id_);
         std::cout << "User connected ID: " << web_socket_user->sender_id_ << '\n';
     }
     else {
@@ -128,7 +125,7 @@ void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed) {
 
     web_socket_user->message_ = parsed[MESSAGE];
     web_socket_user->receiver_id_ = parsed[RECEIVER_ID];
-    web_socket_user->sent_at = Database::getDatabase()->InsertAndGetSentAt(web_socket_user->sender_id_, web_socket_user->receiver_id_, web_socket_user->message_);
+    web_socket_user->sent_at = Database::getDatabase()->getMessageTable()->InsertAndGetSentAt(web_socket_user->sender_id_, web_socket_user->receiver_id_, web_socket_user->message_);
 
     RecordMessageTime(WS);
 

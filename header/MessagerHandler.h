@@ -12,6 +12,9 @@ using json = nlohmann::json;
 
 class MessagerHandler {
 private:
+    const int MAX_MESSAGE_COUNT = 8;
+    const int MIN_SPAM_TIME = 10;
+
     RequestHandler* request_handler_;
 
     typedef uWS::WebSocket<false, true, WebSocketUser> web_socket;

@@ -6,7 +6,7 @@
 
 std::mutex mtx;
 
-DBConnection::DBConnection() : connection_(PQconnectdb(PathDB::CONNECTION_DB.data()))
+ DBConnection::DBConnection() : connection_(PQconnectdb(PathDB::CONNECTION_DB.data()))
 {
 	if (PQstatus(connection_) != CONNECTION_OK) {
 		PQfinish(connection_);
@@ -28,6 +28,13 @@ std::unique_ptr<Database> Database::createInstance() {
     return std::unique_ptr<Database>(new Database());
 }
 
+Database::Database() : users_table_(new UserTable()), message_table_(new MessageTable()) {}
+
+Database::~Database() {
+    delete users_table_;
+    delete message_table_;
+}
+
 Database* Database::getDatabase() {
     if (!instance_) {
         std::lock_guard<std::mutex> lock(mtx);
@@ -38,75 +45,20 @@ Database* Database::getDatabase() {
     return instance_;
 }
 
-//--- FOR THE USERS TABLE ---//
 
-void Database::InsertUsers(const std::string& user_name, const std::string& email, const std::string& password) const
+UserTable* Database::getUserTable() const
 {
-
-    const std::string query = "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)";
-    const char* param_values[3] = { user_name.c_str(), email.c_str(), password.c_str() };
-    PGresult* res = PQexecParams(connection_,
-        query.c_str(),
-        3,      
-        NULL,
-        param_values,
-        NULL,   
-        NULL,    
-        0);      
-
-    PQclear(res);
+    return users_table_;
 }
 
-bool Database::CheckUserIdExists(const uint64_t user_id) const
+MessageTable* Database::getMessageTable() const
 {
-    const std::string query = "SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)";
-    const std::string user_id_str = std::to_string(user_id);
-    const char* param_values[1] = { user_id_str.c_str() };
-
-    PGresult* res = PQexecParams(connection_,
-        query.c_str(),
-        1,
-        NULL,
-        param_values,
-        NULL, NULL,
-        0);
-
-    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        PQclear(res);
-        return false;
-    }
-
-    const bool exists = PQgetvalue(res, 0, 0)[0] == 't'; // 't' == true
-
-    PQclear(res);
-    return exists;
+    return message_table_;
 }
 
-bool Database::CheckEmailExists(const std::string& email) const
-{
-    const std::string query = "SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)";
-    const char* param_values[1] = { email.c_str() };
 
-    PGresult* res = PQexecParams(connection_,
-        query.c_str(),
-        1,           
-        NULL,         
-        param_values,
-        NULL, NULL,   
-        0);           
 
-    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        PQclear(res);
-        return false; 
-    }
-
-    const bool exists = PQgetvalue(res, 0, 0)[0] == 't'; // 't' == true
-
-    PQclear(res);
-    return exists;
-}
-
-std::string Database::GetPasswordByEmail(const std::string& email) const
+std::string UserTable::GetPasswordByEmail(const std::string& email) const
 {
     const std::string query = "SELECT password FROM users WHERE email = $1";
     const char* param_values[1] = { email.c_str() };
@@ -130,7 +82,8 @@ std::string Database::GetPasswordByEmail(const std::string& email) const
     return password;
 }
 
-uint64_t Database::GetUserIdByEmail(const std::string& email) const {
+uint64_t UserTable::GetUserIdByEmail(const std::string& email) const
+{
     const std::string query = "SELECT id FROM users WHERE email = $1";
     const char* param_values[1] = { email.c_str() };
 
@@ -158,7 +111,8 @@ uint64_t Database::GetUserIdByEmail(const std::string& email) const {
     return user_id;
 }
 
-std::string Database::GetUsernameById(const uint64_t user_id) const {
+std::string UserTable::GetUsernameById(const uint64_t user_id) const
+{
     const std::string query = "SELECT username FROM users WHERE id = $1";
     const std::string user_id_str = std::to_string(user_id);
     const char* param_values[1] = { user_id_str.c_str() };
@@ -182,7 +136,7 @@ std::string Database::GetUsernameById(const uint64_t user_id) const {
     return username;
 }
 
-json Database::GetAllUsersNamesInJson() const
+json UserTable::GetAllUsersNamesInJson() const
 {
     json usersJson;
 
@@ -203,64 +157,7 @@ json Database::GetAllUsersNamesInJson() const
     return usersJson;
 }
 
-std::string Database::FindUserByEmail(const std::string& email) const {
-    const std::string query = "SELECT username FROM users WHERE email = $1";
-    const char* param_values[1] = { email.c_str() };
-
-    PGresult* res = PQexecParams(connection_,
-        query.c_str(),
-        1,
-        NULL,
-        param_values,
-        NULL, NULL,
-        0);
-
-    if (PQntuples(res) == 0) {
-        PQclear(res);
-        return "";
-    }
-
-    std::string username = PQgetvalue(res, 0, 0);
-    PQclear(res);
-
-    return username;
-}
-
-json Database::FindUserByName(const std::string& name)
-{
-    json usersJson;
-
-    const std::string query = "SELECT username FROM users WHERE username = $1";
-    const char* param_values[1] = { name.c_str() };
-
-    PGresult* res = PQexecParams(connection_,
-        query.c_str(),
-        1,
-        NULL,
-        param_values,
-        NULL, NULL,
-        0);
-
-    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        PQclear(res);
-        return usersJson;
-    }
-
-    if (PQntuples(res) == 0) {
-        PQclear(res);
-        return usersJson;
-    }
-
-    for (int i = 0; i < PQntuples(res); ++i) {
-        usersJson.push_back(PQgetvalue(res, i, 0));
-    }
-
-    PQclear(res);
-
-    return usersJson;
-}
-
-std::set<int> Database::GetFriendIdsByUserId(const uint64_t user_id) const
+std::set<int> UserTable::GetFriendIdsByUserId(const uint64_t user_id) const
 {
     const std::string query = "SELECT friend_ids FROM users WHERE id = $1";
     const std::string user_id_str = std::to_string(user_id);
@@ -312,7 +209,23 @@ std::set<int> Database::GetFriendIdsByUserId(const uint64_t user_id) const
     return friends;
 }
 
-void Database::AddFriendForUser(const uint64_t user_id, const uint64_t friend_id) const
+void UserTable::InsertUsers(const std::string& user_name, const std::string& email, const std::string& password) const
+{
+    const std::string query = "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)";
+    const char* param_values[3] = { user_name.c_str(), email.c_str(), password.c_str() };
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        3,
+        NULL,
+        param_values,
+        NULL,
+        NULL,
+        0);
+
+    PQclear(res);
+}
+
+void UserTable::AddFriendForUser(const uint64_t user_id, const uint64_t friend_id) const
 {
     // Execute SQL query to update friend_ids for the user
     const std::string query = "UPDATE users SET friend_ids = ARRAY_APPEND(users.friend_ids, $1) WHERE id = $2";
@@ -336,9 +249,117 @@ void Database::AddFriendForUser(const uint64_t user_id, const uint64_t friend_id
     PQclear(res);
 }
 
-//--- FOR THE MESSAGES TABLE---//
+bool UserTable::CheckUserIdExists(const uint64_t user_id) const
+{
+    const std::string query = "SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)";
+    const std::string user_id_str = std::to_string(user_id);
+    const char* param_values[1] = { user_id_str.c_str() };
 
-void Database::InsertMessage(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const {
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        return false;
+    }
+
+    const bool exists = PQgetvalue(res, 0, 0)[0] == 't'; // 't' == true
+
+    PQclear(res);
+    return exists;
+}
+
+bool UserTable::CheckEmailExists(const std::string& email) const
+{
+    const std::string query = "SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)";
+    const char* param_values[1] = { email.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        return false;
+    }
+
+    const bool exists = PQgetvalue(res, 0, 0)[0] == 't'; // 't' == true
+
+    PQclear(res);
+    return exists;
+}
+
+std::string UserTable::FindUserByEmail(const std::string& email) const
+{
+    const std::string query = "SELECT username FROM users WHERE email = $1";
+    const char* param_values[1] = { email.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQntuples(res) == 0) {
+        PQclear(res);
+        return "";
+    }
+
+    std::string username = PQgetvalue(res, 0, 0);
+    PQclear(res);
+
+    return username;
+}
+
+json UserTable::FindUserByName(const std::string& name)
+{
+    json usersJson;
+
+    const std::string query = "SELECT username FROM users WHERE username = $1";
+    const char* param_values[1] = { name.c_str() };
+
+    PGresult* res = PQexecParams(connection_,
+        query.c_str(),
+        1,
+        NULL,
+        param_values,
+        NULL, NULL,
+        0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        PQclear(res);
+        return usersJson;
+    }
+
+    if (PQntuples(res) == 0) {
+        PQclear(res);
+        return usersJson;
+    }
+
+    for (int i = 0; i < PQntuples(res); ++i) {
+        usersJson.push_back(PQgetvalue(res, i, 0));
+    }
+
+    PQclear(res);
+
+    return usersJson;
+}
+
+
+
+void MessageTable::InsertMessage(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const
+{
     PQsetClientEncoding(connection_, "UTF8");
 
     const std::string query = "INSERT INTO messages (sender_id, receiver_id, message_text, sent_at) VALUES ($1, $2, $3, NOW())";
@@ -364,10 +385,11 @@ void Database::InsertMessage(const uint64_t sender_id, const uint64_t receiver_i
     PQclear(res);
 }
 
-std::string Database::InsertAndGetSentAt(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const {
+std::string MessageTable::InsertAndGetSentAt(const uint64_t sender_id, const uint64_t receiver_id, const std::string& message_text) const
+{
     PQsetClientEncoding(connection_, "UTF8");
 
-	const std::string query = "INSERT INTO messages (sender_id, receiver_id, message_text, sent_at) VALUES ($1, $2, $3, NOW()) RETURNING sent_at";
+    const std::string query = "INSERT INTO messages (sender_id, receiver_id, message_text, sent_at) VALUES ($1, $2, $3, NOW()) RETURNING sent_at";
 
     const std::string sender_id_str = std::to_string(sender_id);
     const std::string receiver_id_str = std::to_string(receiver_id);
@@ -398,10 +420,11 @@ std::string Database::InsertAndGetSentAt(const uint64_t sender_id, const uint64_
     return sent_at;
 }
 
-json Database::PrintClientsMessages(const uint64_t sender_id, const uint64_t receiver_id) const {
+json MessageTable::PrintClientsMessages(const uint64_t sender_id, const uint64_t receiver_id) const
+{
     PQsetClientEncoding(connection_, "UTF8");
 
-	const std::string query = "SELECT sender_id, receiver_id, message_text, sent_at FROM messages WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1) ORDER BY sent_at DESC";
+    const std::string query = "SELECT sender_id, receiver_id, message_text, sent_at FROM messages WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1) ORDER BY sent_at DESC";
 
     const std::string sender_id_str = std::to_string(sender_id);
     const std::string receiver_id_str = std::to_string(receiver_id);
