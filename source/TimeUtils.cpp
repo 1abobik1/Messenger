@@ -1,7 +1,7 @@
 #include "../header/TimeUtils.h"
 
 // extracting a minute from a string like 2024-05-23 11:56:32.699288+03 - in this example the function will return 56
-int time_helper::helperGetMinutes(const std::string& sent_at)
+int time_utils::getMinutes(const std::string& sent_at)
 {
     std::string minutes;
     int colon_count = 0;
@@ -22,7 +22,7 @@ int time_helper::helperGetMinutes(const std::string& sent_at)
 }
 
 // extracting a seconds from a string like 2024-05-23 11:56:32.699288+03 - in this example the function will return 32
-int time_helper::helperGetSeconds(const std::string& sent_at)
+int time_utils::getSeconds(const std::string& sent_at)
 {
     std::string seconds;
     int colon_count = 0;

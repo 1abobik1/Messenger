@@ -2,7 +2,7 @@
 
 #include<string>
 
-namespace time_helper {
-	int helperGetMinutes(const std::string& sent_at);
-	int helperGetSeconds(const std::string& sent_at);
+namespace time_utils {
+	int getMinutes(const std::string& sent_at);
+	int getSeconds(const std::string& sent_at);
 }

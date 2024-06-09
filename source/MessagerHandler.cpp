@@ -57,8 +57,8 @@ bool MessagerHandler::CheckAndHandleBlock(web_socket* WS) {
 
 void MessagerHandler::RecordMessageTime(web_socket* WS) {
     WebSocketUser* web_socket_user = WS->getUserData();
-    web_socket_user->message_times.push_back({ time_helper::helperGetMinutes(web_socket_user->sent_at), time_helper::helperGetSeconds(web_socket_user->sent_at) });
-    if (web_socket_user->message_times.size() > MAX_MESSAGE_COUNT) {
+    web_socket_user->message_times.push_back({ time_utils::getMinutes(web_socket_user->sent_at), time_utils::getSeconds(web_socket_user->sent_at) });
+    if (const int msg_counter_spam_detection = 8; web_socket_user->message_times.size() > msg_counter_spam_detection) {
         web_socket_user->message_times.pop_front();
     }
 
@@ -67,10 +67,11 @@ void MessagerHandler::RecordMessageTime(web_socket* WS) {
 bool MessagerHandler::CheckAndHandleSpam(web_socket* WS) {
     WebSocketUser* web_socket_user = WS->getUserData();
 
-    if (web_socket_user->message_times.size() == MAX_MESSAGE_COUNT) {
+    if (const int msg_counter_spam_detection = 8; web_socket_user->message_times.size() == msg_counter_spam_detection) {
         int sum_time_diff = 0;
 
         bool all_minute_equal = true;
+        // if the minutes of sending the first two messages from the user are different, then you should not check
         for (size_t i = 0; i < web_socket_user->message_times.size() - 1; ++i) {
             if (web_socket_user->message_times[i].first != web_socket_user->message_times[i + 1].first) {
                 all_minute_equal = false;
@@ -78,13 +79,16 @@ bool MessagerHandler::CheckAndHandleSpam(web_socket* WS) {
             }
         }
 
+        
         if (all_minute_equal) {
             for (size_t i = 0; i < web_socket_user->message_times.size() - 1; ++i) {
                 sum_time_diff += (web_socket_user->message_times[i + 1].second - web_socket_user->message_times[i].second);
             }
         }
 
-        if (sum_time_diff != 0 && sum_time_diff <= MIN_SPAM_TIME) {
+        const int min_spam_time_in_sec = 9;
+        if (web_socket_user->message_times.size() == 8 && sum_time_diff != 0 && sum_time_diff <= min_spam_time_in_sec)// if the user sent 8 messages faster than 10 seconds, he will be blocked for spam  
+        {
             std::cout << "sum_time_diff " << sum_time_diff << '\n';
             web_socket_user->is_blocked = true;
             web_socket_user->unblock_time = std::chrono::steady_clock::now() + std::chrono::seconds(30);
@@ -119,6 +123,7 @@ void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed) {
 
     WebSocketUser* web_socket_user = WS->getUserData();
 
+    // if the user is still blocked due to spam
     if (CheckAndHandleBlock(WS)) {
         return;
     }
@@ -129,10 +134,12 @@ void MessagerHandler::ProcessPrivateMessage(web_socket* WS, json parsed) {
 
     RecordMessageTime(WS);
 
+    // Check if the user is spamming
     if (CheckAndHandleSpam(WS)) {
         return;
     }
 
+    // if the user is not blocked, then he can send a message
     if (!CheckAndHandleSpam(WS) && !CheckAndHandleBlock(WS)) {
         SendMsg(WS);
     }
