@@ -2,7 +2,7 @@
 ### 1) скачайте [vcpkg](https://github.com/microsoft/vcpkg) c github (там есть подробная инструкция по скачиванию) 
 ### 2) после успешной установки перейдите в папку, где установлен vcpkg и скачайте библиотеки uwebsockets, nlohmann-json, libpq. Пример скачивания
 ``` C:\vcpkg>vcpkg.exe install uwebsockets ```
-### 3) восстановите базу данных с именем Messenger_DB с использованием одного из файлов в папке create_db.
+### 3) восстановите базу данных с именем Messenger_DB с использованием файла create_db в папке.
 ### 4) я использовал pgAdmin4(после создания бд с именем Messenger_DB, нужно нажать на него правой кнопкой мыши, нажать на вкладку восстановить и выбрать путь до файла database_setup.sql и выбрать его для восстановления)
 ### 5) в файле CommonConst.h укажите свои данные, пример моих данных: 
 ``` constexpr std::string_view CONNECTION_DB = "host=localhost dbname=Messenger_DB user=postgres password=Zopa_kek12"; ```
