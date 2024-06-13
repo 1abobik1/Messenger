@@ -1,11 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "../header/RequestHandler.h"
-#include "../header/Server.h"
-#include "../bcrypt-cpp/include/bcrypt.h"
-#include "../header/DataBase.h"
+#include "RequestHandler.h"
+#include "Server.h"
+#include "bcrypt.h"
+#include "DataBase.h"
 
 #include <iostream>
+#include <stdexcept>
 
 
 void RequestHandler::HandleSignUp(uWS::HttpResponse<false>* res, uWS::HttpRequest* req)
@@ -37,7 +38,7 @@ void RequestHandler::HandleSignUp(uWS::HttpResponse<false>* res, uWS::HttpReques
 				try {
 					if (Database::getDatabase()->getUserTable()->CheckEmailExists(user_model_->get_email()))
 					{
-						throw std::exception("User with this email already exists");
+						throw std::invalid_argument("User with this email already exists");
 					}
 					else
 					{
@@ -107,12 +108,12 @@ void RequestHandler::HandleLogIn(uWS::HttpResponse<false>* res, uWS::HttpRequest
 						}
 						else
 						{
-							throw std::exception("wrong password");
+							throw std::invalid_argument("wrong password");
 						}
 					}
 					else
 					{
-						throw std::exception("wrong email");
+						throw std::invalid_argument("wrong email");
 					}
 				}
 				catch (std::runtime_error& r) {

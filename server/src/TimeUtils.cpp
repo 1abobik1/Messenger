@@ -1,4 +1,4 @@
-#include "../header/TimeUtils.h"
+#include "TimeUtils.h"
 
 // extracting a minute from a string like 2024-05-23 11:56:32.699288+03 - in this example the function will return 56
 int time_utils::getMinutes(const std::string& sent_at)

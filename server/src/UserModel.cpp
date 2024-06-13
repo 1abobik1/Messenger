@@ -1,4 +1,4 @@
-#include "../header/UserModel.h"
+#include "UserModel.h"
 
 std::uint64_t UserModel::get_id() const { return user_id_; }
 

@@ -1,11 +1,11 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "../header/MessagerHandler.h"
+#include "MessagerHandler.h"
 #include <iostream>
 
-#include "../header/Server.h"
-#include "../header/CommonConst.h"
-#include "../header/TimeUtils.h"
+#include "Server.h"
+#include "CommonConst.h"
+#include "TimeUtils.h"
 
 using namespace JsonChat;
 

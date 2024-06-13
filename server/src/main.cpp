@@ -3,8 +3,8 @@
 
 #include <locale.h>
 
-#include "header/Server.h"
-#include "header/DataBase.h"
+#include "Server.h"
+#include "DataBase.h"
 
 int main() {
 	setlocale(LC_ALL, "en_US.UTF-8");
