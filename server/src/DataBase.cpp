@@ -6,12 +6,13 @@
 
 std::mutex mtx;
 
- DBConnection::DBConnection() : connection_(PQconnectdb(PathDB::CONNECTION_DB.data()))
+DBConnection::DBConnection() : connection_(PQconnectdb(PathDB::CONNECTION_DB.c_str()))
 {
 	if (PQstatus(connection_) != CONNECTION_OK) {
+		const std::string error = PQerrorMessage(connection_);
 		PQfinish(connection_);
 		connection_ = nullptr;
-		throw std::runtime_error(PQerrorMessage(connection_));
+		throw std::runtime_error(error);
 	}
 }
 

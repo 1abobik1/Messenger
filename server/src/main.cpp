@@ -1,16 +1,21 @@
-#define _SILENCE_ALL_CXX23_DEPRECATION_ARNINGS 
-#define _CRT_SECURE_NO_WARNINGS
+#include <exception>
+#include <iostream>
 
-#include <locale.h>
-
+#include "CommonConst.h"
 #include "Server.h"
-#include "DataBase.h"
+#include "messenger/config.hpp"
 
 int main() {
-	setlocale(LC_ALL, "en_US.UTF-8");
+	try {
+		const messenger::Config config = messenger::loadConfigFromEnv();
+		PathDB::CONNECTION_DB = config.databaseUrl;
 
-	Server server(9000);
-	server.run();
-
+		Server server(config.port);
+		server.run();
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Fatal: " << e.what() << '\n';
+		return 1;
+	}
 	return 0;
 }

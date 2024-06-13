@@ -30,6 +30,6 @@ namespace JsonChat
 
 namespace PathDB
 {
-	// path to the DB
-	constexpr std::string_view CONNECTION_DB = "host=localhost dbname=Messenger_DB user=postgres password=Zopa_kek12";
+	// connection string, set once from DATABASE_URL in main()
+	inline std::string CONNECTION_DB;
 }

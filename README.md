@@ -6,9 +6,9 @@ C:\vcpkg>vcpkg.exe install uwebsockets
 ```
 ### 3) Восстановите базу данных с именем Messenger_DB, используя файл database_setup.sql в папке create_db.
 ### 4) Рекомендуется использовать pgAdmin4 -в этом приложении после создания базы данных Messenger_DB, нажмите на нее правой кнопкой мыши, выберите вкладку "Восстановить" и укажите путь до файла database_setup.sql для восстановления.
-### 5) В файле CommonConst.h укажите свои данные для подключения к базе данных, например:
+### 5) Укажите строку подключения к базе данных в переменной окружения DATABASE_URL (пример — в файле .env.example):
 ```
-constexpr std::string_view CONNECTION_DB = "host=localhost dbname=Messenger_DB user=postgres password=Zopa_kek12";
+DATABASE_URL=postgresql://postgres:<пароль>@localhost:5432/Messenger_DB
 ```
 ### 6) Скачайте [CMake](https://cmake.org/download/) с официального сайта.
 ### 7) Настройте CMake (не забудьте изменить локальные пути для библиотек uwebsockets и nlohmann-json в файле CMakeLists.txt, строки 32-33).
