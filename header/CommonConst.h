@@ -13,9 +13,9 @@ namespace JsonChat
 
 	const std::string PUBLIC_MSG = "public_msg";
 
-	const std::string RECEIVER_ID = "receiver_id"; // получатель 
+	const std::string RECEIVER_ID = "receiver_id"; // РїРѕР»СѓС‡Р°С‚РµР»СЊ 
 
-	const std::string SENDER_ID = "sender_id"; // отправитель
+	const std::string SENDER_ID = "sender_id"; // РѕС‚РїСЂР°РІРёС‚РµР»СЊ
 
 	const std::string SET_NAME = "set_name";
 

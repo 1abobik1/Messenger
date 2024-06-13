@@ -82,11 +82,11 @@ const SendForm = ({active, setActive, socket, receiverId, selectedUserName}) => 
   }
 
   useEffect(() => {
-    // Ãðóïïèðîâêà ñîîáùåíèé íà îñíîâå òîãî, ÷åé ýòî ID (îòïðàâèòåëÿ èëè ïîëó÷àòåëÿ)
+    // Ð“Ñ€ÑƒÐ¿Ð¿Ð¸Ñ€Ð¾Ð²ÐºÐ° ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ð¹ Ð½Ð° Ð¾ÑÐ½Ð¾Ð²Ðµ Ñ‚Ð¾Ð³Ð¾, Ñ‡ÐµÐ¹ ÑÑ‚Ð¾ ID (Ð¾Ñ‚Ð¿Ñ€Ð°Ð²Ð¸Ñ‚ÐµÐ»Ñ Ð¸Ð»Ð¸ Ð¿Ð¾Ð»ÑƒÑ‡Ð°Ñ‚ÐµÐ»Ñ)
     const yourMsgs = allMessages.filter(msg => msg.sender_id.toString() === yourUserId);
     const otherMsgs = allMessages.filter(msg => msg.receiver_id.toString() === yourUserId);
 
-    // Ôîðìàòèðîâàíèå ñîîáùåíèé äëÿ îòîáðàæåíèÿ â èíòåðôåéñå
+    // Ð¤Ð¾Ñ€Ð¼Ð°Ñ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ð¹ Ð´Ð»Ñ Ð¾Ñ‚Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ Ð² Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹ÑÐµ
     const formattedYourMsgs = yourMsgs.map(msg => ({
       content: msg.message_text,
       timestamp: parseDate(msg.sent_at),
@@ -99,7 +99,7 @@ const SendForm = ({active, setActive, socket, receiverId, selectedUserName}) => 
       isYours: false
     }));
 
-    // Ñîðòèðîâêà ñîîáùåíèé ïî âðåìåíè îòïðàâêè
+    // Ð¡Ð¾Ñ€Ñ‚Ð¸Ñ€Ð¾Ð²ÐºÐ° ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ð¹ Ð¿Ð¾ Ð²Ñ€ÐµÐ¼ÐµÐ½Ð¸ Ð¾Ñ‚Ð¿Ñ€Ð°Ð²ÐºÐ¸
     const combinedMessages = [...formattedYourMsgs, ...formattedOtherMsgs];
     combinedMessages.sort((a, b) => a.timestamp - b.timestamp);
 
