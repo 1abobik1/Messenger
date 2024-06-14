@@ -61,6 +61,11 @@ target_include_directories(bcrypt PUBLIC third_party/bcrypt/include PRIVATE thir
 add_executable(messenger-server
     src/main.cpp
     src/config.cpp
+    src/db/connection.cpp
+    src/db/user_repository.cpp
+    src/db/session_repository.cpp
+    src/db/friend_repository.cpp
+    src/db/message_repository.cpp
     src/Server.cpp
     src/MessagerHandler.cpp
     src/RequestHandler.cpp
