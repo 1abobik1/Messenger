@@ -31,28 +31,30 @@ export const AuthProvider = ({children}) => {
   }, []);
 
   // apiFetch with the current token; an expired session sends the user back to the login page.
-  const request = useCallback(async (path, options = {}) => {
-    try {
-      return await apiFetch(path, {...options, token: session?.token});
-    } catch (error) {
-      if (error.status === 401) {
-        signout();
+  const request = useCallback(
+    async (path, options = {}) => {
+      try {
+        return await apiFetch(path, {...options, token: session?.token});
+      } catch (error) {
+        if (error.status === 401) {
+          signout();
+        }
+        throw error;
       }
-      throw error;
-    }
-  }, [session, signout]);
-
-  const value = useMemo(() => ({
-    user: session?.user ?? null,
-    token: session?.token ?? null,
-    signin,
-    signout,
-    request,
-  }), [session, signin, signout, request]);
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+    },
+    [session, signout],
   );
+
+  const value = useMemo(
+    () => ({
+      user: session?.user ?? null,
+      token: session?.token ?? null,
+      signin,
+      signout,
+      request,
+    }),
+    [session, signin, signout, request],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

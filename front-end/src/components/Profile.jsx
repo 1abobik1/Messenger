@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useNavigate} from "react-router-dom";
-import useAuth from "../auth/useAuth";
+import {useNavigate} from 'react-router-dom';
+import useAuth from '../auth/useAuth';
 
 const Profile = () => {
   const {user, signout, request} = useAuth();
@@ -19,9 +19,9 @@ const Profile = () => {
           setIsOpen(false);
         }
       }
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
       return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener('mousedown', handleClickOutside);
       };
     }
   }, [isOpen]);
@@ -42,9 +42,7 @@ const Profile = () => {
       </button>
       {isOpen && (
         <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl">
-          <div className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-            {userEmail}
-          </div>
+          <div className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{userEmail}</div>
           <div className="block px-4 py-2 text-sm">
             <button
               onClick={logout}

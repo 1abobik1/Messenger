@@ -1,16 +1,16 @@
-.menu{
+.menu {
   transform: translateX(-117%);
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   transition: all 0.2s;
 }
-.menu.active{
+.menu.active {
   transform: translateX(-17%);
 }
 @media screen and (max-width: 768px) {
-  .menu{
+  .menu {
     display: none;
   }
-  .menu.active{
+  .menu.active {
     display: block;
   }
 }
@@ -18,10 +18,10 @@
   font-size: 0.88rem;
   color: red;
 }
-.scrollbar::-webkit-scrollbar{
+.scrollbar::-webkit-scrollbar {
   width: 6px;
 }
-.scrollbar::-webkit-scrollbar-thumb{
+.scrollbar::-webkit-scrollbar-thumb {
   border-radius: 8px;
   background-color: rgb(99 102 241);
 }

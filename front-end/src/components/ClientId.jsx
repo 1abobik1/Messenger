@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import SendForm from "./SendForm";
-import {Link, useOutletContext} from "react-router-dom";
-import LoadingSpinner from "./LoadingSpinner";
-import useAuth from "../auth/useAuth";
+import SendForm from './SendForm';
+import {Link, useOutletContext} from 'react-router-dom';
+import LoadingSpinner from './LoadingSpinner';
+import useAuth from '../auth/useAuth';
 
 const ClientId = () => {
   const {menuActive, id, socket} = useOutletContext();
@@ -17,7 +17,7 @@ const ClientId = () => {
     setReceiver(null);
     setNotFound(false);
     request(`/api/users/${receiverId}`)
-      .then(user => !cancelled && setReceiver(user))
+      .then((user) => !cancelled && setReceiver(user))
       .catch(() => !cancelled && setNotFound(true));
     return () => {
       cancelled = true;
@@ -26,19 +26,23 @@ const ClientId = () => {
 
   if (notFound) {
     return (
-      <div className='flex flex-col w-screen h-screen items-center justify-center'>
-        <p className='font-bold text-xl'>User not found</p>
-        <Link to='/client' className='text-blue-400 mt-2'>Back</Link>
+      <div className="flex flex-col w-screen h-screen items-center justify-center">
+        <p className="font-bold text-xl">User not found</p>
+        <Link to="/client" className="text-blue-400 mt-2">
+          Back
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className='w-screen'>
+    <div className="w-screen">
       {socket && receiver ? (
-        <SendForm active={menuActive} socket={socket} receiver={receiver}/>
+        <SendForm active={menuActive} socket={socket} receiver={receiver} />
       ) : (
-        <div className='flex h-screen justify-center w-full'><LoadingSpinner/></div>
+        <div className="flex h-screen justify-center w-full">
+          <LoadingSpinner />
+        </div>
       )}
     </div>
   );

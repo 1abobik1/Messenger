@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import '../css/sign.css';
-import {Navigate, useNavigate} from "react-router-dom";
-import useAuth from "../auth/useAuth";
-import {apiFetch} from "../api";
+import {Navigate, useNavigate} from 'react-router-dom';
+import useAuth from '../auth/useAuth';
+import {apiFetch} from '../api';
 
 function isValidEmail(email) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -14,7 +14,7 @@ function isValidPassword(password) {
 }
 
 function isValidNickname(nickname) {
-  return (nickname.length <= 20) && (nickname.length > 0) && !/^\d+$/.test(nickname);
+  return nickname.length <= 20 && nickname.length > 0 && !/^\d+$/.test(nickname);
 }
 
 // Returns the first problem with the sign-up form, or '' if it looks valid (the server checks again).
@@ -44,15 +44,15 @@ const SignUpLogin = () => {
   const {user, signin} = useAuth();
 
   if (user) {
-    return <Navigate to='/client' replace={true}/>;
+    return <Navigate to="/client" replace={true} />;
   }
 
   const authenticate = (path, body, setMessage) => {
     setBusy(true);
     setMessage('');
     apiFetch(path, {method: 'POST', body})
-      .then(session => signin(session, () => navigate('/client', {replace: true})))
-      .catch(error => {
+      .then((session) => signin(session, () => navigate('/client', {replace: true})))
+      .catch((error) => {
         setMessage(error.message);
         setBusy(false);
       });
@@ -79,40 +79,83 @@ const SignUpLogin = () => {
   return (
     <div className="body">
       <div className="main">
-        <input type="checkbox" id="chk" aria-hidden="true"/>
+        <input type="checkbox" id="chk" aria-hidden="true" />
 
         <div className="signup" id="signup_id">
           <form id="signup_form">
-            <label htmlFor="chk" aria-hidden="true">Sign up</label>
-            <input type="text" name="user_name_sign" placeholder="User name" required={true}
-                   value={userName}
-                   minLength={1}
-                   onChange={(e) => setUserName(e.target.value)}/>
-            <input type="email" name="email_sign" placeholder="Email" required={true}
-                   value={email}
-                   onChange={(e) => setEmail(e.target.value)}/>
-            <input type="password" name="pswd_sign" placeholder="Password" required={true}
-                   minLength={10}
-                   value={password}
-                   onChange={(e) => setPassword(e.target.value)}/>
+            <label htmlFor="chk" aria-hidden="true">
+              Sign up
+            </label>
+            <input
+              type="text"
+              name="user_name_sign"
+              placeholder="User name"
+              required={true}
+              value={userName}
+              minLength={1}
+              onChange={(e) => setUserName(e.target.value)}
+            />
+            <input
+              type="email"
+              name="email_sign"
+              placeholder="Email"
+              required={true}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              name="pswd_sign"
+              placeholder="Password"
+              required={true}
+              minLength={10}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
             {signUpMessage && <p className="form-error">{signUpMessage}</p>}
-            <button type="button" id="signup_button" onClick={handleSignUp} disabled={busy}
-                    className='hover:bg-indigo-900'>Sign up</button>
+            <button
+              type="button"
+              id="signup_button"
+              onClick={handleSignUp}
+              disabled={busy}
+              className="hover:bg-indigo-900"
+            >
+              Sign up
+            </button>
           </form>
         </div>
 
         <div className="login" id="login_id">
           <form id="login_form">
-            <label htmlFor="chk" aria-hidden="true">Login</label>
-            <input type="email" name="email_log" placeholder="Email" required={true}
-                   value={emailLogin}
-                   onChange={(e) => setEmailLogin(e.target.value)}/>
-            <input type="password" name="pswd_log" placeholder="Password" required={true}
-                   value={passwordLogin}
-                   onChange={(e) => setPasswordLogin(e.target.value)}/>
+            <label htmlFor="chk" aria-hidden="true">
+              Login
+            </label>
+            <input
+              type="email"
+              name="email_log"
+              placeholder="Email"
+              required={true}
+              value={emailLogin}
+              onChange={(e) => setEmailLogin(e.target.value)}
+            />
+            <input
+              type="password"
+              name="pswd_log"
+              placeholder="Password"
+              required={true}
+              value={passwordLogin}
+              onChange={(e) => setPasswordLogin(e.target.value)}
+            />
             {loginMessage && <p className="form-error">{loginMessage}</p>}
-            <button type="button" id="login_button" onClick={handleLogin} disabled={busy}
-                    className='hover:bg-indigo-900'>Login</button>
+            <button
+              type="button"
+              id="login_button"
+              onClick={handleLogin}
+              disabled={busy}
+              className="hover:bg-indigo-900"
+            >
+              Login
+            </button>
           </form>
         </div>
       </div>

@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import '../css/burger.css';
-import useAuth from "../auth/useAuth";
+import useAuth from '../auth/useAuth';
 import {FaPlus, FaMinus, FaCheck} from 'react-icons/fa';
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from 'react-router-dom';
 
 const BurgerMenu = ({active}) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -52,10 +52,10 @@ const BurgerMenu = ({active}) => {
     }
   };
 
-  const isFriend = (userId) => friends.some(friend => friend.id === userId);
+  const isFriend = (userId) => friends.some((friend) => friend.id === userId);
 
   const toggleShowFriends = () => {
-    setShowFriends(prevState => !prevState);
+    setShowFriends((prevState) => !prevState);
   };
 
   const openChat = (userId, event) => {
@@ -76,11 +76,13 @@ const BurgerMenu = ({active}) => {
               type="text"
               placeholder="search by email"
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="border border-gray-200 rounded p-2"
             />
-            <button onClick={handleSearch}
-                    className="bg-indigo-500 text-white font-semibold py-2 mt-2 rounded hover:bg-indigo-400">
+            <button
+              onClick={handleSearch}
+              className="bg-indigo-500 text-white font-semibold py-2 mt-2 rounded hover:bg-indigo-400"
+            >
               {searching ? 'Searching...' : 'Search'}
             </button>
           </div>
@@ -93,8 +95,10 @@ const BurgerMenu = ({active}) => {
             </div>
             <div className="flex flex-col space-y-1 mt-4 -mx-2 min-h-10 overflow-y-auto">
               {searchResult && (
-                <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
-                     onClick={(event) => openChat(searchResult.id, event)}>
+                <div
+                  className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
+                  onClick={(event) => openChat(searchResult.id, event)}
+                >
                   <div className="flex items-center">
                     <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
                       {searchResult.username.charAt(0)}
@@ -112,11 +116,11 @@ const BurgerMenu = ({active}) => {
                     }}
                     className={
                       isFriend(searchResult.id)
-                        ? "ml-2 text-green-500 rounded-full p-1"
-                        : "ml-2 text-green-500 hover:bg-green-200 rounded-full p-1"
+                        ? 'ml-2 text-green-500 rounded-full p-1'
+                        : 'ml-2 text-green-500 hover:bg-green-200 rounded-full p-1'
                     }
                   >
-                    {isFriend(searchResult.id) ? <FaCheck/> : <FaPlus/>}
+                    {isFriend(searchResult.id) ? <FaCheck /> : <FaPlus />}
                   </button>
                 </div>
               )}
@@ -127,14 +131,17 @@ const BurgerMenu = ({active}) => {
             <div className="flex flex-row items-center justify-between text-xs">
               <span className="font-bold text-lg text-gray-800">Friends</span>
               <button onClick={toggleShowFriends} className="focus:outline-none">
-                {showFriends ? <FaMinus/> : <FaPlus/>}
+                {showFriends ? <FaMinus /> : <FaPlus />}
               </button>
             </div>
             {showFriends && (
               <div className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto max-h-100">
-                {friends.map(friend => (
-                  <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
-                       onClick={(event) => openChat(friend.id, event)} key={friend.id}>
+                {friends.map((friend) => (
+                  <div
+                    className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
+                    onClick={(event) => openChat(friend.id, event)}
+                    key={friend.id}
+                  >
                     <div className="flex items-center">
                       <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
                         {friend.username.charAt(0)}

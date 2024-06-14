@@ -9,7 +9,7 @@ function formatTime(isoString) {
 const MessageList = ({messages, myId}) => {
   return (
     <div className="flex flex-col space-y-4 p-4">
-      {messages.map(msg => {
+      {messages.map((msg) => {
         const isYours = msg.from === myId;
         return (
           <div key={msg.id} className={`flex ${isYours ? 'justify-end' : 'justify-start'}`}>
