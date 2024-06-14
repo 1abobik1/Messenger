@@ -58,8 +58,8 @@ add_library(bcrypt STATIC third_party/bcrypt/src/bcrypt.cpp third_party/bcrypt/s
 target_include_directories(bcrypt PUBLIC third_party/bcrypt/include PRIVATE third_party/bcrypt/src)
 
 # --- server --------------------------------------------------------------------
-add_executable(messenger-server
-    src/main.cpp
+# Everything except main(), so the tests can link it.
+add_library(messenger-core STATIC
     src/api.cpp
     src/auth_service.cpp
     src/chat.cpp
@@ -76,12 +76,37 @@ add_executable(messenger-server
     src/sha256.cpp
     src/validation.cpp
 )
-target_include_directories(messenger-server PRIVATE include)
-target_link_libraries(messenger-server PRIVATE uwebsockets nlohmann_json::nlohmann_json PostgreSQL::PostgreSQL bcrypt)
+target_include_directories(messenger-core PUBLIC include)
+target_link_libraries(messenger-core PUBLIC uwebsockets nlohmann_json::nlohmann_json PostgreSQL::PostgreSQL bcrypt)
 
-if(MSVC)
-    target_compile_options(messenger-server PRIVATE /W4 /utf-8 /permissive-)
-    target_compile_definitions(messenger-server PRIVATE _CRT_SECURE_NO_WARNINGS NOMINMAX)
-else()
-    target_compile_options(messenger-server PRIVATE -Wall -Wextra -Wpedantic)
+add_executable(messenger-server src/main.cpp)
+target_link_libraries(messenger-server PRIVATE messenger-core)
+
+foreach(target messenger-core messenger-server)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4 /utf-8 /permissive-)
+        target_compile_definitions(${target} PRIVATE _CRT_SECURE_NO_WARNINGS NOMINMAX)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+endforeach()
+
+# --- tests (no database needed) ------------------------------------------------
+include(CTest)
+if(BUILD_TESTING)
+    FetchContent_Declare(googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.tar.gz
+        DOWNLOAD_EXTRACT_TIMESTAMP ON)
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+
+    add_executable(messenger-tests
+        tests/rate_limiter_test.cpp
+        tests/sha256_test.cpp
+        tests/validation_test.cpp
+    )
+    target_link_libraries(messenger-tests PRIVATE messenger-core GTest::gtest_main)
+    include(GoogleTest)
+    gtest_discover_tests(messenger-tests)
 endif()
