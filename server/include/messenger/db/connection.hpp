@@ -54,7 +54,7 @@ public:
     Connection(const Connection&) = delete;
     Connection& operator=(const Connection&) = delete;
 
-    // Runs a parameterized query ($1, $2, ...). Reconnects once if the connection was lost.
+    // Runs a parameterized query ($1, $2, ...). If the connection was lost, reconnects and retries once.
     // Throws DbError if the query fails.
     Result exec(std::string_view sql, const std::vector<Param>& params = {});
 

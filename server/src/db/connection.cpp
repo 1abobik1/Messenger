@@ -15,35 +15,41 @@ void Connection::connect() {
 }
 
 Result Connection::exec(std::string_view sql, const std::vector<Param>& params) {
-    if (PQstatus(conn_.get()) != CONNECTION_OK) {
-        PQreset(conn_.get());
-        if (PQstatus(conn_.get()) != CONNECTION_OK) {
-            connect();
-        }
-    }
-
     std::vector<const char*> values;
     values.reserve(params.size());
     for (const Param& param : params) {
         values.push_back(param ? param->c_str() : nullptr);
     }
-
     const std::string query(sql);
-    PGresult* raw = PQexecParams(conn_.get(), query.c_str(), static_cast<int>(values.size()), nullptr,
-                                 values.data(), nullptr, nullptr, 0);
-    if (raw == nullptr) {
-        throw DbError("query failed: " + std::string(PQerrorMessage(conn_.get())), {});
-    }
 
-    const ExecStatusType status = PQresultStatus(raw);
-    if (status != PGRES_COMMAND_OK && status != PGRES_TUPLES_OK) {
-        const char* state = PQresultErrorField(raw, PG_DIAG_SQLSTATE);
-        DbError error("query failed: " + std::string(PQresultErrorMessage(raw)),
-                      state != nullptr ? state : "");
+    // A dropped connection (e.g. PostgreSQL restarted) is only noticed when a query fails:
+    // reconnect and try once more.
+    for (int attempt = 0;; ++attempt) {
+        if (PQstatus(conn_.get()) != CONNECTION_OK) {
+            PQreset(conn_.get());
+            if (PQstatus(conn_.get()) != CONNECTION_OK) {
+                connect();
+            }
+        }
+
+        PGresult* raw = PQexecParams(conn_.get(), query.c_str(), static_cast<int>(values.size()), nullptr,
+                                     values.data(), nullptr, nullptr, 0);
+        const ExecStatusType status = raw != nullptr ? PQresultStatus(raw) : PGRES_FATAL_ERROR;
+        if (status == PGRES_COMMAND_OK || status == PGRES_TUPLES_OK) {
+            return Result(raw);
+        }
+
+        const bool connectionLost = PQstatus(conn_.get()) == CONNECTION_BAD;
+        if (connectionLost && attempt == 0) {
+            PQclear(raw);
+            continue;
+        }
+
+        const char* state = raw != nullptr ? PQresultErrorField(raw, PG_DIAG_SQLSTATE) : nullptr;
+        const std::string message = raw != nullptr ? PQresultErrorMessage(raw) : PQerrorMessage(conn_.get());
         PQclear(raw);
-        throw error;
+        throw DbError("query failed: " + message, state != nullptr ? state : "");
     }
-    return Result(raw);
 }
 
 }  // namespace messenger::db
