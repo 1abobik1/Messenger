@@ -3,9 +3,8 @@ import '../css/burger.css';
 import useAuth from "../auth/useAuth";
 import {FaPlus, FaMinus, FaCheck} from 'react-icons/fa';
 import {useNavigate} from "react-router-dom";
-import {allowedRoutes} from "./URLGuard";
 
-const BurgerMenu = ({active, setActive, setSelectedUserName}) => {
+const BurgerMenu = ({active}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState(null); // {id, username}
   const [errorMessage, setErrorMessage] = useState('');
@@ -59,11 +58,9 @@ const BurgerMenu = ({active, setActive, setSelectedUserName}) => {
     setShowFriends(prevState => !prevState);
   };
 
-  const handleClientIdClick = (userId, event, nickname) => {
+  const openChat = (userId, event) => {
     event.stopPropagation();
-    setSelectedUserName(nickname);
-    allowedRoutes.add(`/client/${userId}`);
-    navigate(`${userId}`);
+    navigate(`/client/${userId}`);
   };
 
   return (
@@ -97,7 +94,7 @@ const BurgerMenu = ({active, setActive, setSelectedUserName}) => {
             <div className="flex flex-col space-y-1 mt-4 -mx-2 min-h-10 overflow-y-auto">
               {searchResult && (
                 <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
-                     onClick={(event) => handleClientIdClick(searchResult.id, event, searchResult.username)}>
+                     onClick={(event) => openChat(searchResult.id, event)}>
                   <div className="flex items-center">
                     <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
                       {searchResult.username.charAt(0)}
@@ -137,7 +134,7 @@ const BurgerMenu = ({active, setActive, setSelectedUserName}) => {
               <div className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto max-h-100">
                 {friends.map(friend => (
                   <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
-                       onClick={(event) => handleClientIdClick(friend.id, event, friend.username)} key={friend.id}>
+                       onClick={(event) => openChat(friend.id, event)} key={friend.id}>
                     <div className="flex items-center">
                       <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
                         {friend.username.charAt(0)}

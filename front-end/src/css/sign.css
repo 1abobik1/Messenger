@@ -99,3 +99,11 @@
 #chk:checked ~ .signup label {
   transform: scale(.6);
 }
+
+.form-error {
+  color: #fecaca;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 8px auto 0;
+  width: 60%;
+}

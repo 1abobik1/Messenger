@@ -6,7 +6,8 @@ import useAuth from "../auth/useAuth";
 
 const MAX_MESSAGE_LENGTH = 4000;
 
-const SendForm = ({active, setActive, socket, receiverId, selectedUserName}) => {
+const SendForm = ({active, socket, receiver}) => {
+  const receiverId = receiver.id;
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]); // [{id, from, to, body, sent_at}], oldest first
   const [error, setError] = useState('');
@@ -76,9 +77,9 @@ const SendForm = ({active, setActive, socket, receiverId, selectedUserName}) => 
   return (
     <div
       className={active ? 'flex flex-col flex-auto h-screen form active pl-4' : 'flex flex-col flex-auto h-screen form pl-4'}>
-      <div className="flex flex-cnpm startol flex-auto flex-shrink-0  bg-gray-100 h-full p-4">
+      <div className="flex flex-auto flex-shrink-0 bg-gray-100 h-full p-4">
         <div className="sendhund">
-          <Receiver selectedUserName={selectedUserName} receiverId={receiverId}/>
+          <Receiver receiver={receiver}/>
           <div className="flex flex-col h-full overflow-y-scroll">
             <MessageList messages={messages} myId={myId}/>
           </div>
