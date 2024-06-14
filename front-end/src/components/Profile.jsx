@@ -3,11 +3,11 @@ import {useNavigate} from "react-router-dom";
 import useAuth from "../auth/useAuth";
 
 const Profile = () => {
-  const userEmail = localStorage.getItem('userEmail');
+  const {user, signout, request} = useAuth();
+  const userEmail = user?.email;
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const {signout} = useAuth();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -26,9 +26,10 @@ const Profile = () => {
     }
   }, [isOpen]);
   const logout = () => {
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userId');
-    signout(() => navigate('/', {replace: true}))
+    // End the session on the server too; leave even if the server is unreachable.
+    request('/api/auth/logout', {method: 'POST'})
+      .catch(() => {})
+      .finally(() => signout(() => navigate('/', {replace: true})));
   };
 
   return (

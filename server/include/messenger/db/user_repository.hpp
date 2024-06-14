@@ -16,7 +16,7 @@ public:
     std::optional<User> create(const std::string& username, const std::string& email, const std::string& passwordHash);
 
     std::optional<User> findByEmail(const std::string& email);
-    std::optional<UserSummary> findById(UserId id);
+    std::optional<User> findById(UserId id);
 
 private:
     Connection& connection_;

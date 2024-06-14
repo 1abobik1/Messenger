@@ -2,9 +2,7 @@ import React, {useState} from 'react';
 import '../css/sign.css';
 import {useNavigate} from "react-router-dom";
 import useAuth from "../auth/useAuth";
-
-var bcrypt = require('bcryptjs');
-var salt = bcrypt.genSaltSync(13);
+import {apiFetch} from "../api";
 
 function isValidEmail(email) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,15 +17,6 @@ function isValidNickname(nickname) {
   return (nickname.length <= 20) && (nickname.length > 0) && !/^\d+$/.test(nickname);
 }
 
-function createUser(userName, email, password) {
-  var passwordToSave = bcrypt.hashSync(password, salt);
-  return {
-    user_name: userName,
-    email,
-    pswd: passwordToSave
-  };
-}
-
 const SignUpLogin = () => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -37,37 +26,10 @@ const SignUpLogin = () => {
 
   const handleSignUp = () => {
     if (isValidNickname(userName) && isValidEmail(email) && isValidPassword(password)) {
-      let userData = createUser(userName, email, password);
-      let jsonStr = JSON.stringify(userData);
-
-      fetch('http://localhost:9000/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: jsonStr
-      })
-        .then(response => {
-          if (response.ok) {
-            return response.text();
-          } else {
-            throw new Error('Request failed');
-          }
-        })
-        .then(data => {
-          const userData = JSON.parse(data);
-          if (userData.id) {
-            localStorage.setItem('userEmail', email);
-            localStorage.setItem('userId', userData.id);
-            signin(userName, () => navigate('/client', {replace: true}));
-          } else {
-            alert();
-          }
-        })
-        .catch(error => {
-          alert(error.message);
-        });
-
+      // The password is sent as is and hashed with bcrypt on the server.
+      apiFetch('/api/auth/signup', {method: 'POST', body: {username: userName, email, password}})
+        .then(session => signin(session, () => navigate('/client', {replace: true})))
+        .catch(error => alert(error.message));
     } else {
       if (!isValidNickname(userName)) {
         alert("your name should be short and contain more than just numbers");
@@ -81,50 +43,16 @@ const SignUpLogin = () => {
     }
   };
 
-  // Добавим сохранение email при успешном входе
   const [emailLogin, setEmailLogin] = useState('');
   const [passwordLogin, setPasswordLogin] = useState('');
 
   const handleLogin = () => {
-    if (isValidEmail(emailLogin) && isValidPassword(passwordLogin)) {
-      let userData = {
-        email: emailLogin,
-        pswd: passwordLogin
-      };
-
-      let jsonStr = JSON.stringify(userData);
-
-      fetch('http://localhost:9000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: jsonStr
-      })
-        .then(response => {
-          if (response.ok) {
-            return response.text();
-          } else {
-            throw new Error('Request failed');
-          }
-        })
-        .then(data => {
-          const userData = JSON.parse(data);
-          if (userData.id) {
-            localStorage.setItem('userEmail', emailLogin);
-            localStorage.setItem('userId', userData.id);
-            signin(emailLogin, () => navigate('/client', {replace: true}));
-          } else {
-            alert(data);
-          }
-        })
-        .catch(()=> {
-          alert("Wrong email or password");
-        });
+    if (isValidEmail(emailLogin) && passwordLogin.length > 0) {
+      apiFetch('/api/auth/login', {method: 'POST', body: {email: emailLogin, password: passwordLogin}})
+        .then(session => signin(session, () => navigate('/client', {replace: true})))
+        .catch(error => alert(error.status === 401 ? "Wrong email or password" : error.message));
     } else {
-      if (!isValidEmail(emailLogin) || !isValidPassword(passwordLogin)) {
-        alert("Wrong email or password");
-      }
+      alert("Wrong email or password");
     }
   };
   return (

@@ -1,21 +1,15 @@
 #include <exception>
-#include <iostream>
+#include <string>
 
-#include "CommonConst.h"
-#include "Server.h"
 #include "messenger/config.hpp"
+#include "messenger/log.hpp"
+#include "messenger/server.hpp"
 
 int main() {
-	try {
-		const messenger::Config config = messenger::loadConfigFromEnv();
-		PathDB::CONNECTION_DB = config.databaseUrl;
-
-		Server server(config.port);
-		server.run();
-	}
-	catch (const std::exception& e) {
-		std::cerr << "Fatal: " << e.what() << '\n';
-		return 1;
-	}
-	return 0;
+    try {
+        return messenger::runServer(messenger::loadConfigFromEnv());
+    } catch (const std::exception& e) {
+        messenger::log::error(std::string("fatal: ") + e.what());
+        return 1;
+    }
 }

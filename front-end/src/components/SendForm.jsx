@@ -2,76 +2,68 @@ import React, {useEffect, useState, useCallback} from 'react';
 import '../css/form.css';
 import MessageList from "./MessageList";
 import Receiver from "./Receiver";
+import useAuth from "../auth/useAuth";
+
+const MAX_MESSAGE_LENGTH = 4000;
 
 const SendForm = ({active, setActive, socket, receiverId, selectedUserName}) => {
   const [message, setMessage] = useState('');
-  const [allMessages, setAllMessages] = useState([]);
-  const [yourMessages, setYourMessages] = useState([]);
-  const [otherMessages, setOtherMessages] = useState([]);
-  const yourUserId = localStorage.getItem('userId');
+  const [messages, setMessages] = useState([]); // [{id, from, to, body, sent_at}], oldest first
+  const [error, setError] = useState('');
+  const {user, request} = useAuth();
+  const myId = user.id;
 
-  function parseDate(dateString) {
-    const [datePart] = dateString.split('.');
-    const date = new Date(datePart);
-    return Math.floor(date.getTime());
-  }
-
-  const fetchAllMessages = useCallback(async () => {
-    try {
-      const requestBody = {
-        sender_id: parseInt(yourUserId),
-        receiver_id: receiverId
-      };
-
-      const response = await fetch('http://localhost:9000/client/PrintClientsMessages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setAllMessages(data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [yourUserId, receiverId]);
-
+  // Adds messages that are not on screen yet; the server may deliver the same message twice (history + socket).
+  const addMessages = useCallback((incoming) => {
+    setMessages(prev => {
+      const known = new Set(prev.map(msg => msg.id));
+      const fresh = incoming.filter(msg => !known.has(msg.id));
+      return fresh.length ? [...prev, ...fresh].sort((a, b) => a.id - b.id) : prev;
+    });
+  }, []);
 
   useEffect(() => {
-    if (receiverId && yourUserId) {
-      fetchAllMessages();
-    }
-  }, [fetchAllMessages, receiverId, yourUserId]);
+    let cancelled = false;
+    setMessages([]);
+    request(`/api/messages/${receiverId}?limit=50`)
+      .then(history => {
+        if (!cancelled) {
+          addMessages(history);
+        }
+      })
+      .catch(err => setError(err.message));
+    return () => {
+      cancelled = true;
+    };
+  }, [receiverId, request, addMessages]);
 
   useEffect(() => {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      setOtherMessages(prevMessages => [...prevMessages, {
-        content: data.message,
-        timestamp: parseDate(data.sent_at),
-        isYours: false
-      }]);
+      if (data.type === 'message') {
+        const msg = data.message;
+        // Only messages of this conversation: a message from someone else must not appear here.
+        const inThisChat = (msg.from === receiverId && msg.to === myId) || (msg.from === myId && msg.to === receiverId);
+        if (inThisChat) {
+          addMessages([msg]);
+        }
+      } else if (data.type === 'error') {
+        setError(data.code === 'rate_limited'
+          ? `Too many messages. Try again in ${data.retry_after} s.`
+          : data.message);
+      }
     };
-
     return () => {
       socket.onmessage = null;
     };
-  }, [socket, receiverId]);
-
-  function getCurrentTime() {
-    return Date.now();
-  }
+  }, [socket, receiverId, myId, addMessages]);
 
   function sendMessage() {
     if (message.trim() !== '') {
-      const newMessage = {content: message, timestamp: getCurrentTime(), isYours: true};
-      socket.send(JSON.stringify({"command": "private_msg", "receiver_id": receiverId, "message": message}));
-      setYourMessages([...yourMessages, newMessage]);
+      // Shown when the server echoes it back with its id and time.
+      socket.send(JSON.stringify({type: 'message', to: receiverId, body: message}));
       setMessage('');
+      setError('');
     }
   }
 
@@ -79,34 +71,7 @@ const SendForm = ({active, setActive, socket, receiverId, selectedUserName}) => 
     if (event.key === 'Enter' && event.ctrlKey) {
       sendMessage();
     }
-  }
-
-  useEffect(() => {
-    // Группировка сообщений на основе того, чей это ID (отправителя или получателя)
-    const yourMsgs = allMessages.filter(msg => msg.sender_id.toString() === yourUserId);
-    const otherMsgs = allMessages.filter(msg => msg.receiver_id.toString() === yourUserId);
-
-    // Форматирование сообщений для отображения в интерфейсе
-    const formattedYourMsgs = yourMsgs.map(msg => ({
-      content: msg.message_text,
-      timestamp: parseDate(msg.sent_at),
-      isYours: true
-    }));
-
-    const formattedOtherMsgs = otherMsgs.map(msg => ({
-      content: msg.message_text,
-      timestamp: parseDate(msg.sent_at),
-      isYours: false
-    }));
-
-    // Сортировка сообщений по времени отправки
-    const combinedMessages = [...formattedYourMsgs, ...formattedOtherMsgs];
-    combinedMessages.sort((a, b) => a.timestamp - b.timestamp);
-
-    setYourMessages(combinedMessages.filter(msg => msg.isYours));
-    setOtherMessages(combinedMessages.filter(msg => !msg.isYours));
-  }, [allMessages, yourUserId]);
-
+  };
 
   return (
     <div
@@ -115,8 +80,9 @@ const SendForm = ({active, setActive, socket, receiverId, selectedUserName}) => 
         <div className="sendhund">
           <Receiver selectedUserName={selectedUserName} receiverId={receiverId}/>
           <div className="flex flex-col h-full overflow-y-scroll">
-            <MessageList yourMessages={yourMessages} otherMessages={otherMessages}/>
+            <MessageList messages={messages} myId={myId}/>
           </div>
+          {error && <div className="text-sm text-red-600 px-4 py-1">{error}</div>}
           <div className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4 input">
             <div className="flex-grow ml-4">
               <div className="relative w-full">
@@ -126,7 +92,7 @@ const SendForm = ({active, setActive, socket, receiverId, selectedUserName}) => 
                                   onKeyUp={handleKeyPress}
                                   value={message}
                                   id="messageInput"
-                                  maxLength={3500}
+                                  maxLength={MAX_MESSAGE_LENGTH}
                                   autoFocus={true}
                                   placeholder={`Message`}/>
               </div>

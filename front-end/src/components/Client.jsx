@@ -4,6 +4,8 @@ import WhoToWrite from "./WhoToWrite";
 import {Outlet, useParams} from "react-router-dom";
 import {SocketContext} from "./SocketContext";
 import Profile from "./Profile";
+import useAuth from "../auth/useAuth";
+import {WS_URL} from "../api";
 
 const Client = () => {
   const [menuActive, setMenuActive] = useState(true);
@@ -11,13 +13,14 @@ const Client = () => {
   const [isSocketReady, setIsSocketReady] = useState(false);
   const [selectedUserName, setSelectedUserName] = useState('');
   const {id} = useParams();
+  const {token} = useAuth();
 
   useEffect(() => {
     if (socketRef.current) {
       socketRef.current.close();
     }
 
-    socketRef.current = new WebSocket('ws://localhost:9000/');
+    socketRef.current = new WebSocket(`${WS_URL}?token=${encodeURIComponent(token)}`);
     socketRef.current.onopen = () => {
       setIsSocketReady(true);
     };
@@ -30,7 +33,7 @@ const Client = () => {
         socketRef.current.close();
       }
     };
-  }, []);
+  }, [token]);
 
 
   return (

@@ -60,18 +60,21 @@ target_include_directories(bcrypt PUBLIC third_party/bcrypt/include PRIVATE thir
 # --- server --------------------------------------------------------------------
 add_executable(messenger-server
     src/main.cpp
+    src/api.cpp
+    src/auth_service.cpp
+    src/chat.cpp
     src/config.cpp
     src/db/connection.cpp
-    src/db/user_repository.cpp
-    src/db/session_repository.cpp
     src/db/friend_repository.cpp
     src/db/message_repository.cpp
-    src/Server.cpp
-    src/MessagerHandler.cpp
-    src/RequestHandler.cpp
-    src/DataBase.cpp
-    src/UserModel.cpp
-    src/TimeUtils.cpp
+    src/db/session_repository.cpp
+    src/db/user_repository.cpp
+    src/http.cpp
+    src/log.cpp
+    src/rate_limiter.cpp
+    src/server.cpp
+    src/sha256.cpp
+    src/validation.cpp
 )
 target_include_directories(messenger-server PRIVATE include)
 target_link_libraries(messenger-server PRIVATE uwebsockets nlohmann_json::nlohmann_json PostgreSQL::PostgreSQL bcrypt)

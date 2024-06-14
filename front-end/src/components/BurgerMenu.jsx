@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import '../css/burger.css';
 import useAuth from "../auth/useAuth";
 import {FaPlus, FaMinus, FaCheck} from 'react-icons/fa';
@@ -7,105 +7,65 @@ import {allowedRoutes} from "./URLGuard";
 
 const BurgerMenu = ({active, setActive, setSelectedUserName}) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResult, setSearchResult] = useState({user_by_email: null, user_id: null});
+  const [searchResult, setSearchResult] = useState(null); // {id, username}
   const [errorMessage, setErrorMessage] = useState('');
   const [searching, setSearching] = useState(false);
-  const [searchPerformed, setSearchPerformed] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [friends, setFriends] = useState([]);
-  const userEmail = localStorage.getItem('userEmail');
-  const [addedFriends, setAddedFriends] = useState([]);
+  const [friends, setFriends] = useState([]); // [{id, username}]
   const [showFriends, setShowFriends] = useState(true);
   const navigate = useNavigate();
+  const {request} = useAuth();
 
-  const handleSearch = async () => {
+  const loadFriends = useCallback(async () => {
     try {
-      if (!searchQuery.trim()) {
-        return;
-      }
-      setSearchPerformed(true);
-      setSearching(true);
-      const response = await fetch('http://localhost:9000/client/SearchUser', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({query: searchQuery})
-      });
-      if (response.ok) {
-        const data = await response.json();
-        if (!data.error) {
-          if (data.user_by_email) {
-            setSearchResult({user_by_email: data.user_by_email, user_id: data.user_id});
-          }
-          setErrorMessage('');
-        } else {
-          throw new Error(data.error, 'Failed to search users');
-        }
-      } else {
-        throw new Error('Failed to search users');
-      }
+      setFriends(await request('/api/friends'));
     } catch (error) {
       console.error(error);
-      setSearchResult({user_by_email: null, user_id: null});
-      setErrorMessage(error.message + ' No such user exists');
+    }
+  }, [request]);
+
+  useEffect(() => {
+    loadFriends();
+  }, [loadFriends]);
+
+  const handleSearch = async () => {
+    const query = searchQuery.trim();
+    if (!query) {
+      return;
+    }
+    setSearching(true);
+    try {
+      setSearchResult(await request(`/api/users/search?email=${encodeURIComponent(query)}`));
+      setErrorMessage('');
+    } catch (error) {
+      setSearchResult(null);
+      setErrorMessage(error.status === 404 ? 'No such user exists' : error.message);
     } finally {
       setSearching(false);
     }
   };
 
-  const handleSearchFriends = async () => {
+  const handleAddFriend = async (friendId) => {
     try {
-      const response = await fetch('http://localhost:9000/client/SearchUserFriends', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({user_email: userEmail})
-      });
-      if (response.ok) {
-        const data = await response.json();
-        if (!data.error) {
-          setFriends(data.friends);
-        }
-      }
+      await request('/api/friends', {method: 'POST', body: {friend_id: friendId}});
+      await loadFriends();
     } catch (error) {
-      console.error(error);
-    }
-  };
-  const handleAddFriend = async () => {
-    try {
-      if (addedFriends.includes(searchResult.user_id)) {
-        return;
-      }
-      const response = await fetch('http://localhost:9000/client/AddFriends', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({user_email: userEmail, new_friend_id: searchResult.user_id})
-      });
-      if (response.ok) {
-        setAddedFriends(prevFriends => [...prevFriends, searchResult.user_id]);
-      }
-    } catch (error) {
-      console.error(error);
+      setErrorMessage(error.message);
     }
   };
 
-  const handleFriendsClick = () => {
-    handleSearchFriends();
-  };
+  const isFriend = (userId) => friends.some(friend => friend.id === userId);
 
   const toggleShowFriends = () => {
     setShowFriends(prevState => !prevState);
   };
+
   const handleClientIdClick = (userId, event, nickname) => {
     event.stopPropagation();
     setSelectedUserName(nickname);
     allowedRoutes.add(`/client/${userId}`);
     navigate(`${userId}`);
   };
+
   return (
     <div className={active ? 'menu active h-screen' : 'menu h-screen'}>
       <div className="flex justify-between h-screen flex-col py-8 pl-6 pr-6 w-64 bg-white flex-shrink-0">
@@ -126,51 +86,41 @@ const BurgerMenu = ({active, setActive, setSelectedUserName}) => {
                     className="bg-indigo-500 text-white font-semibold py-2 mt-2 rounded hover:bg-indigo-400">
               {searching ? 'Searching...' : 'Search'}
             </button>
-            <button onClick={handleFriendsClick}
-                    className="bg-blue-600 text-white font-semibold py-1 mt-1 rounded hover:bg-blue-500">
-              Friends
-            </button>
           </div>
-          {/* List of users */}
+          {/* Search result */}
           <div className="flex flex-col mt-8">
             <div className="flex flex-row items-center justify-between text-xs">
-                            <span
-                              className={`font-bold ${searchPerformed && searchResult.user_by_email === null ? 'no-users-found' : 'invisible'}`}
-                            >
-                                {searchResult.length > 0 ? `Users (${searchResult.length})` : 'No users found'}
-                            </span>
+              <span className={`font-bold ${errorMessage ? 'no-users-found' : 'invisible'}`}>
+                {errorMessage || 'No users found'}
+              </span>
             </div>
             <div className="flex flex-col space-y-1 mt-4 -mx-2 min-h-10 overflow-y-auto">
-              {searchResult.user_by_email && (
+              {searchResult && (
                 <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
-                     onClick={(event) => handleClientIdClick(searchResult.user_id, event,searchResult.user_by_email)}>
+                     onClick={(event) => handleClientIdClick(searchResult.id, event, searchResult.username)}>
                   <div className="flex items-center">
                     <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-                      {searchResult.user_by_email.charAt(0)}
+                      {searchResult.username.charAt(0)}
                     </div>
                     <div className="ml-2 text-sm font-semibold">
-                      {searchResult.user_by_email} (id-{searchResult.user_id})
+                      {searchResult.username} (id-{searchResult.id})
                     </div>
                   </div>
                   <button
                     onClick={(event) => {
                       event.stopPropagation();
-                      if (friends.some(friend => friend.friend_id === searchResult.user_id)) {
-                      } else {
-                        handleAddFriend(searchResult.user_id);
+                      if (!isFriend(searchResult.id)) {
+                        handleAddFriend(searchResult.id);
                       }
                     }}
                     className={
-                      friends.some(friend => friend.friend_id === searchResult.user_id)
+                      isFriend(searchResult.id)
                         ? "ml-2 text-green-500 rounded-full p-1"
                         : "ml-2 text-green-500 hover:bg-green-200 rounded-full p-1"
                     }
                   >
-                    {friends.some(friend => friend.friend_id === searchResult.user_id)
-                      ? <FaCheck/>
-                      : <FaPlus/>}
+                    {isFriend(searchResult.id) ? <FaCheck/> : <FaPlus/>}
                   </button>
-
                 </div>
               )}
             </div>
@@ -179,23 +129,21 @@ const BurgerMenu = ({active, setActive, setSelectedUserName}) => {
           <div className="flex flex-col mt-8">
             <div className="flex flex-row items-center justify-between text-xs">
               <span className="font-bold text-lg text-gray-800">Friends</span>
-              {/* ������ ��� ������������ ����������� ������ ������ */}
               <button onClick={toggleShowFriends} className="focus:outline-none">
                 {showFriends ? <FaMinus/> : <FaPlus/>}
               </button>
             </div>
-            {/* �������� ����������� ������ ������ */}
             {showFriends && (
               <div className="flex flex-col space-y-1 mt-4 -mx-2 overflow-y-auto max-h-100">
-                {friends.map((friend, index) => (
+                {friends.map(friend => (
                   <div className="flex items-center justify-between hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
-                       onClick={(event) => handleClientIdClick(friend.friend_id, event, friend.friend_name)} key={index}>
+                       onClick={(event) => handleClientIdClick(friend.id, event, friend.username)} key={friend.id}>
                     <div className="flex items-center">
                       <div className="flex items-center justify-center h-8 w-8 bg-indigo-200 rounded-full">
-                        {friend.friend_name.charAt(0)}
+                        {friend.username.charAt(0)}
                       </div>
                       <div className="ml-2 text-sm font-semibold">
-                        {friend.friend_name} (id-{friend.friend_id})
+                        {friend.username} (id-{friend.id})
                       </div>
                     </div>
                   </div>

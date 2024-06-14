@@ -33,12 +33,13 @@ std::optional<User> UserRepository::findByEmail(const std::string& email) {
     return userFromRow(result, 0);
 }
 
-std::optional<UserSummary> UserRepository::findById(UserId id) {
-    const Result result = connection_.exec("SELECT id, username FROM users WHERE id = $1", {std::to_string(id)});
+std::optional<User> UserRepository::findById(UserId id) {
+    const Result result =
+        connection_.exec("SELECT id, username, email, password_hash FROM users WHERE id = $1", {std::to_string(id)});
     if (result.rows() == 0) {
         return std::nullopt;
     }
-    return UserSummary{result.int64(0, 0), result.text(0, 1)};
+    return userFromRow(result, 0);
 }
 
 }  // namespace messenger::db
