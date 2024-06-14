@@ -16,7 +16,8 @@ public:
     Message insert(UserId from, UserId to, const std::string& body);
 
     // Messages between two users, newest first. beforeId pages back through older messages.
-    std::vector<Message> conversation(UserId userId, UserId peerId, std::optional<MessageId> beforeId, int limit);
+    std::vector<Message> conversation(UserId userId, UserId peerId, std::optional<MessageId> beforeId,
+                                      int limit);
 
 private:
     Connection& connection_;

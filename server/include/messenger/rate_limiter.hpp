@@ -13,7 +13,8 @@ public:
 
     RateLimiter(std::size_t maxEvents, Clock::duration window, Clock::duration blockFor);
 
-    // Registers an attempt at `now`. Returns zero if it is allowed, otherwise how long the sender stays blocked.
+    // Registers an attempt at `now`. Returns zero if it is allowed, otherwise how long the sender stays
+    // blocked.
     Clock::duration tryAcquire(Clock::time_point now);
 
 private:

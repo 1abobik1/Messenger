@@ -28,7 +28,9 @@ void sendError(ChatSocket* ws, std::string_view code, std::string_view message, 
 
 }  // namespace
 
-std::string userTopic(UserId userId) { return "user:" + std::to_string(userId); }
+std::string userTopic(UserId userId) {
+    return "user:" + std::to_string(userId);
+}
 
 void ChatHandler::registerOn(uWS::App& app) {
     app.ws<SocketData>(
@@ -107,20 +109,23 @@ void ChatHandler::sendMessage(ChatSocket* ws, UserId to, const std::string& body
         return;
     }
 
-    // Only messages that would really be sent count; checked before storing, so spam never reaches the database.
+    // Only messages that would really be sent count; checked before storing, so spam never reaches the
+    // database.
     const auto blockedFor = limiterFor(from).tryAcquire(RateLimiter::Clock::now());
     if (blockedFor > RateLimiter::Clock::duration::zero()) {
         const auto seconds = std::chrono::ceil<std::chrono::seconds>(blockedFor).count();
-        sendError(ws, "rate_limited", "too many messages, you are blocked for a while", {{"retry_after", seconds}});
+        sendError(ws, "rate_limited", "too many messages, you are blocked for a while",
+                  {{"retry_after", seconds}});
         return;
     }
 
     const Message message = services_.messages.insert(from, to, body);
     const std::string payload = Json{{"type", "message"}, {"message", toJson(message)}}.dump();
 
-    ws->publish(userTopic(to), payload, uWS::OpCode::TEXT);    // the recipient's tabs
-    ws->publish(userTopic(from), payload, uWS::OpCode::TEXT);  // the sender's other tabs (publish skips ws itself)
-    ws->send(payload, uWS::OpCode::TEXT);                      // confirmation with the stored id and time
+    ws->publish(userTopic(to), payload, uWS::OpCode::TEXT);  // the recipient's tabs
+    ws->publish(userTopic(from), payload,
+                uWS::OpCode::TEXT);        // the sender's other tabs (publish skips ws itself)
+    ws->send(payload, uWS::OpCode::TEXT);  // confirmation with the stored id and time
 }
 
 RateLimiter& ChatHandler::limiterFor(UserId userId) {

@@ -34,8 +34,8 @@ std::optional<User> UserRepository::findByEmail(const std::string& email) {
 }
 
 std::optional<User> UserRepository::findById(UserId id) {
-    const Result result =
-        connection_.exec("SELECT id, username, email, password_hash FROM users WHERE id = $1", {std::to_string(id)});
+    const Result result = connection_.exec(
+        "SELECT id, username, email, password_hash FROM users WHERE id = $1", {std::to_string(id)});
     if (result.rows() == 0) {
         return std::nullopt;
     }

@@ -36,7 +36,8 @@ TEST(RateLimiter, OldEventsLeaveTheWindow) {
 }
 
 TEST(RateLimiter, WorksAcrossMinuteBoundaries) {
-    // The old implementation compared the minute and second fields of timestamps and broke at hh:mm:59 -> hh:mm+1:00.
+    // The old implementation compared the minute and second fields of timestamps and broke at hh:mm:59 ->
+    // hh:mm+1:00.
     RateLimiter limiter(2, 10s, 30s);
     const auto almostNextMinute = kStart + 59s;
     EXPECT_EQ(limiter.tryAcquire(almostNextMinute), kZero);

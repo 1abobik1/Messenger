@@ -8,7 +8,7 @@ namespace messenger {
 
 struct Config {
     std::uint16_t port = 9000;
-    std::string databaseUrl;                          // libpq conninfo or postgres:// URL
+    std::string databaseUrl;                           // libpq conninfo or postgres:// URL
     std::string corsOrigin = "http://localhost:3000";  // the front-end origin allowed to call the API
     std::chrono::hours sessionTtl{24 * 7};
 };

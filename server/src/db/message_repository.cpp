@@ -15,16 +15,16 @@ Message messageFromRow(const Result& result, int row) {
 }  // namespace
 
 Message MessageRepository::insert(UserId from, UserId to, const std::string& body) {
-    const Result result =
-        connection_.exec(std::string("INSERT INTO messages (sender_id, receiver_id, body) VALUES ($1, $2, $3) "
-                                     "RETURNING id, sender_id, receiver_id, body, ") +
-                             kSentAt,
-                         {std::to_string(from), std::to_string(to), body});
+    const Result result = connection_.exec(
+        std::string("INSERT INTO messages (sender_id, receiver_id, body) VALUES ($1, $2, $3) "
+                    "RETURNING id, sender_id, receiver_id, body, ") +
+            kSentAt,
+        {std::to_string(from), std::to_string(to), body});
     return messageFromRow(result, 0);
 }
 
-std::vector<Message> MessageRepository::conversation(UserId userId, UserId peerId, std::optional<MessageId> beforeId,
-                                                     int limit) {
+std::vector<Message> MessageRepository::conversation(UserId userId, UserId peerId,
+                                                     std::optional<MessageId> beforeId, int limit) {
     // LEAST/GREATEST match the messages_conversation_idx index.
     const Result result = connection_.exec(
         std::string("SELECT id, sender_id, receiver_id, body, ") + kSentAt +

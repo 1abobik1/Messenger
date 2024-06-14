@@ -38,7 +38,8 @@ Result Connection::exec(std::string_view sql, const std::vector<Param>& params) 
     const ExecStatusType status = PQresultStatus(raw);
     if (status != PGRES_COMMAND_OK && status != PGRES_TUPLES_OK) {
         const char* state = PQresultErrorField(raw, PG_DIAG_SQLSTATE);
-        DbError error("query failed: " + std::string(PQresultErrorMessage(raw)), state != nullptr ? state : "");
+        DbError error("query failed: " + std::string(PQresultErrorMessage(raw)),
+                      state != nullptr ? state : "");
         PQclear(raw);
         throw error;
     }

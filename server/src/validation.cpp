@@ -49,15 +49,15 @@ bool isValidUtf8(std::string_view text) {
 }
 
 std::size_t utf8Length(std::string_view text) {
-    return static_cast<std::size_t>(std::count_if(text.begin(), text.end(), [](char c) {
-        return (static_cast<unsigned char>(c) & 0xC0) != 0x80;
-    }));
+    return static_cast<std::size_t>(std::count_if(
+        text.begin(), text.end(), [](char c) { return (static_cast<unsigned char>(c) & 0xC0) != 0x80; }));
 }
 
 std::string trim(std::string_view text) {
     const auto isSpace = [](char c) { return std::isspace(static_cast<unsigned char>(c)) != 0; };
     const auto begin = std::find_if_not(text.begin(), text.end(), isSpace);
-    const auto end = std::find_if_not(text.rbegin(), std::string_view::reverse_iterator(begin), isSpace).base();
+    const auto end =
+        std::find_if_not(text.rbegin(), std::string_view::reverse_iterator(begin), isSpace).base();
     return std::string(begin, end);
 }
 
@@ -77,7 +77,8 @@ std::optional<std::string> validateUsername(std::string_view username) {
     if (length == 0 || length > kMaxUsernameLength) {
         return "username must be 1-20 characters long";
     }
-    if (std::all_of(trimmed.begin(), trimmed.end(), [](char c) { return std::isdigit(static_cast<unsigned char>(c)); })) {
+    if (std::all_of(trimmed.begin(), trimmed.end(),
+                    [](char c) { return std::isdigit(static_cast<unsigned char>(c)); })) {
         return "username must not consist of digits only";
     }
     return std::nullopt;
@@ -89,8 +90,9 @@ std::optional<std::string> validateEmail(std::string_view email) {
     const bool shapeOk = normalized.size() <= 254 && at != std::string::npos && at > 0 &&
                          normalized.find('@', at + 1) == std::string::npos &&
                          normalized.find('.', at + 2) != std::string::npos && normalized.back() != '.' &&
-                         std::none_of(normalized.begin(), normalized.end(),
-                                      [](char c) { return std::isspace(static_cast<unsigned char>(c)) != 0; });
+                         std::none_of(normalized.begin(), normalized.end(), [](char c) {
+                             return std::isspace(static_cast<unsigned char>(c)) != 0;
+                         });
     if (!shapeOk || !isValidUtf8(normalized)) {
         return "invalid email";
     }

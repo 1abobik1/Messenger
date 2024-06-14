@@ -13,7 +13,8 @@ public:
     explicit UserRepository(Connection& connection) : connection_(connection) {}
 
     // Returns std::nullopt if the email is already taken.
-    std::optional<User> create(const std::string& username, const std::string& email, const std::string& passwordHash);
+    std::optional<User> create(const std::string& username, const std::string& email,
+                               const std::string& passwordHash);
 
     std::optional<User> findByEmail(const std::string& email);
     std::optional<User> findById(UserId id);

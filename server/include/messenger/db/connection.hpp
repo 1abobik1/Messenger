@@ -37,13 +37,16 @@ public:
     int rows() const { return PQntuples(result_.get()); }
     bool isNull(int row, int column) const { return PQgetisnull(result_.get(), row, column) != 0; }
     std::string text(int row, int column) const { return PQgetvalue(result_.get(), row, column); }
-    std::int64_t int64(int row, int column) const { return std::stoll(PQgetvalue(result_.get(), row, column)); }
+    std::int64_t int64(int row, int column) const {
+        return std::stoll(PQgetvalue(result_.get(), row, column));
+    }
 
 private:
     std::unique_ptr<PGresult, decltype(&PQclear)> result_;
 };
 
-// One libpq connection. The server is single-threaded (uWebSockets event loop), so it is shared by all repositories.
+// One libpq connection. The server is single-threaded (uWebSockets event loop), so it is shared by all
+// repositories.
 class Connection {
 public:
     explicit Connection(std::string conninfo);

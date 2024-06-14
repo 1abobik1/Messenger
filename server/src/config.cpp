@@ -31,7 +31,8 @@ Config loadConfigFromEnv() {
     config.databaseUrl = std::string(env("DATABASE_URL"));
     if (config.databaseUrl.empty()) {
         throw std::runtime_error(
-            "DATABASE_URL is not set, e.g. DATABASE_URL=postgresql://messenger:messenger@localhost:5432/messenger");
+            "DATABASE_URL is not set, e.g. "
+            "DATABASE_URL=postgresql://messenger:messenger@localhost:5432/messenger");
     }
     if (const auto port = env("MESSENGER_PORT"); !port.empty()) {
         config.port = static_cast<std::uint16_t>(parsePositive(port, "MESSENGER_PORT", 65535));

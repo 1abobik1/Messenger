@@ -38,10 +38,12 @@ std::string generateToken() {
     return token;
 }
 
-AuthService::AuthService(db::UserRepository& users, db::SessionRepository& sessions, std::chrono::hours sessionTtl)
+AuthService::AuthService(db::UserRepository& users, db::SessionRepository& sessions,
+                         std::chrono::hours sessionTtl)
     : users_(users), sessions_(sessions), sessionTtl_(sessionTtl) {}
 
-AuthOutcome AuthService::signup(const std::string& username, const std::string& email, const std::string& password) {
+AuthOutcome AuthService::signup(const std::string& username, const std::string& email,
+                                const std::string& password) {
     if (auto error = validation::validateUsername(username)) {
         return invalidInput(*error);
     }
@@ -61,7 +63,8 @@ AuthOutcome AuthService::signup(const std::string& username, const std::string& 
 }
 
 AuthOutcome AuthService::login(const std::string& email, const std::string& password) {
-    if (validation::validateEmail(email) || password.empty() || password.size() > validation::kMaxPasswordBytes) {
+    if (validation::validateEmail(email) || password.empty() ||
+        password.size() > validation::kMaxPasswordBytes) {
         return invalidCredentials();
     }
 

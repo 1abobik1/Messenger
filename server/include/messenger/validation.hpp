@@ -5,7 +5,8 @@
 #include <string>
 #include <string_view>
 
-// Input checks shared by the HTTP API and the chat. Each validate* returns an error message, or nullopt if OK.
+// Input checks shared by the HTTP API and the chat. Each validate* returns an error message, or nullopt if
+// OK.
 namespace messenger::validation {
 
 inline constexpr std::size_t kMaxUsernameLength = 20;

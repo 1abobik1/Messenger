@@ -20,7 +20,8 @@ using ChatSocket = uWS::WebSocket<false, true, SocketData>;
 // WebSocket endpoint /ws?token=<session token>.
 //
 // Client -> server: {"type":"message","to":<user id>,"body":"..."}
-// Server -> client: {"type":"message","message":{id,from,to,body,sent_at}}  (to both users and all their tabs)
+// Server -> client: {"type":"message","message":{id,from,to,body,sent_at}}  (to both users and all their
+// tabs)
 //                   {"type":"error","code":"...","message":"...","retry_after":<seconds, for rate_limited>}
 class ChatHandler {
 public:

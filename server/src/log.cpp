@@ -23,8 +23,14 @@ void write(std::string_view level, std::string_view message) {
 
 }  // namespace
 
-void info(std::string_view message) { write("INFO ", message); }
-void warn(std::string_view message) { write("WARN ", message); }
-void error(std::string_view message) { write("ERROR", message); }
+void info(std::string_view message) {
+    write("INFO ", message);
+}
+void warn(std::string_view message) {
+    write("WARN ", message);
+}
+void error(std::string_view message) {
+    write("ERROR", message);
+}
 
 }  // namespace messenger::log

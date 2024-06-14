@@ -16,8 +16,10 @@ constexpr int kDefaultPageSize = 50;
 constexpr int kMaxPageSize = 100;
 
 Json sessionJson(const Session& session) {
-    return Json{{"token", session.token},
-                {"user", {{"id", session.user.id}, {"username", session.user.username}, {"email", session.user.email}}}};
+    return Json{
+        {"token", session.token},
+        {"user",
+         {{"id", session.user.id}, {"username", session.user.username}, {"email", session.user.email}}}};
 }
 
 std::string_view statusFor(AuthFailure::Reason reason) {
@@ -70,7 +72,9 @@ auto authed(Services& s, Handler handler) {
 
 }  // namespace
 
-Json toJson(const UserSummary& user) { return Json{{"id", user.id}, {"username", user.username}}; }
+Json toJson(const UserSummary& user) {
+    return Json{{"id", user.id}, {"username", user.username}};
+}
 
 Json toJson(const Message& message) {
     return Json{{"id", message.id},
@@ -82,137 +86,140 @@ Json toJson(const Message& message) {
 
 void registerApi(uWS::App& app, Services& s) {
     app.post("/api/auth/signup", guarded(s, [&s](Response* res, Request*) {
-        s.responder.readJson(res, [&s, res](Json body) {
-            const auto username = http::jsonString(body, "username");
-            const auto email = http::jsonString(body, "email");
-            const auto password = http::jsonString(body, "password");
-            if (!username || !email || !password) {
-                s.responder.error(res, http::kBadRequest, "username, email and password are required");
-                return;
-            }
-            replyAuth(s, res, s.auth.signup(*username, *email, *password), http::kCreated);
-        });
-    }));
+                 s.responder.readJson(res, [&s, res](Json body) {
+                     const auto username = http::jsonString(body, "username");
+                     const auto email = http::jsonString(body, "email");
+                     const auto password = http::jsonString(body, "password");
+                     if (!username || !email || !password) {
+                         s.responder.error(res, http::kBadRequest,
+                                           "username, email and password are required");
+                         return;
+                     }
+                     replyAuth(s, res, s.auth.signup(*username, *email, *password), http::kCreated);
+                 });
+             }));
 
     app.post("/api/auth/login", guarded(s, [&s](Response* res, Request*) {
-        s.responder.readJson(res, [&s, res](Json body) {
-            const auto email = http::jsonString(body, "email");
-            const auto password = http::jsonString(body, "password");
-            if (!email || !password) {
-                s.responder.error(res, http::kBadRequest, "email and password are required");
-                return;
-            }
-            replyAuth(s, res, s.auth.login(*email, *password), http::kOk);
-        });
-    }));
+                 s.responder.readJson(res, [&s, res](Json body) {
+                     const auto email = http::jsonString(body, "email");
+                     const auto password = http::jsonString(body, "password");
+                     if (!email || !password) {
+                         s.responder.error(res, http::kBadRequest, "email and password are required");
+                         return;
+                     }
+                     replyAuth(s, res, s.auth.login(*email, *password), http::kOk);
+                 });
+             }));
 
     app.post("/api/auth/logout", guarded(s, [&s](Response* res, Request* req) {
-        s.auth.logout(http::bearerToken(req));
-        s.responder.noContent(res);
-    }));
+                 s.auth.logout(http::bearerToken(req));
+                 s.responder.noContent(res);
+             }));
 
     app.get("/api/me", authed(s, [&s](Response* res, Request*, UserId me) {
-        const auto user = s.users.findById(me);
-        if (!user) {
-            s.responder.error(res, http::kUnauthorized, "authentication required");
-            return;
-        }
-        s.responder.json(res, http::kOk, {{"id", user->id}, {"username", user->username}, {"email", user->email}});
-    }));
+                const auto user = s.users.findById(me);
+                if (!user) {
+                    s.responder.error(res, http::kUnauthorized, "authentication required");
+                    return;
+                }
+                s.responder.json(res, http::kOk,
+                                 {{"id", user->id}, {"username", user->username}, {"email", user->email}});
+            }));
 
     app.get("/api/users/search", authed(s, [&s](Response* res, Request* req, UserId) {
-        const std::string email(req->getQuery("email"));
-        if (email.empty()) {
-            s.responder.error(res, http::kBadRequest, "query parameter 'email' is required");
-            return;
-        }
-        const auto user = s.users.findByEmail(email);
-        if (!user) {
-            s.responder.error(res, http::kNotFound, "user not found");
-            return;
-        }
-        s.responder.json(res, http::kOk, toJson(UserSummary{user->id, user->username}));
-    }));
+                const std::string email(req->getQuery("email"));
+                if (email.empty()) {
+                    s.responder.error(res, http::kBadRequest, "query parameter 'email' is required");
+                    return;
+                }
+                const auto user = s.users.findByEmail(email);
+                if (!user) {
+                    s.responder.error(res, http::kNotFound, "user not found");
+                    return;
+                }
+                s.responder.json(res, http::kOk, toJson(UserSummary{user->id, user->username}));
+            }));
 
     app.get("/api/users/:id", authed(s, [&s](Response* res, Request* req, UserId) {
-        const auto id = http::parseId(req->getParameter(0));
-        const auto user = id ? s.users.findById(*id) : std::nullopt;
-        if (!user) {
-            s.responder.error(res, http::kNotFound, "user not found");
-            return;
-        }
-        s.responder.json(res, http::kOk, toJson(UserSummary{user->id, user->username}));
-    }));
+                const auto id = http::parseId(req->getParameter(0));
+                const auto user = id ? s.users.findById(*id) : std::nullopt;
+                if (!user) {
+                    s.responder.error(res, http::kNotFound, "user not found");
+                    return;
+                }
+                s.responder.json(res, http::kOk, toJson(UserSummary{user->id, user->username}));
+            }));
 
     app.get("/api/friends", authed(s, [&s](Response* res, Request*, UserId me) {
-        Json friends = Json::array();
-        for (const UserSummary& user : s.friends.list(me)) {
-            friends.push_back(toJson(user));
-        }
-        s.responder.json(res, http::kOk, friends);
-    }));
+                Json friends = Json::array();
+                for (const UserSummary& user : s.friends.list(me)) {
+                    friends.push_back(toJson(user));
+                }
+                s.responder.json(res, http::kOk, friends);
+            }));
 
     app.post("/api/friends", authed(s, [&s](Response* res, Request*, UserId me) {
-        s.responder.readJson(res, [&s, res, me](Json body) {
-            const auto friendId = http::jsonId(body, "friend_id");
-            if (!friendId) {
-                s.responder.error(res, http::kBadRequest, "friend_id must be a positive integer");
-                return;
-            }
-            if (*friendId == me) {
-                s.responder.error(res, http::kBadRequest, "you cannot add yourself as a friend");
-                return;
-            }
-            const auto user = s.users.findById(*friendId);
-            if (!user) {
-                s.responder.error(res, http::kNotFound, "user not found");
-                return;
-            }
-            const bool added = s.friends.add(me, *friendId);
-            s.responder.json(res, added ? http::kCreated : http::kOk, toJson(UserSummary{user->id, user->username}));
-        });
-    }));
+                 s.responder.readJson(res, [&s, res, me](Json body) {
+                     const auto friendId = http::jsonId(body, "friend_id");
+                     if (!friendId) {
+                         s.responder.error(res, http::kBadRequest, "friend_id must be a positive integer");
+                         return;
+                     }
+                     if (*friendId == me) {
+                         s.responder.error(res, http::kBadRequest, "you cannot add yourself as a friend");
+                         return;
+                     }
+                     const auto user = s.users.findById(*friendId);
+                     if (!user) {
+                         s.responder.error(res, http::kNotFound, "user not found");
+                         return;
+                     }
+                     const bool added = s.friends.add(me, *friendId);
+                     s.responder.json(res, added ? http::kCreated : http::kOk,
+                                      toJson(UserSummary{user->id, user->username}));
+                 });
+             }));
 
     app.get("/api/messages/:peerId", authed(s, [&s](Response* res, Request* req, UserId me) {
-        const auto peerId = http::parseId(req->getParameter(0));
-        if (!peerId) {
-            s.responder.error(res, http::kBadRequest, "invalid user id");
-            return;
-        }
+                const auto peerId = http::parseId(req->getParameter(0));
+                if (!peerId) {
+                    s.responder.error(res, http::kBadRequest, "invalid user id");
+                    return;
+                }
 
-        std::optional<MessageId> before;
-        if (const std::string_view raw = req->getQuery("before"); !raw.empty()) {
-            before = http::parseId(raw);
-            if (!before) {
-                s.responder.error(res, http::kBadRequest, "'before' must be a message id");
-                return;
-            }
-        }
-        int limit = kDefaultPageSize;
-        if (const std::string_view raw = req->getQuery("limit"); !raw.empty()) {
-            const auto parsed = http::parseId(raw);
-            if (!parsed || *parsed > kMaxPageSize) {
-                s.responder.error(res, http::kBadRequest, "'limit' must be between 1 and 100");
-                return;
-            }
-            limit = static_cast<int>(*parsed);
-        }
+                std::optional<MessageId> before;
+                if (const std::string_view raw = req->getQuery("before"); !raw.empty()) {
+                    before = http::parseId(raw);
+                    if (!before) {
+                        s.responder.error(res, http::kBadRequest, "'before' must be a message id");
+                        return;
+                    }
+                }
+                int limit = kDefaultPageSize;
+                if (const std::string_view raw = req->getQuery("limit"); !raw.empty()) {
+                    const auto parsed = http::parseId(raw);
+                    if (!parsed || *parsed > kMaxPageSize) {
+                        s.responder.error(res, http::kBadRequest, "'limit' must be between 1 and 100");
+                        return;
+                    }
+                    limit = static_cast<int>(*parsed);
+                }
 
-        Json messages = Json::array();
-        for (const Message& message : s.messages.conversation(me, *peerId, before, limit)) {
-            messages.push_back(toJson(message));
-        }
-        s.responder.json(res, http::kOk, messages);
-    }));
+                Json messages = Json::array();
+                for (const Message& message : s.messages.conversation(me, *peerId, before, limit)) {
+                    messages.push_back(toJson(message));
+                }
+                s.responder.json(res, http::kOk, messages);
+            }));
 
     app.get("/api/health", guarded(s, [&s](Response* res, Request*) {
-        try {
-            s.connection.exec("SELECT 1");
-            s.responder.json(res, http::kOk, {{"status", "ok"}});
-        } catch (const db::DbError&) {
-            s.responder.json(res, http::kServiceUnavailable, {{"status", "database unavailable"}});
-        }
-    }));
+                try {
+                    s.connection.exec("SELECT 1");
+                    s.responder.json(res, http::kOk, {{"status", "ok"}});
+                } catch (const db::DbError&) {
+                    s.responder.json(res, http::kServiceUnavailable, {{"status", "database unavailable"}});
+                }
+            }));
 
     app.options("/*", [&s](Response* res, Request*) { s.responder.preflight(res); });
 }
