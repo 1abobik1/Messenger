@@ -56,6 +56,10 @@ find_package(PostgreSQL REQUIRED)
 # --- bcrypt (vendored) -------------------------------------------------------
 add_library(bcrypt STATIC third_party/bcrypt/src/bcrypt.cpp third_party/bcrypt/src/blowfish.cpp)
 target_include_directories(bcrypt PUBLIC third_party/bcrypt/include PRIVATE third_party/bcrypt/src)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GCC" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    # Third-party code: a false positive about snprintf truncation of the salt string.
+    target_compile_options(bcrypt PRIVATE -Wno-format-truncation)
+endif()
 
 # --- server --------------------------------------------------------------------
 # Everything except main(), so the tests can link it.
