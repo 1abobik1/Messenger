@@ -1,0 +1,44 @@
+# docker compose up --build  ->  http://localhost:3000
+# Values come from .env if it exists (see .env.example), otherwise the defaults below are used.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-messenger}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-messenger}
+      POSTGRES_DB: ${POSTGRES_DB:-messenger}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  server:
+    build: ./server
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-messenger}:${POSTGRES_PASSWORD:-messenger}@db:5432/${POSTGRES_DB:-messenger}
+      MESSENGER_PORT: 9000
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-168}
+    ports:
+      - "9000:9000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./front-end
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:9000}
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+
+volumes:
+  db-data:
